@@ -4,11 +4,11 @@
    DESCRIPTION: Waiter Dashboard for Smart Restaurant Ordering System
    ============================================= */
 
-import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Moon, Sun, Bell, CheckCircle, Clock, Users } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Moon, Sun, Bell, CheckCircle, Clock, Users } from "lucide-react";
 
 interface OrderItem {
   name: string;
@@ -20,8 +20,8 @@ interface WaiterOrder {
   tableNumber: string;
   orderId: string;
   items: OrderItem[];
-  status: 'Ready' | 'Delivered';
-  paymentStatus: 'Paid' | 'Cash Pending';
+  status: "Ready" | "Delivered";
+  paymentStatus: "Paid" | "Cash Pending";
   timestamp: string;
   isUrgent?: boolean;
 }
@@ -64,24 +64,36 @@ export default function WaiterDashboard() {
     },
   ]);
 
-  const [assistanceRequests, setAssistanceRequests] = useState<AssistanceRequest[]>([
-    { tableNumber: "15", requestType: "Call Waiter", time: "1 min ago", isNew: true },
-    { tableNumber: "09", requestType: "Extra Water", time: "4 min ago", isNew: false },
+  const [assistanceRequests, setAssistanceRequests] = useState<
+    AssistanceRequest[]
+  >([
+    {
+      tableNumber: "15",
+      requestType: "Call Waiter",
+      time: "1 min ago",
+      isNew: true,
+    },
+    {
+      tableNumber: "09",
+      requestType: "Extra Water",
+      time: "4 min ago",
+      isNew: false,
+    },
   ]);
 
   // Theme
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
 
   const markAsDelivered = (orderId: string) => {
-    setOrders(prev => prev.filter(order => order.orderId !== orderId));
+    setOrders((prev) => prev.filter((order) => order.orderId !== orderId));
   };
 
   return (
@@ -100,12 +112,19 @@ export default function WaiterDashboard() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Badge variant="outline" className="px-4 py-2 flex items-center gap-2">
+            <Badge
+              variant="outline"
+              className="px-4 py-2 flex items-center gap-2"
+            >
               <Bell className="h-4 w-4" />
               {assistanceRequests.length} Requests
             </Badge>
             <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDark ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
           </div>
         </div>
@@ -120,19 +139,34 @@ export default function WaiterDashboard() {
                 Ready to Deliver
                 <Badge className="bg-green-600">{orders.length}</Badge>
               </h2>
-              <p className="text-sm text-zinc-400">Pull to refresh in real app</p>
+              <p className="text-sm text-zinc-400">
+                Pull to refresh in real app
+              </p>
             </div>
 
             <div className="space-y-6">
               {orders.map((order) => (
-                <Card key={order.id} className={`bg-zinc-900 border-white/10 ${order.isUrgent ? 'border-amber-500' : ''}`}>
+                <Card
+                  key={order.id}
+                  className={`bg-zinc-900 border-white/10 ${order.isUrgent ? "border-amber-500" : ""}`}
+                >
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-5">
                       <div>
-                        <p className="text-4xl font-bold text-amber-500">Table #{order.tableNumber}</p>
-                        <p className="font-mono text-sm text-zinc-500 mt-1">{order.orderId}</p>
+                        <p className="text-4xl font-bold text-amber-500">
+                          Table #{order.tableNumber}
+                        </p>
+                        <p className="font-mono text-sm text-zinc-500 mt-1">
+                          {order.orderId}
+                        </p>
                       </div>
-                      <Badge variant={order.paymentStatus === "Paid" ? "default" : "secondary"}>
+                      <Badge
+                        variant={
+                          order.paymentStatus === "Paid"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
                         {order.paymentStatus}
                       </Badge>
                     </div>
@@ -156,7 +190,7 @@ export default function WaiterDashboard() {
                       )}
                     </div>
 
-                    <Button 
+                    <Button
                       onClick={() => markAsDelivered(order.orderId)}
                       className="w-full h-14 text-lg bg-green-600 hover:bg-green-700"
                     >
@@ -170,8 +204,12 @@ export default function WaiterDashboard() {
               {orders.length === 0 && (
                 <Card className="bg-zinc-900 border-white/10 p-12 text-center">
                   <p className="text-6xl mb-4">🎉</p>
-                  <h3 className="text-xl font-medium">No orders ready for delivery</h3>
-                  <p className="text-zinc-500 mt-2">New orders will appear here automatically</p>
+                  <h3 className="text-xl font-medium">
+                    No orders ready for delivery
+                  </h3>
+                  <p className="text-zinc-500 mt-2">
+                    New orders will appear here automatically
+                  </p>
                 </Card>
               )}
             </div>
@@ -186,20 +224,24 @@ export default function WaiterDashboard() {
 
             <div className="space-y-4">
               {assistanceRequests.map((req, index) => (
-                <Card key={index} className={`bg-zinc-900 border-white/10 ${req.isNew ? 'border-amber-500' : ''}`}>
+                <Card
+                  key={index}
+                  className={`bg-zinc-900 border-white/10 ${req.isNew ? "border-amber-500" : ""}`}
+                >
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="text-2xl font-bold">Table #{req.tableNumber}</p>
-                        <p className="text-amber-500 font-medium mt-1">{req.requestType}</p>
+                        <p className="text-2xl font-bold">
+                          Table #{req.tableNumber}
+                        </p>
+                        <p className="text-amber-500 font-medium mt-1">
+                          {req.requestType}
+                        </p>
                       </div>
                       <p className="text-xs text-zinc-500">{req.time}</p>
                     </div>
 
-                    <Button 
-                      className="w-full mt-6 h-12"
-                      variant="outline"
-                    >
+                    <Button className="w-full mt-6 h-12" variant="outline">
                       Respond Now
                     </Button>
                   </CardContent>
@@ -208,8 +250,8 @@ export default function WaiterDashboard() {
             </div>
 
             <div className="mt-10">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full h-14 border-white/30 hover:bg-white/5"
               >
                 View All Active Tables

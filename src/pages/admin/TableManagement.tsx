@@ -2,24 +2,39 @@
    PAGE NAME: TableManagement
    FILE PATH: src/pages/TableManagement.tsx
    ============================================= */
-import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
-} from '../components/ui/dialog';
-import { Moon, Sun, Plus, QrCode, Users, Clock, Trash2 } from 'lucide-react';
-import { useFirestore, addDocument, updateDocument, deleteDocument } from '../hooks/useFirestore';
-import { useAuth } from '../hooks/useAuth';
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import { Moon, Sun, Plus, QrCode, Users, Clock, Trash2 } from "lucide-react";
+import {
+  useFirestore,
+  addDocument,
+  updateDocument,
+  deleteDocument,
+} from "../../hooks/useFirestore";
+import { useAuth } from "../../hooks/useAuth";
 
 interface RestaurantTable {
   id: string;
   number: string;
   capacity: number;
-  status: 'Available' | 'Occupied' | 'Reserved' | 'Cleaning';
+  status: "Available" | "Occupied" | "Reserved" | "Cleaning";
   currentSession?: {
     customerName: string;
     startedAt: string;
@@ -30,29 +45,36 @@ interface RestaurantTable {
 
 export default function TableManagement() {
   const { user } = useAuth();
-  const { data: tables, loading } = useFirestore<RestaurantTable>('tables');
+  const { data: tables, loading } = useFirestore<RestaurantTable>("tables");
 
   const [isDark, setIsDark] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
-  const [selectedTable, setSelectedTable] = useState<RestaurantTable | null>(null);
-  const [newTable, setNewTable] = useState({ number: '', capacity: 4 });
+  const [selectedTable, setSelectedTable] = useState<RestaurantTable | null>(
+    null,
+  );
+  const [newTable, setNewTable] = useState({ number: "", capacity: 4 });
 
   // Theme
   useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
+    if (isDark) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Available': return 'bg-emerald-600';
-      case 'Occupied': return 'bg-red-600';
-      case 'Reserved': return 'bg-amber-600';
-      case 'Cleaning': return 'bg-blue-600';
-      default: return 'bg-zinc-600';
+      case "Available":
+        return "bg-emerald-600";
+      case "Occupied":
+        return "bg-red-600";
+      case "Reserved":
+        return "bg-amber-600";
+      case "Cleaning":
+        return "bg-blue-600";
+      default:
+        return "bg-zinc-600";
     }
   };
 
@@ -61,30 +83,33 @@ export default function TableManagement() {
     setIsQRModalOpen(true);
   };
 
-  const changeTableStatus = async (id: string, newStatus: RestaurantTable['status']) => {
-    await updateDocument('tables', id, { 
+  const changeTableStatus = async (
+    id: string,
+    newStatus: RestaurantTable["status"],
+  ) => {
+    await updateDocument("tables", id, {
       status: newStatus,
-      ...(newStatus === 'Available' && { currentSession: null })
+      ...(newStatus === "Available" && { currentSession: null }),
     });
   };
 
   const deleteTable = async (id: string) => {
-    await deleteDocument('tables', id);
+    await deleteDocument("tables", id);
   };
 
   const addNewTable = async () => {
     if (!newTable.number) return;
 
-    const tableData: Omit<RestaurantTable, 'id'> = {
-      number: newTable.number.padStart(2, '0'),
+    const tableData: Omit<RestaurantTable, "id"> = {
+      number: newTable.number.padStart(2, "0"),
       capacity: newTable.capacity,
-      status: 'Available',
+      status: "Available",
       qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TABLE-${newTable.number}-LUMINA`,
     };
 
-    await addDocument('tables', tableData);
+    await addDocument("tables", tableData);
     setIsAddModalOpen(false);
-    setNewTable({ number: '', capacity: 4 });
+    setNewTable({ number: "", capacity: 4 });
   };
 
   return (
@@ -98,14 +123,23 @@ export default function TableManagement() {
             </div>
             <div>
               <h1 className="text-3xl font-bold">Table Management</h1>
-              <p className="text-sm text-amber-500">Lumina Grand Restaurant • Real-time Status</p>
+              <p className="text-sm text-amber-500">
+                Lumina Grand Restaurant • Real-time Status
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <Button onClick={toggleTheme} variant="ghost" size="icon">
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDark ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
-            <Button onClick={() => setIsAddModalOpen(true)} className="bg-amber-600 hover:bg-amber-700">
+            <Button
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-amber-600 hover:bg-amber-700"
+            >
               <Plus className="mr-2 h-4 w-4" /> Add New Table
             </Button>
           </div>
@@ -115,14 +149,23 @@ export default function TableManagement() {
       <div className="max-w-screen-2xl mx-auto p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {tables.map((table) => (
-            <Card key={table.id} className="bg-zinc-900 border-white/10 hover:border-amber-500/50 transition-all">
+            <Card
+              key={table.id}
+              className="bg-zinc-900 border-white/10 hover:border-amber-500/50 transition-all"
+            >
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-4xl font-bold text-amber-500">#{table.number}</CardTitle>
-                    <p className="text-zinc-400">Capacity: {table.capacity} seats</p>
+                    <CardTitle className="text-4xl font-bold text-amber-500">
+                      #{table.number}
+                    </CardTitle>
+                    <p className="text-zinc-400">
+                      Capacity: {table.capacity} seats
+                    </p>
                   </div>
-                  <Badge className={`${getStatusColor(table.status)} text-white px-4 py-1`}>
+                  <Badge
+                    className={`${getStatusColor(table.status)} text-white px-4 py-1`}
+                  >
                     {table.status}
                   </Badge>
                 </div>
@@ -135,9 +178,13 @@ export default function TableManagement() {
                     <div className="flex items-center gap-3 mb-3">
                       <Users className="h-5 w-5 text-amber-500" />
                       <div>
-                        <p className="font-medium">{table.currentSession.customerName}</p>
+                        <p className="font-medium">
+                          {table.currentSession.customerName}
+                        </p>
                         <p className="text-sm text-zinc-400 flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> {table.currentSession.startedAt} • {table.currentSession.guests} guests
+                          <Clock className="h-3 w-3" />{" "}
+                          {table.currentSession.startedAt} •{" "}
+                          {table.currentSession.guests} guests
                         </p>
                       </div>
                     </div>
@@ -159,26 +206,38 @@ export default function TableManagement() {
                     QR Code
                   </Button>
 
-                  {table.status === 'Available' && (
-                    <Button onClick={() => changeTableStatus(table.id, 'Occupied')} className="bg-emerald-600 hover:bg-emerald-700">
+                  {table.status === "Available" && (
+                    <Button
+                      onClick={() => changeTableStatus(table.id, "Occupied")}
+                      className="bg-emerald-600 hover:bg-emerald-700"
+                    >
                       Open Table
                     </Button>
                   )}
 
-                  {table.status === 'Occupied' && (
-                    <Button onClick={() => changeTableStatus(table.id, 'Available')} variant="destructive">
+                  {table.status === "Occupied" && (
+                    <Button
+                      onClick={() => changeTableStatus(table.id, "Available")}
+                      variant="destructive"
+                    >
                       Close Table
                     </Button>
                   )}
 
-                  {table.status === 'Reserved' && (
-                    <Button onClick={() => changeTableStatus(table.id, 'Occupied')} className="bg-amber-600 hover:bg-amber-700">
+                  {table.status === "Reserved" && (
+                    <Button
+                      onClick={() => changeTableStatus(table.id, "Occupied")}
+                      className="bg-amber-600 hover:bg-amber-700"
+                    >
                       Seat Guests
                     </Button>
                   )}
 
-                  {table.status === 'Cleaning' && (
-                    <Button onClick={() => changeTableStatus(table.id, 'Available')} className="bg-blue-600 hover:bg-blue-700">
+                  {table.status === "Cleaning" && (
+                    <Button
+                      onClick={() => changeTableStatus(table.id, "Available")}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
                       Mark Ready
                     </Button>
                   )}
@@ -212,7 +271,9 @@ export default function TableManagement() {
                 type="text"
                 placeholder="06"
                 value={newTable.number}
-                onChange={(e) => setNewTable({ ...newTable, number: e.target.value })}
+                onChange={(e) =>
+                  setNewTable({ ...newTable, number: e.target.value })
+                }
               />
             </div>
             <div>
@@ -221,13 +282,25 @@ export default function TableManagement() {
                 type="number"
                 min={1}
                 value={newTable.capacity}
-                onChange={(e) => setNewTable({ ...newTable, capacity: parseInt(e.target.value) || 4 })}
+                onChange={(e) =>
+                  setNewTable({
+                    ...newTable,
+                    capacity: parseInt(e.target.value) || 4,
+                  })
+                }
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
-            <Button onClick={addNewTable} className="bg-amber-600 hover:bg-amber-700">Create Table</Button>
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={addNewTable}
+              className="bg-amber-600 hover:bg-amber-700"
+            >
+              Create Table
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -237,7 +310,9 @@ export default function TableManagement() {
         <DialogContent className="max-w-md text-center">
           <DialogHeader>
             <DialogTitle>Table #{selectedTable?.number} QR Code</DialogTitle>
-            <DialogDescription>Scan to view menu and place order</DialogDescription>
+            <DialogDescription>
+              Scan to view menu and place order
+            </DialogDescription>
           </DialogHeader>
           {selectedTable?.qrCode && (
             <div className="flex justify-center py-8 bg-white rounded-2xl">
@@ -252,7 +327,9 @@ export default function TableManagement() {
             Table {selectedTable?.number} • Lumina Grand Restaurant
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsQRModalOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setIsQRModalOpen(false)}>
+              Close
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

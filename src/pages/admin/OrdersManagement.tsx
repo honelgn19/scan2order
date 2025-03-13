@@ -3,22 +3,22 @@
    FILE PATH: src/pages/OrdersManagement.tsx
    ============================================= */
 import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Input } from '../components/ui/input';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Badge } from '../../components/ui/badge';
+import { Input } from '../../components/ui/input';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from '../components/ui/table';
+} from '../../components/ui/table';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
-} from '../components/ui/dialog';
+} from '../../components/ui/dialog';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '../components/ui/select';
+} from '../../components/ui/select';
 import { Moon, Sun, Eye, Table as TableIcon } from 'lucide-react';
-import { useFirestore, updateDocument } from '../hooks/useFirestore';
-import { useAuth } from '../hooks/useAuth';
+import { useFirestore, updateDocument } from '../../hooks/useFirestore';
+import { useAuth } from '../../hooks/useAuth';
 
 interface OrderItem { name: string; quantity: number; price: number; }
 interface Order {

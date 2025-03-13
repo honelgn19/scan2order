@@ -4,11 +4,11 @@
    DESCRIPTION: Cart Page for QR Restaurant Ordering System
    ============================================= */
 
-import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Moon, Sun, Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Moon, Sun, Plus, Minus, Trash2, ArrowLeft } from "lucide-react";
 
 interface CartItem {
   id: number;
@@ -16,44 +16,44 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
-  fasting: 'FASTING' | 'NON_FASTING' | 'BOTH';
+  fasting: "FASTING" | "NON_FASTING" | "BOTH";
 }
 
 export default function CartPage() {
   const [isDark, setIsDark] = useState(true);
   const [cartItems, setCartItems] = useState<CartItem[]>([
-    { 
-      id: 1, 
-      name: "Injera Be Wot", 
-      price: 185, 
-      quantity: 2, 
-      image: "https://picsum.photos/id/1080/300/200", 
-      fasting: "NON_FASTING" 
+    {
+      id: 1,
+      name: "Injera Be Wot",
+      price: 185,
+      quantity: 2,
+      image: "https://picsum.photos/id/1080/300/200",
+      fasting: "NON_FASTING",
     },
-    { 
-      id: 2, 
-      name: "Shiro", 
-      price: 120, 
-      quantity: 1, 
-      image: "https://picsum.photos/id/292/300/200", 
-      fasting: "FASTING" 
+    {
+      id: 2,
+      name: "Shiro",
+      price: 120,
+      quantity: 1,
+      image: "https://picsum.photos/id/292/300/200",
+      fasting: "FASTING",
     },
-    { 
-      id: 4, 
-      name: "Fresh Mango Juice", 
-      price: 65, 
-      quantity: 3, 
-      image: "https://picsum.photos/id/870/300/200", 
-      fasting: "BOTH" 
+    {
+      id: 4,
+      name: "Fresh Mango Juice",
+      price: 65,
+      quantity: 3,
+      image: "https://picsum.photos/id/870/300/200",
+      fasting: "BOTH",
     },
   ]);
 
   // Theme
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDark]);
 
@@ -61,19 +61,24 @@ export default function CartPage() {
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
-    setCartItems(prev => 
-      prev.map(item => item.id === id ? { ...item, quantity: newQuantity } : item)
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item,
+      ),
     );
   };
 
   const removeItem = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   // Calculations
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const vat = subtotal * 0.15;           // 15% VAT
-  const serviceCharge = subtotal * 0.10; // 10% Service Charge
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+  const vat = subtotal * 0.15; // 15% VAT
+  const serviceCharge = subtotal * 0.1; // 10% Service Charge
   const total = subtotal + vat + serviceCharge;
 
   return (
@@ -91,7 +96,11 @@ export default function CartPage() {
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {isDark ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
@@ -101,14 +110,19 @@ export default function CartPage() {
           <div className="text-center py-20">
             <p className="text-6xl mb-4">🛒</p>
             <h3 className="text-xl font-medium">Your cart is empty</h3>
-            <p className="text-zinc-400 mt-2">Add delicious meals from the menu</p>
+            <p className="text-zinc-400 mt-2">
+              Add delicious meals from the menu
+            </p>
           </div>
         ) : (
           <>
             {/* Cart Items */}
             <div className="space-y-4">
               {cartItems.map((item) => (
-                <Card key={item.id} className="bg-zinc-900 border-white/10 overflow-hidden">
+                <Card
+                  key={item.id}
+                  className="bg-zinc-900 border-white/10 overflow-hidden"
+                >
                   <CardContent className="p-4 flex gap-4">
                     <img
                       src={item.image}
@@ -117,16 +131,24 @@ export default function CartPage() {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between">
-                        <h3 className="font-semibold text-lg leading-tight">{item.name}</h3>
+                        <h3 className="font-semibold text-lg leading-tight">
+                          {item.name}
+                        </h3>
                         <p className="font-bold text-lg">ETB {item.price}</p>
                       </div>
 
                       <div className="flex gap-2 mt-2">
-                        {(item.fasting === "FASTING" || item.fasting === "BOTH") && (
-                          <Badge className="bg-green-900 text-green-300 text-xs">Fasting</Badge>
+                        {(item.fasting === "FASTING" ||
+                          item.fasting === "BOTH") && (
+                          <Badge className="bg-green-900 text-green-300 text-xs">
+                            Fasting
+                          </Badge>
                         )}
-                        {(item.fasting === "NON_FASTING" || item.fasting === "BOTH") && (
-                          <Badge variant="outline" className="text-xs">Non-Fasting</Badge>
+                        {(item.fasting === "NON_FASTING" ||
+                          item.fasting === "BOTH") && (
+                          <Badge variant="outline" className="text-xs">
+                            Non-Fasting
+                          </Badge>
                         )}
                       </div>
 
@@ -136,16 +158,22 @@ export default function CartPage() {
                             variant="outline"
                             size="icon"
                             className="h-9 w-9"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity - 1)
+                            }
                           >
                             <Minus className="h-4 w-4" />
                           </Button>
-                          <span className="font-medium w-8 text-center">{item.quantity}</span>
+                          <span className="font-medium w-8 text-center">
+                            {item.quantity}
+                          </span>
                           <Button
                             variant="outline"
                             size="icon"
                             className="h-9 w-9"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
                           >
                             <Plus className="h-4 w-4" />
                           </Button>
@@ -196,16 +224,14 @@ export default function CartPage() {
       {cartItems.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-950 border-t border-white/10 p-4">
           <div className="max-w-2xl mx-auto flex flex-col gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="h-14 text-base border-white/30 hover:bg-white/5"
             >
               ← Continue Ordering
             </Button>
-            
-            <Button 
-              className="h-14 text-base font-medium bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
-            >
+
+            <Button className="h-14 text-base font-medium bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700">
               Proceed to Checkout
             </Button>
           </div>

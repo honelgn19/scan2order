@@ -3,13 +3,13 @@
    FILE PATH: src/pages/KitchenDashboard.tsx
    DESCRIPTION: Kitchen Dashboard - Real-time with Firebase
    ============================================= */
-import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Moon, Sun, Bell, Clock, CheckCircle } from 'lucide-react';
-import { useFirestore, updateDocument } from '../hooks/useFirestore';
-import { useAuth } from '../hooks/useAuth';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Moon, Sun, Bell, Clock, CheckCircle } from "lucide-react";
+import { useFirestore, updateDocument } from "../../hooks/useFirestore";
+import { useAuth } from "../../hooks/useAuth";
 
 interface OrderItem {
   name: string;
@@ -21,8 +21,8 @@ interface KitchenOrder {
   tableNumber: string;
   orderId: string;
   items: OrderItem[];
-  status: 'Pending' | 'Preparing' | 'Ready' | 'Delivered';
-  paymentStatus: 'Paid' | 'Cash Pending';
+  status: "Pending" | "Preparing" | "Ready" | "Delivered";
+  paymentStatus: "Paid" | "Cash Pending";
   timestamp: string;
   createdAt?: string;
   isNew?: boolean;
@@ -30,45 +30,52 @@ interface KitchenOrder {
 
 export default function KitchenDashboard() {
   const { user } = useAuth();
-  const { data: allOrders, loading } = useFirestore<KitchenOrder>('orders');
+  const { data: allOrders, loading } = useFirestore<KitchenOrder>("orders");
 
   const [isDark, setIsDark] = useState(true);
 
   // Filter only relevant orders for kitchen (Pending, Preparing, Ready)
-  const orders = allOrders.filter(order => 
-    ['Pending', 'Preparing', 'Ready'].includes(order.status)
+  const orders = allOrders.filter((order) =>
+    ["Pending", "Preparing", "Ready"].includes(order.status),
   );
 
   // Theme
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  const updateOrderStatus = async (orderId: string, newStatus: 'Preparing' | 'Ready' | 'Delivered') => {
-    await updateDocument('orders', orderId, { 
+  const updateOrderStatus = async (
+    orderId: string,
+    newStatus: "Preparing" | "Ready" | "Delivered",
+  ) => {
+    await updateDocument("orders", orderId, {
       status: newStatus,
-      ...(newStatus === 'Delivered' && { isNew: false })
+      ...(newStatus === "Delivered" && { isNew: false }),
     });
   };
 
   const getColumnOrders = (status: string) => {
-    return orders.filter(order => order.status === status);
+    return orders.filter((order) => order.status === status);
   };
 
   const columns = [
     { title: "Pending", status: "Pending" as const, color: "bg-yellow-500" },
     { title: "Preparing", status: "Preparing" as const, color: "bg-blue-500" },
     { title: "Ready", status: "Ready" as const, color: "bg-green-500" },
-    { title: "Delivered", status: "Delivered" as const, color: "bg-emerald-600" },
+    {
+      title: "Delivered",
+      status: "Delivered" as const,
+      color: "bg-emerald-600",
+    },
   ];
 
-  const newOrdersCount = orders.filter(o => o.isNew).length;
+  const newOrdersCount = orders.filter((o) => o.isNew).length;
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -86,12 +93,19 @@ export default function KitchenDashboard() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Badge variant="outline" className="px-4 py-2 flex items-center gap-2">
+            <Badge
+              variant="outline"
+              className="px-4 py-2 flex items-center gap-2"
+            >
               <Bell className="h-4 w-4" />
               {newOrdersCount} New Orders
             </Badge>
             <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDark ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
           </div>
         </div>
@@ -114,19 +128,29 @@ export default function KitchenDashboard() {
 
               <div className="space-y-4 min-h-[calc(100vh-180px)]">
                 {getColumnOrders(column.status).map((order) => (
-                  <Card 
-                    key={order.id} 
-                    className={`bg-zinc-900 border-white/10 overflow-hidden transition-all ${order.isNew ? 'ring-2 ring-amber-500' : ''}`}
+                  <Card
+                    key={order.id}
+                    className={`bg-zinc-900 border-white/10 overflow-hidden transition-all ${order.isNew ? "ring-2 ring-amber-500" : ""}`}
                   >
                     <CardContent className="p-5">
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <p className="text-2xl font-bold text-amber-500">Table #{order.tableNumber}</p>
-                          <p className="font-mono text-sm text-zinc-500">{order.orderId}</p>
+                          <p className="text-2xl font-bold text-amber-500">
+                            Table #{order.tableNumber}
+                          </p>
+                          <p className="font-mono text-sm text-zinc-500">
+                            {order.orderId}
+                          </p>
                         </div>
-                        <Badge 
-                          variant={order.paymentStatus === "Paid" ? "default" : "secondary"}
-                          className={order.paymentStatus === "Paid" ? "bg-green-600" : ""}
+                        <Badge
+                          variant={
+                            order.paymentStatus === "Paid"
+                              ? "default"
+                              : "secondary"
+                          }
+                          className={
+                            order.paymentStatus === "Paid" ? "bg-green-600" : ""
+                          }
                         >
                           {order.paymentStatus}
                         </Badge>
@@ -134,9 +158,14 @@ export default function KitchenDashboard() {
 
                       <div className="space-y-2 mb-6">
                         {order.items.map((item, idx) => (
-                          <div key={idx} className="flex justify-between text-sm">
+                          <div
+                            key={idx}
+                            className="flex justify-between text-sm"
+                          >
                             <span className="text-zinc-200">{item.name}</span>
-                            <span className="font-medium">×{item.quantity}</span>
+                            <span className="font-medium">
+                              ×{item.quantity}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -151,13 +180,19 @@ export default function KitchenDashboard() {
                       {/* Action Buttons */}
                       <div className="grid grid-cols-2 gap-2">
                         {column.status !== "Delivered" && (
-                          <Button 
+                          <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateOrderStatus(order.id, 
-                              column.status === "Pending" ? "Preparing" : 
-                              column.status === "Preparing" ? "Ready" : "Delivered"
-                            )}
+                            onClick={() =>
+                              updateOrderStatus(
+                                order.id,
+                                column.status === "Pending"
+                                  ? "Preparing"
+                                  : column.status === "Preparing"
+                                    ? "Ready"
+                                    : "Delivered",
+                              )
+                            }
                           >
                             {column.status === "Pending" && "Start Preparing"}
                             {column.status === "Preparing" && "Mark Ready"}
@@ -166,10 +201,12 @@ export default function KitchenDashboard() {
                         )}
 
                         {column.status === "Ready" && (
-                          <Button 
+                          <Button
                             size="sm"
                             className="bg-green-600 hover:bg-green-700"
-                            onClick={() => updateOrderStatus(order.id, "Delivered")}
+                            onClick={() =>
+                              updateOrderStatus(order.id, "Delivered")
+                            }
                           >
                             <CheckCircle className="h-4 w-4 mr-2" />
                             Complete

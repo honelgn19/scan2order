@@ -4,22 +4,24 @@
    DESCRIPTION: Live Order Tracking Page for QR Restaurant Ordering System
    ============================================= */
 
-import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Moon, Sun, Clock, Phone, Plus, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Moon, Sun, Clock, Phone, Plus, ArrowLeft } from "lucide-react";
 
 interface OrderItem {
   name: string;
   quantity: number;
   price: number;
-  status: 'Pending' | 'Preparing' | 'Ready' | 'Delivered';
+  status: "Pending" | "Preparing" | "Ready" | "Delivered";
 }
 
 export default function LiveOrderTrackingPage() {
   const [isDark, setIsDark] = useState(true);
-  const [currentStatus, setCurrentStatus] = useState<'Pending' | 'Preparing' | 'Ready' | 'Delivered'>('Preparing');
+  const [currentStatus, setCurrentStatus] = useState<
+    "Pending" | "Preparing" | "Ready" | "Delivered"
+  >("Preparing");
   const [estimatedTime, setEstimatedTime] = useState(28); // minutes
 
   const [orderItems] = useState<OrderItem[]>([
@@ -35,7 +37,7 @@ export default function LiveOrderTrackingPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (estimatedTime > 5) {
-        setEstimatedTime(prev => prev - 1);
+        setEstimatedTime((prev) => prev - 1);
       }
     }, 8000);
 
@@ -45,9 +47,9 @@ export default function LiveOrderTrackingPage() {
   // Theme
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDark]);
 
@@ -60,9 +62,12 @@ export default function LiveOrderTrackingPage() {
     { label: "Delivered", value: "Delivered" as const },
   ];
 
-  const currentStep = statuses.findIndex(s => s.value === currentStatus);
+  const currentStep = statuses.findIndex((s) => s.value === currentStatus);
 
-  const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = orderItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
   const total = Math.round(subtotal * 1.25);
 
   return (
@@ -76,11 +81,17 @@ export default function LiveOrderTrackingPage() {
             </Button>
             <div>
               <h1 className="text-2xl font-bold">Live Tracking</h1>
-              <p className="text-xs text-amber-500">Table #{tableNumber} • Order {orderId}</p>
+              <p className="text-xs text-amber-500">
+                Table #{tableNumber} • Order {orderId}
+              </p>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {isDark ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
@@ -93,7 +104,13 @@ export default function LiveOrderTrackingPage() {
             <span className="font-medium text-sm">LIVE</span>
           </div>
           <h2 className="text-3xl font-bold mb-1">Order in Progress</h2>
-          <p className="text-zinc-400">Estimated ready in <span className="text-amber-500 font-semibold">{estimatedTime}</span> minutes</p>
+          <p className="text-zinc-400">
+            Estimated ready in{" "}
+            <span className="text-amber-500 font-semibold">
+              {estimatedTime}
+            </span>{" "}
+            minutes
+          </p>
         </div>
 
         {/* Progress Timeline */}
@@ -101,25 +118,36 @@ export default function LiveOrderTrackingPage() {
           <CardContent className="p-8">
             <div className="relative flex justify-between">
               {statuses.map((status, index) => (
-                <div key={status.value} className="flex flex-col items-center relative z-10">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500
-                    ${currentStep === index 
-                      ? 'bg-amber-500 border-amber-500 text-zinc-950 scale-110' 
-                      : currentStep > index 
-                        ? 'bg-green-500 border-green-500 text-white' 
-                        : 'bg-zinc-800 border-white/20'}`}>
-                    {currentStep > index ? '✓' : index + 1}
+                <div
+                  key={status.value}
+                  className="flex flex-col items-center relative z-10"
+                >
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500
+                    ${
+                      currentStep === index
+                        ? "bg-amber-500 border-amber-500 text-zinc-950 scale-110"
+                        : currentStep > index
+                          ? "bg-green-500 border-green-500 text-white"
+                          : "bg-zinc-800 border-white/20"
+                    }`}
+                  >
+                    {currentStep > index ? "✓" : index + 1}
                   </div>
-                  <p className={`text-xs mt-3 font-medium ${currentStep === index ? 'text-amber-500' : currentStep > index ? 'text-green-400' : 'text-zinc-500'}`}>
+                  <p
+                    className={`text-xs mt-3 font-medium ${currentStep === index ? "text-amber-500" : currentStep > index ? "text-green-400" : "text-zinc-500"}`}
+                  >
                     {status.label}
                   </p>
                 </div>
               ))}
               {/* Connecting Line */}
               <div className="absolute top-5 left-5 right-5 h-0.5 bg-white/10 -z-10">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-green-500 via-amber-500 to-amber-500 transition-all duration-700"
-                  style={{ width: `${(currentStep / (statuses.length - 1)) * 100}%` }}
+                  style={{
+                    width: `${(currentStep / (statuses.length - 1)) * 100}%`,
+                  }}
                 />
               </div>
             </div>
@@ -164,7 +192,9 @@ export default function LiveOrderTrackingPage() {
                 Add More
               </Button>
             </div>
-            <p className="text-zinc-400 text-sm">You can place more orders while waiting.</p>
+            <p className="text-zinc-400 text-sm">
+              You can place more orders while waiting.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -172,16 +202,14 @@ export default function LiveOrderTrackingPage() {
       {/* Action Buttons */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-950 border-t border-white/10 p-4">
         <div className="max-w-2xl mx-auto flex flex-col gap-3">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="h-14 border-white/30 hover:bg-white/5"
           >
             Continue Ordering
           </Button>
 
-          <Button 
-            className="h-14 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 flex items-center gap-3"
-          >
+          <Button className="h-14 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 flex items-center gap-3">
             <Phone className="h-5 w-5" />
             Call Waiter
           </Button>

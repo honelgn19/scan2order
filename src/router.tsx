@@ -1,83 +1,199 @@
 import { createBrowserRouter } from "react-router-dom";
 
-// Layouts
+// Root
 import App from "./App";
-import AdminLayout from "./components/layouts/AdminLayout";
-import StaffLayout from "./components/layouts/StaffLayout";
-import CustomerLayout from "./components/layouts/CustomerLayout";
 
-// Pages
-import DigitalMenuPage from "./pages/DigitalMenuPage";
-import QRLandingPage from "./pages/QRLandingPage";
-import Login from "./pages/Login";
-import CartPage from "./pages/CartPage";
-import CheckoutPage from "./pages/CheckoutPage";
-import OrderSuccess from "./pages/OrderSuccessPage";
+// Layouts
+import AdminLayout from "./layouts/AdminLayout";
+import StaffLayout from "./layouts/StaffLayout";
+import CustomerLayout from "./layouts/CustomerLayout";
+// import AuthLayout from "./layouts/AuthLayout";
 
-// Staff Pages
-import KitchenDashboard from "./pages/KitchenDashboard";
-import WaiterDashboard from "./pages/WaiterDashboard";
-import LiveOrderTracking from "./pages/LiveOrderTrackingPage";
+// ======================
+// AUTH PAGES
+// ======================
 
-// Admin Pages
-import AdminDashboard from "./pages/AdminDashboard";
-import FoodManagement from "./pages/FoodManagement";
-import CategoryManagement from "./pages/CategoryManagement";
-import TableManagement from "./pages/TableManagement";
-import OrdersManagement from "./pages/OrdersManagement";
-import PaymentsManagement from "./pages/PaymentsManagement";
-import ReportsAnalytics from "./pages/ReportsAnalytics";
+import Login from "./pages/auth/Login";
+
+// ======================
+// CUSTOMER PAGES
+// ======================
+
+import QRLandingPage from "./pages/customer/QRLandingPage";
+import DigitalMenuPage from "./pages/customer/DigitalMenuPage";
+import CartPage from "./pages/customer/CartPage";
+import CheckoutPage from "./pages/customer/CheckoutPage";
+import OrderSuccessPage from "./pages/customer/OrderSuccessPage";
+import LiveOrderTrackingPage from "./pages/customer/LiveOrderTrackingPage";
+
+// ======================
+// STAFF PAGES
+// ======================
+
+import KitchenDashboard from "./pages/staff/KitchenDashboard";
+import WaiterDashboard from "./pages/staff/WaiterDashboard";
+// import ReadyOrdersPage from "./pages/staff/ReadyOrdersPage";
+// import ActiveTablesPage from "./pages/staff/ActiveTablesPage";
+
+// ======================
+// ADMIN PAGES
+// ======================
+
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import FoodManagement from "./pages/admin/FoodManagement";
+import CategoryManagement from "./pages/admin/CategoryManagement";
+import TableManagement from "./pages/admin/TableManagement";
+import OrdersManagement from "./pages/admin/OrdersManagement";
+import PaymentsManagement from "./pages/admin/PaymentsManagement";
+import ReportsAnalytics from "./pages/admin/ReportsAnalytics";
+// import UserManagement from "./pages/admin/UserManagement";
+// import NotificationsPage from "./pages/admin/NotificationsPage";
+// import SettingsPage from "./pages/admin/SettingsPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      // Public / Customer Routes
+      // ======================
+      // AUTH ROUTES
+      // ======================
+
       {
+        element: <AuthLayout />,
+        children: [{ path: "login", element: <Login /> }],
+      },
+
+      // ======================
+      // CUSTOMER ROUTES
+      // ======================
+
+      {
+        path: "customer",
         element: <CustomerLayout />,
         children: [
           { index: true, element: <QRLandingPage /> },
-          { path: "login", element: <Login /> },
+
           { path: "menu", element: <DigitalMenuPage /> },
+
           { path: "cart", element: <CartPage /> },
+
           { path: "checkout", element: <CheckoutPage /> },
-          { path: "order-success", element: <OrderSuccess /> },
+
+          {
+            path: "order-success",
+            element: <OrderSuccessPage />,
+          },
+
+          {
+            path: "live-tracking",
+            element: <LiveOrderTrackingPage />,
+          },
         ],
       },
 
-      // Staff Routes
+      // ======================
+      // STAFF ROUTES
+      // ======================
+
       {
+        path: "staff",
         element: <StaffLayout />,
         children: [
-          { path: "kitchen", element: <KitchenDashboard /> },
-          { path: "waiter", element: <WaiterDashboard /> },
-          { path: "live-orders", element: <LiveOrderTracking /> },
+          {
+            path: "kitchen",
+            element: <KitchenDashboard />,
+          },
+
+          {
+            path: "waiter",
+            element: <WaiterDashboard />,
+          },
+
+          {
+            path: "ready-orders",
+            element: <ReadyOrdersPage />,
+          },
+
+          {
+            path: "active-tables",
+            element: <ActiveTablesPage />,
+          },
         ],
       },
 
-      // Admin Routes (Nested Layout)
+      // ======================
+      // ADMIN ROUTES
+      // ======================
+
       {
         path: "admin",
         element: <AdminLayout />,
         children: [
-          { index: true, element: <AdminDashboard /> },
-          { path: "foods", element: <FoodManagement /> },
-          { path: "categories", element: <CategoryManagement /> },
-          { path: "tables", element: <TableManagement /> },
-          { path: "orders", element: <OrdersManagement /> },
-          { path: "payments", element: <PaymentsManagement /> },
-          { path: "reports", element: <ReportsAnalytics /> },
+          {
+            index: true,
+            element: <AdminDashboard />,
+          },
+
+          {
+            path: "foods",
+            element: <FoodManagement />,
+          },
+
+          {
+            path: "categories",
+            element: <CategoryManagement />,
+          },
+
+          {
+            path: "tables",
+            element: <TableManagement />,
+          },
+
+          {
+            path: "orders",
+            element: <OrdersManagement />,
+          },
+
+          {
+            path: "payments",
+            element: <PaymentsManagement />,
+          },
+
+          {
+            path: "reports",
+            element: <ReportsAnalytics />,
+          },
+
+          {
+            path: "users",
+            element: <UserManagement />,
+          },
+
+          {
+            path: "notifications",
+            element: <NotificationsPage />,
+          },
+
+          {
+            path: "settings",
+            element: <SettingsPage />,
+          },
         ],
       },
 
-      // 404
+      // ======================
+      // 404 PAGE
+      // ======================
+
       {
         path: "*",
         element: (
-          <h1 className="text-center mt-20 text-3xl font-bold text-white">
-            404 - Page Not Found
-          </h1>
+          <div className="flex min-h-screen items-center justify-center bg-background">
+            <h1 className="text-3xl font-bold">
+              404 - Page Not Found
+            </h1>
+          </div>
         ),
       },
     ],
