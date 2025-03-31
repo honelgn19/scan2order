@@ -4,18 +4,18 @@
    DESCRIPTION: Reports & Analytics - Admin Panel
    ============================================= */
 import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Badge } from '../../components/ui/badge';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../components/ui/select';
+} from '../../components/ui/select';
 import { Moon, Sun, Download, TrendingUp, Users } from 'lucide-react';
-import { useFirestore } from '../hooks/useFirestore';
+import { useFirestore } from '../../hooks/useFirestore';
 
 // Charts
 import {

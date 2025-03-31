@@ -1,11 +1,5 @@
 import { Outlet } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <Outlet />
-    </div>
-  );
+export default function App() {
+  return <Outlet />;
 }
-
-export default App;
