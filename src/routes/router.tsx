@@ -1,10 +1,10 @@
 /* =============================================
    FILE: src/routes/router.tsx
-   MAIN ROUTER FOR THE ENTIRE APPLICATION
+   CORRECTED VERSION - NO CIRCULAR IMPORT
    ============================================= */
 
-import { createBrowserRouter } from "react-router-dom";
-import App from "../App"; // Main App component that wraps all routes
+import { createBrowserRouter, Navigate } from "react-router-dom";
+
 // Layouts
 import AuthLayout from "../layouts/AuthLayout";
 import CustomerLayout from "../layouts/CustomerLayout";
@@ -43,7 +43,6 @@ import SettingsPage from "../pages/admin/SettingsPage";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />, // This will be wrapped in App.tsx
     children: [
       // ======================
       // AUTH ROUTES
@@ -56,7 +55,7 @@ export const router = createBrowserRouter([
       },
 
       // ======================
-      // CUSTOMER ROUTES (QR Ordering)
+      // CUSTOMER ROUTES
       // ======================
       {
         path: "customer",
@@ -105,17 +104,10 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // 404 Route
+      // Redirect root to customer
       {
-        path: "*",
-        element: (
-          <div className="min-h-screen flex items-center justify-center bg-zinc-950">
-            <div className="text-center">
-              <h1 className="text-6xl font-bold text-amber-500 mb-4">404</h1>
-              <p className="text-2xl text-white">Page Not Found</p>
-            </div>
-          </div>
-        ),
+        path: "/",
+        element: <Navigate to="/customer" replace />,
       },
     ],
   },
