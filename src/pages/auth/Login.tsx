@@ -4,6 +4,7 @@
    ============================================= */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -18,15 +19,39 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const toggleTheme = () => setIsDark(!isDark);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      alert("Login successful! (Connect Firebase here)");
-    }, 1500);
+
+      // Mock user data (In real app, this comes from Firebase/Auth API)
+      const mockUser = {
+        email: email,
+        role: email.includes('admin') ? 'Admin' 
+            : email.includes('kitchen') ? 'Kitchen' 
+            : email.includes('waiter') ? 'Waiter' 
+            : 'Staff' // default for other staff
+      };
+
+      alert(`Login successful as ${mockUser.role}!`);
+
+      // Role-based Redirection
+      if (mockUser.role === 'Admin') {
+        navigate('/admin');
+      } else if (mockUser.role === 'Kitchen' || mockUser.role === 'Waiter') {
+        navigate('/staff/kitchen');
+      } else {
+        // Default for staff or customer-facing login
+        navigate('/customer/menu');
+      }
+    }, 1300);
   };
 
   return (
@@ -56,12 +81,15 @@ export default function Login() {
             <Input
               id="email"
               type="email"
-              placeholder="staff@lumina.com"
+              placeholder="staff@lumina.com or admin@lumina.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               className="h-12 mt-2"
             />
+            <p className="text-xs text-zinc-500 mt-1">
+              Tip: Use <span className="font-mono">admin@</span> for Admin, <span className="font-mono">kitchen@</span> for Kitchen
+            </p>
           </div>
 
           <div>
@@ -92,7 +120,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-12 text-base bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+            className="w-full h-12 text-base font-medium bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
           >
             {isLoading ? "Signing in..." : "Sign In"}
           </Button>
