@@ -1,37 +1,54 @@
-import { useState, useEffect } from 'react';
+// src/hooks/useFirestore.ts
+import { useState, useEffect } from "react";
 import {
   collection,
   onSnapshot,
+  query,
+  QueryConstraint,
   addDoc,
   updateDoc,
   deleteDoc,
   doc,
-  query,
-  where,
-  orderBy,
-} from 'firebase/firestore';
-import { db } from '../lib/firebase';
+} from "firebase/firestore";
+import { db } from "../lib/firebase";
 
-export function useFirestore<T>(collectionName: string, queryConstraints: any[] = []) {
+export function useFirestore<T>(
+  collectionName: string,
+  queryConstraints: QueryConstraint[] = [],
+) {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const q = query(collection(db, collectionName), ...queryConstraints);
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as T[];
-      setData(items);
-      setLoading(false);
-    });
+    setLoading(true);
+    setError(null);
+
+    const colRef = collection(db, collectionName);
+    const q = query(colRef, ...queryConstraints);
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const items = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as T[];
+
+        setData(items);
+        setLoading(false);
+      },
+      (err) => {
+        console.error(`Error fetching ${collectionName}:`, err);
+        setError(err);
+        setLoading(false);
+      },
+    );
 
     return () => unsubscribe();
-  }, [collectionName]);
+  }, [collectionName, ...queryConstraints]); // Better dependency handling
 
-  return { data, loading };
+  return { data, loading, error };
 }
 
 // Helper functions

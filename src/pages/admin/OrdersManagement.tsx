@@ -2,78 +2,100 @@
    PAGE NAME: OrdersManagement
    FILE PATH: src/pages/OrdersManagement.tsx
    ============================================= */
-import React, { useState, useEffect } from 'react';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Input } from '../../components/ui/input';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from '../../components/ui/table';
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Input } from "../../components/ui/input";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from '../../components/ui/dialog';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '../../components/ui/select';
-import { Moon, Sun, Eye, Table as TableIcon } from 'lucide-react';
-import { useFirestore, updateDocument } from '../../hooks/useFirestore';
-import { useAuth } from '../../hooks/useAuth';
-
-interface OrderItem { name: string; quantity: number; price: number; }
-interface Order {
-  id: string;
-  orderId: string;
-  tableNumber: string;
-  customerName: string;
-  items: OrderItem[];
-  total: number;
-  status: 'Pending' | 'Preparing' | 'Ready' | 'Delivered' | 'Cancelled';
-  paymentMethod: 'Cash' | 'Mobile Money' | 'Card';
-  timestamp: string;
-  createdAt: string;
-}
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { Moon, Sun, Eye, Table as TableIcon } from "lucide-react";
+import { useFirestore, updateDocument } from "../../hooks/useFirestore";
+import { useAuth } from "../../hooks/useAuth";
+import type { Order } from "../../types"; // ← Use global types
 
 export default function OrdersManagement() {
   const { user } = useAuth();
-  const { data: orders, loading } = useFirestore<Order>('orders', [/* you can add orderBy here */]);
-  
+  const { data: orders, loading } = useFirestore<Order>("orders", [
+    // Example: orderBy("createdAt", "desc") if you add index
+  ]);
+
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [filterStatus, setFilterStatus] = useState('All');
-  const [filterPayment, setFilterPayment] = useState('All');
-  const [filterTable, setFilterTable] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [filterPayment, setFilterPayment] = useState("All");
+  const [filterTable, setFilterTable] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDark, setIsDark] = useState(true);
 
+  // Theme
   useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
+    if (isDark) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  const filteredOrders = orders.filter(order => {
-    const matchesStatus = filterStatus === 'All' || order.status === filterStatus;
-    const matchesPayment = filterPayment === 'All' || order.paymentMethod === filterPayment;
-    const matchesTable = !filterTable || order.tableNumber.includes(filterTable);
-    const matchesSearch = order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          order.customerName.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredOrders = orders.filter((order) => {
+    const matchesStatus =
+      filterStatus === "All" || order.status === filterStatus;
+    const matchesPayment =
+      filterPayment === "All" || order.paymentMethod === filterPayment;
+    const matchesTable =
+      !filterTable || order.tableNumber.includes(filterTable);
+    const matchesSearch =
+      order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerName.toLowerCase().includes(searchTerm.toLowerCase());
+
     return matchesStatus && matchesPayment && matchesTable && matchesSearch;
   });
 
-  const updateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
-    await updateDocument('orders', orderId, { status: newStatus });
+  const updateOrderStatus = async (
+    orderId: string,
+    newStatus: Order["status"],
+  ) => {
+    await updateDocument("orders", orderId, { status: newStatus });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Pending': return 'bg-yellow-600';
-      case 'Preparing': return 'bg-blue-600';
-      case 'Ready': return 'bg-green-600';
-      case 'Delivered': return 'bg-emerald-600';
-      case 'Cancelled': return 'bg-red-600';
-      default: return 'bg-zinc-600';
+      case "Pending":
+        return "bg-yellow-600";
+      case "Preparing":
+        return "bg-blue-600";
+      case "Ready":
+        return "bg-green-600";
+      case "Delivered":
+        return "bg-emerald-600";
+      case "Cancelled":
+        return "bg-red-600";
+      default:
+        return "bg-zinc-600";
     }
   };
 
@@ -85,39 +107,62 @@ export default function OrdersManagement() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-6 py-4">
-        <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
+      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-4 md:px-6 py-4">
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
               <span className="text-3xl">📋</span>
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Orders Management</h1>
-              <p className="text-sm text-amber-500">Lumina Grand Restaurant • Live Orders</p>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                Orders Management
+              </h1>
+              <p className="text-sm text-amber-500">
+                Lumina Grand Restaurant • Live Orders
+              </p>
             </div>
           </div>
           <Button onClick={toggleTheme} variant="ghost" size="icon">
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {isDark ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto p-6 space-y-6">
+      <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">
         {/* Filters */}
         <Card className="bg-zinc-900 border-white/10">
-          <CardHeader><CardTitle>Filters</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Filters</CardTitle>
+          </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Input placeholder="Search Order ID or Customer" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              <Input
+                placeholder="Search Order ID or Customer"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="All">All Status</SelectItem>
-                  {['Pending','Preparing','Ready','Delivered','Cancelled'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Preparing">Preparing</SelectItem>
+                  <SelectItem value="Ready">Ready</SelectItem>
+                  <SelectItem value="Delivered">Delivered</SelectItem>
+                  <SelectItem value="Cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
+
               <Select value={filterPayment} onValueChange={setFilterPayment}>
-                <SelectTrigger><SelectValue placeholder="Payment" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Payment Method" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="All">All Payments</SelectItem>
                   <SelectItem value="Cash">Cash</SelectItem>
@@ -125,7 +170,12 @@ export default function OrdersManagement() {
                   <SelectItem value="Card">Card</SelectItem>
                 </SelectContent>
               </Select>
-              <Input placeholder="Table Number" value={filterTable} onChange={(e) => setFilterTable(e.target.value)} />
+
+              <Input
+                placeholder="Table Number"
+                value={filterTable}
+                onChange={(e) => setFilterTable(e.target.value)}
+              />
             </div>
           </CardContent>
         </Card>
@@ -135,7 +185,7 @@ export default function OrdersManagement() {
           <CardHeader>
             <CardTitle>All Orders ({filteredOrders.length})</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -150,17 +200,33 @@ export default function OrdersManagement() {
               </TableHeader>
               <TableBody>
                 {filteredOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-mono">{order.orderId}</TableCell>
-                    <TableCell>#{order.tableNumber}</TableCell>
-                    <TableCell>{order.customerName}</TableCell>
-                    <TableCell className="font-semibold">ETB {order.total}</TableCell>
-                    <TableCell>
-                      <Badge className={`${getStatusColor(order.status)}`}>{order.status}</Badge>
+                  <TableRow key={order.id} className="hover:bg-zinc-800/50">
+                    <TableCell className="font-mono font-medium">
+                      {order.orderId}
                     </TableCell>
-                    <TableCell>{order.timestamp}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">#{order.tableNumber}</Badge>
+                    </TableCell>
+                    <TableCell>{order.customerName}</TableCell>
+                    <TableCell className="font-semibold">
+                      ETB {order.total}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        className={`${getStatusColor(order.status)} text-white`}
+                      >
+                        {order.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-zinc-400">
+                      {order.timestamp}
+                    </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="outline" size="sm" onClick={() => openOrderDetails(order)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openOrderDetails(order)}
+                      >
                         <Eye className="mr-2 h-4 w-4" /> Details
                       </Button>
                     </TableCell>
@@ -174,22 +240,91 @@ export default function OrdersManagement() {
 
       {/* Order Details Modal */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           {selectedOrder && (
             <>
               <DialogHeader>
-                <DialogTitle>Order #{selectedOrder.orderId}</DialogTitle>
+                <DialogTitle className="flex items-center justify-between">
+                  Order #{selectedOrder.orderId}
+                  <Badge className={getStatusColor(selectedOrder.status)}>
+                    {selectedOrder.status}
+                  </Badge>
+                </DialogTitle>
               </DialogHeader>
-              {/* ... (same detailed content as previous version) ... */}
-              <div className="flex flex-wrap gap-3 mt-6">
-                {(['Pending', 'Preparing', 'Ready', 'Delivered'] as const).map(status => (
-                  <Button key={status} onClick={() => updateOrderStatus(selectedOrder.id, status)}>
-                    Mark as {status}
-                  </Button>
-                ))}
-                <Button variant="destructive" onClick={() => updateOrderStatus(selectedOrder.id, 'Cancelled')}>
-                  Cancel Order
-                </Button>
+
+              <div className="space-y-6 py-4">
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-sm text-zinc-400">Table</p>
+                    <p className="text-3xl font-bold">
+                      #{selectedOrder.tableNumber}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-zinc-400">Customer</p>
+                    <p className="text-xl">{selectedOrder.customerName}</p>
+                  </div>
+                </div>
+
+                {/* Items */}
+                <div>
+                  <h3 className="font-semibold mb-3">Ordered Items</h3>
+                  <div className="space-y-3">
+                    {selectedOrder.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex justify-between bg-zinc-900 p-4 rounded-xl"
+                      >
+                        <div>
+                          <p>{item.name}</p>
+                          <p className="text-sm text-zinc-500">
+                            ×{item.quantity}
+                          </p>
+                        </div>
+                        <p className="font-mono">
+                          ETB {item.price * item.quantity}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-between text-lg">
+                  <span>Total Amount</span>
+                  <span className="font-bold">ETB {selectedOrder.total}</span>
+                </div>
+
+                {/* Status Actions */}
+                <div>
+                  <h3 className="font-semibold mb-3">Update Status</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {(
+                      ["Pending", "Preparing", "Ready", "Delivered"] as const
+                    ).map((status) => (
+                      <Button
+                        key={status}
+                        variant={
+                          selectedOrder.status === status
+                            ? "default"
+                            : "outline"
+                        }
+                        onClick={() =>
+                          updateOrderStatus(selectedOrder.id, status)
+                        }
+                      >
+                        Mark as {status}
+                      </Button>
+                    ))}
+                    <Button
+                      variant="destructive"
+                      onClick={() =>
+                        updateOrderStatus(selectedOrder.id, "Cancelled")
+                      }
+                    >
+                      Cancel Order
+                    </Button>
+                  </div>
+                </div>
               </div>
             </>
           )}
