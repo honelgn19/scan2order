@@ -10,7 +10,7 @@ export interface MenuItem {
   description?: string;
   image?: string;
   category: string;
-  fasting: 'FASTING' | 'NON_FASTING' | 'BOTH';
+  fasting: "FASTING" | "NON_FASTING" | "BOTH";
   available: boolean;
   prepTime?: number;
 }
@@ -32,9 +32,9 @@ export interface Order {
   orderId: string;
   items: OrderItem[];
   total: number;
-  status: 'Pending' | 'Preparing' | 'Ready' | 'Delivered' | 'Cancelled';
+  status: "Pending" | "Preparing" | "Ready" | "Delivered" | "Cancelled";
   paymentMethod: string;
-  paymentStatus: 'Paid' | 'Pending' | 'Cash Pending' | 'Failed' | 'Refunded';
+  paymentStatus: "Paid" | "Pending" | "Cash Pending" | "Failed" | "Refunded";
   timestamp: string;
   createdAt?: string;
 }
@@ -43,15 +43,15 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'Admin' | 'Kitchen' | 'Waiter' | 'Customer';
-  status: 'Active' | 'Inactive';
+  role: "Admin" | "Kitchen" | "Waiter" | "Customer";
+  status: "Active" | "Inactive";
 }
 
 export interface Table {
   id: string;
   number: string;
   capacity?: number;
-  status: 'Available' | 'Occupied' | 'Reserved' | 'Cleaning';
+  status: "Available" | "Occupied" | "Reserved" | "Cleaning";
   currentSession?: {
     customerName: string;
     startedAt: string;

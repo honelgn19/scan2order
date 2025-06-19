@@ -1,7 +1,9 @@
 /* =============================================
    PAGE NAME: OrdersManagement
-   FILE PATH: src/pages/OrdersManagement.tsx
+   FILE PATH: src/pages/admin/OrdersManagement.tsx
+   FULLY CONNECTED WITH FIRESTORE
    ============================================= */
+
 import React, { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import {
@@ -33,16 +35,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Eye, Table as TableIcon } from "lucide-react";
+import { Moon, Sun, Eye, Plus } from "lucide-react";
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
-import { useAuth } from "../../hooks/useAuth";
-import type { Order } from "../../types"; // ← Use global types
+import type { Order } from "../../types";
 
 export default function OrdersManagement() {
-  const { user } = useAuth();
-  const { data: orders, loading } = useFirestore<Order>("orders", [
-    // Example: orderBy("createdAt", "desc") if you add index
-  ]);
+  const { data: orders = [], loading, error } = useFirestore<Order>("orders");
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -67,19 +65,22 @@ export default function OrdersManagement() {
     const matchesPayment =
       filterPayment === "All" || order.paymentMethod === filterPayment;
     const matchesTable =
-      !filterTable || order.tableNumber.includes(filterTable);
+      !filterTable || order.tableNumber?.toString().includes(filterTable);
     const matchesSearch =
-      order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerName.toLowerCase().includes(searchTerm.toLowerCase());
+      order.orderId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerName?.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesStatus && matchesPayment && matchesTable && matchesSearch;
   });
 
-  const updateOrderStatus = async (
-    orderId: string,
-    newStatus: Order["status"],
-  ) => {
-    await updateDocument("orders", orderId, { status: newStatus });
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      await updateDocument("orders", orderId, { status: newStatus });
+      alert(`Order status updated to ${newStatus}`);
+    } catch (err) {
+      console.error("Update failed:", err);
+      alert("Failed to update status");
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -165,8 +166,9 @@ export default function OrdersManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="All">All Payments</SelectItem>
+                  <SelectItem value="Telebirr">Telebirr</SelectItem>
+                  <SelectItem value="CBE Birr">CBE Birr</SelectItem>
                   <SelectItem value="Cash">Cash</SelectItem>
-                  <SelectItem value="Mobile Money">Mobile Money</SelectItem>
                   <SelectItem value="Card">Card</SelectItem>
                 </SelectContent>
               </Select>
@@ -186,54 +188,60 @@ export default function OrdersManagement() {
             <CardTitle>All Orders ({filteredOrders.length})</CardTitle>
           </CardHeader>
           <CardContent className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Table</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredOrders.map((order) => (
-                  <TableRow key={order.id} className="hover:bg-zinc-800/50">
-                    <TableCell className="font-mono font-medium">
-                      {order.orderId}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">#{order.tableNumber}</Badge>
-                    </TableCell>
-                    <TableCell>{order.customerName}</TableCell>
-                    <TableCell className="font-semibold">
-                      ETB {order.total}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        className={`${getStatusColor(order.status)} text-white`}
-                      >
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-zinc-400">
-                      {order.timestamp}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openOrderDetails(order)}
-                      >
-                        <Eye className="mr-2 h-4 w-4" /> Details
-                      </Button>
-                    </TableCell>
+            {loading ? (
+              <p className="text-center py-12">Loading orders...</p>
+            ) : filteredOrders.length === 0 ? (
+              <p className="text-center py-12 text-zinc-400">No orders found</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Order ID</TableHead>
+                    <TableHead>Table</TableHead>
+                    <TableHead>Payment</TableHead>
+                    <TableHead>Total</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filteredOrders.map((order) => (
+                    <TableRow key={order.id} className="hover:bg-zinc-800/50">
+                      <TableCell className="font-mono font-medium">
+                        {order.orderId}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">#{order.tableNumber}</Badge>
+                      </TableCell>
+                      <TableCell>{order.paymentStatus}</TableCell>
+                      <TableCell className="font-semibold">
+                        ETB {order.total}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={`${getStatusColor(order.status)} text-white`}
+                        >
+                          {order.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-zinc-400">
+                        {order.timestamp || "N/A"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openOrderDetails(order)}
+                        >
+                          <Eye className="mr-2 h-4 w-4" /> Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -261,16 +269,15 @@ export default function OrdersManagement() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-zinc-400">Customer</p>
-                    <p className="text-xl">{selectedOrder.customerName}</p>
+                    <p className="text-sm text-zinc-400">Payment</p>
+                    <p className="text-xl">{selectedOrder.paymentStatus}</p>
                   </div>
                 </div>
 
-                {/* Items */}
                 <div>
                   <h3 className="font-semibold mb-3">Ordered Items</h3>
                   <div className="space-y-3">
-                    {selectedOrder.items.map((item, idx) => (
+                    {selectedOrder.items?.map((item, idx) => (
                       <div
                         key={idx}
                         className="flex justify-between bg-zinc-900 p-4 rounded-xl"
@@ -289,12 +296,11 @@ export default function OrdersManagement() {
                   </div>
                 </div>
 
-                <div className="flex justify-between text-lg">
+                <div className="flex justify-between text-lg border-t border-white/10 pt-4">
                   <span>Total Amount</span>
                   <span className="font-bold">ETB {selectedOrder.total}</span>
                 </div>
 
-                {/* Status Actions */}
                 <div>
                   <h3 className="font-semibold mb-3">Update Status</h3>
                   <div className="flex flex-wrap gap-3">

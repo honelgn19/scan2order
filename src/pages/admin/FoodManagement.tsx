@@ -1,7 +1,9 @@
 /* =============================================
    PAGE NAME: FoodManagement
-   FILE PATH: src/pages/FoodManagement.tsx
+   FILE PATH: src/pages/admin/FoodManagement.tsx
+   WITH DESCRIPTION FIELD
    ============================================= */
+
 import React, { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import {
@@ -14,6 +16,7 @@ import { Badge } from "../../components/ui/badge";
 import { Switch } from "../../components/ui/switch";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import { Textarea } from "../../components/ui/textarea";
 import {
   Table,
   TableBody,
@@ -44,19 +47,20 @@ import {
   updateDocument,
   deleteDocument,
 } from "../../hooks/useFirestore";
-import type { MenuItem } from '../../types';
+import type { MenuItem } from "../../types";
 
 const categories = [
-  "Main Course",
-  "Vegetarian",
-  "Beverage",
+  "Breakfast",
+  "Lunch",
+  "Dinner",
   "Dessert",
   "Starter",
-  "Side",
+  "Drinks",
+  "Traditional",
 ];
 
 export default function FoodManagement() {
-  const { data: foods, loading } = useFirestore<MenuItem>("foods");
+  const { data: foods = [], loading } = useFirestore<MenuItem>("foods");
 
   const [isDark, setIsDark] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -73,6 +77,7 @@ export default function FoodManagement() {
     category: "",
     price: 0,
     image: "",
+    description: "",
     fasting: "BOTH",
     available: true,
   });
@@ -87,13 +92,16 @@ export default function FoodManagement() {
   const toggleTheme = () => setIsDark(!isDark);
 
   const filteredFoods = foods.filter((food) => {
-    const matchesSearch = food.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch = food?.name
+      ? food.name.toLowerCase().includes(searchTerm.toLowerCase())
+      : false;
+
     const matchesCategory =
-      filterCategory === "All" || food.category === filterCategory;
+      filterCategory === "All" || food?.category === filterCategory;
+
     const matchesFasting =
-      filterFasting === "All" || food.fasting === filterFasting;
+      filterFasting === "All" || food?.fasting === filterFasting;
+
     return matchesSearch && matchesCategory && matchesFasting;
   });
 
@@ -116,6 +124,7 @@ export default function FoodManagement() {
       category: "",
       price: 0,
       image: "",
+      description: "",
       fasting: "BOTH",
       available: true,
     });
@@ -136,36 +145,58 @@ export default function FoodManagement() {
   };
 
   const saveFood = async () => {
-    if (!newFood.name || !newFood.category || !newFood.price) return;
-
-    if (isEditModalOpen && selectedFood) {
-      await updateDocument("foods", selectedFood.id, newFood);
-      setIsEditModalOpen(false);
-    } else {
-      await addDocument("foods", newFood);
-      setIsAddModalOpen(false);
+    if (!newFood.name || !newFood.category || !newFood.price) {
+      alert("Please fill Name, Category and Price");
+      return;
     }
 
-    setNewFood({
-      name: "",
-      category: "",
-      price: 0,
-      image: "",
-      fasting: "BOTH",
-      available: true,
-    });
-    setImagePreview("");
+    try {
+      if (isEditModalOpen && selectedFood?.id) {
+        await updateDocument("foods", selectedFood.id, newFood);
+        setIsEditModalOpen(false);
+      } else {
+        await addDocument("foods", newFood);
+        setIsAddModalOpen(false);
+      }
+
+      // Reset form
+      setNewFood({
+        name: "",
+        category: "",
+        price: 0,
+        image: "",
+        description: "",
+        fasting: "BOTH",
+        available: true,
+      });
+      setImagePreview("");
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert("Failed to save. Check console.");
+    }
   };
 
   const deleteFood = async () => {
-    if (selectedFood) {
-      await deleteDocument("foods", selectedFood.id);
-      setIsDeleteModalOpen(false);
+    if (selectedFood?.id) {
+      try {
+        await deleteDocument("foods", selectedFood.id);
+        setIsDeleteModalOpen(false);
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert("Failed to delete");
+      }
     }
   };
 
   const toggleAvailability = async (food: MenuItem) => {
-    await updateDocument("foods", food.id, { available: !food.available });
+    if (food.id) {
+      await updateDocument("foods", food.id, { available: !food.available });
+    }
+  };
+
+  const getFoodImage = (food: MenuItem) => {
+    if (food.image) return food.image;
+    return "https://picsum.photos/id/1080/600/300";
   };
 
   return (
@@ -207,6 +238,7 @@ export default function FoodManagement() {
           <CardHeader>
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
               <CardTitle>Menu Items ({foods.length})</CardTitle>
+              {/* Filters remain same */}
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
@@ -217,6 +249,7 @@ export default function FoodManagement() {
                     className="pl-10 w-full sm:w-80"
                   />
                 </div>
+                {/* Category & Fasting Selects */}
                 <Select
                   value={filterCategory}
                   onValueChange={setFilterCategory}
@@ -249,6 +282,7 @@ export default function FoodManagement() {
           </CardHeader>
 
           <CardContent>
+            {/* Table remains same */}
             <Table>
               <TableHeader>
                 <TableRow>
@@ -265,24 +299,24 @@ export default function FoodManagement() {
                 {filteredFoods.map((food) => (
                   <TableRow key={food.id}>
                     <TableCell>
-                      <img
-                        src={food.image || "https://via.placeholder.com/150"}
-                        alt={food.name}
-                        className="w-14 h-14 object-cover rounded-lg"
-                      />
+                      <div className="w-14 h-14 rounded-lg overflow-hidden bg-zinc-800">
+                        <img
+                          src={getFoodImage(food)}
+                          alt={food.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     </TableCell>
                     <TableCell className="font-medium">{food.name}</TableCell>
                     <TableCell>{food.category}</TableCell>
-                    <TableCell className="font-mono">
-                      ETB {food.price}
-                    </TableCell>
+                    <TableCell>ETB {food.price}</TableCell>
                     <TableCell>
                       <Badge
                         variant={
                           food.fasting === "FASTING" ? "default" : "secondary"
                         }
                       >
-                        {food.fasting.replace("_", " ")}
+                        {food.fasting?.replace("_", " ")}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -292,22 +326,21 @@ export default function FoodManagement() {
                       />
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => openEditModal(food)}
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => openDeleteModal(food)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => openEditModal(food)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => openDeleteModal(food)}
+                        className="ml-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -317,7 +350,7 @@ export default function FoodManagement() {
         </Card>
       </div>
 
-      {/* ==================== ADD / EDIT MODAL ==================== */}
+      {/* Add / Edit Modal with Description */}
       <Dialog
         open={isAddModalOpen || isEditModalOpen}
         onOpenChange={() => {
@@ -325,7 +358,7 @@ export default function FoodManagement() {
           setIsEditModalOpen(false);
         }}
       >
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {isEditModalOpen ? "Edit Food Item" : "Add New Food Item"}
@@ -333,6 +366,7 @@ export default function FoodManagement() {
           </DialogHeader>
 
           <div className="space-y-4 py-4">
+            {/* Image Upload */}
             <div>
               <Label>Food Image</Label>
               <div className="mt-2 border-2 border-dashed border-zinc-700 rounded-xl p-6 text-center">
@@ -358,19 +392,31 @@ export default function FoodManagement() {
             </div>
 
             <div>
-              <Label>Food Name</Label>
+              <Label>Food Name *</Label>
               <Input
                 value={newFood.name || ""}
                 onChange={(e) =>
                   setNewFood({ ...newFood, name: e.target.value })
                 }
-                placeholder="e.g. Doro Wot"
+                placeholder="Doro Wot"
+              />
+            </div>
+
+            <div>
+              <Label>Description *</Label>
+              <Textarea
+                value={newFood.description || ""}
+                onChange={(e) =>
+                  setNewFood({ ...newFood, description: e.target.value })
+                }
+                placeholder="Spicy chicken stew served with injera..."
+                rows={3}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Category</Label>
+                <Label>Category *</Label>
                 <Select
                   value={newFood.category}
                   onValueChange={(val) =>
@@ -390,7 +436,7 @@ export default function FoodManagement() {
                 </Select>
               </div>
               <div>
-                <Label>Price (ETB)</Label>
+                <Label>Price (ETB) *</Label>
                 <Input
                   type="number"
                   value={newFood.price || ""}
@@ -451,15 +497,14 @@ export default function FoodManagement() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation */}
+      {/* Delete Modal */}
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Food Item</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete{" "}
-              <strong>{selectedFood?.name}</strong>? This action cannot be
-              undone.
+              <strong>{selectedFood?.name}</strong>?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -478,3 +523,8 @@ export default function FoodManagement() {
     </div>
   );
 }
+
+const getFoodImage = (food: MenuItem) => {
+  if (food.image) return food.image;
+  return "https://picsum.photos/id/1080/600/300";
+};

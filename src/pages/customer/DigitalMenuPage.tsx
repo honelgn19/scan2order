@@ -219,7 +219,7 @@ export default function DigitalMenuPage() {
                       item.fasting === "BOTH") && (
                       <Badge
                         variant="secondary"
-                        className="bg-gray-700 text-white"
+                        className="bg-gray-800 text-white"
                       >
                         Fasting
                       </Badge>

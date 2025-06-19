@@ -1,32 +1,101 @@
 /* =============================================
    PAGE NAME: AdminDashboard
    FILE PATH: src/pages/admin/AdminDashboard.tsx
-   DESCRIPTION: Main Admin Dashboard
+   CONNECTED WITH FIREBASE
    ============================================= */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import PageHeader from '../../components/common/PageHeader';
 import { Moon, Sun, Users, UtensilsCrossed, TrendingUp, Clock } from 'lucide-react';
+import { useFirestore } from '../../hooks/useFirestore';
+
+interface Order {
+  id?: string;
+  tableNumber?: string;
+  total?: number;
+  status?: string;
+  createdAt?: any;
+  items?: any[];
+}
+
+interface Table {
+  id?: string;
+  number?: string;
+  status?: "Available" | "Occupied" | "Reserved" | "Cleaning";
+}
 
 export default function AdminDashboard() {
   const [isDark, setIsDark] = useState(true);
 
+  // Fetch real data
+  const { data: orders = [] } = useFirestore<Order>("orders");
+  const { data: tables = [] } = useFirestore<Table>("tables");
+
   const toggleTheme = () => setIsDark(!isDark);
 
+  // Dynamic Calculations
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todayOrders = useMemo(() => {
+    return orders.filter(order => {
+      if (!order.createdAt) return false;
+      const orderDate = order.createdAt.seconds 
+        ? new Date(order.createdAt.seconds * 1000) 
+        : new Date(order.createdAt);
+      return orderDate >= today;
+    });
+  }, [orders]);
+
+  const totalOrdersToday = todayOrders.length;
+  const revenueToday = todayOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+
+  const activeTables = tables.filter(t => 
+    t.status === "Occupied" || t.status === "Reserved"
+  ).length;
+
+  const avgPrepTime = "24 min"; // You can make this dynamic later
+
+  const recentOrders = todayOrders.slice(0, 5);
+
   const stats = [
-    { title: "Total Orders Today", value: "142", change: "+18%", icon: UtensilsCrossed, color: "text-amber-500" },
-    { title: "Active Tables", value: "24", change: "8 occupied", icon: Users, color: "text-blue-500" },
-    { title: "Revenue Today", value: "ETB 48,920", change: "+12%", icon: TrendingUp, color: "text-green-500" },
-    { title: "Avg. Prep Time", value: "27 min", change: "-4 min", icon: Clock, color: "text-purple-500" },
+    { 
+      title: "Total Orders Today", 
+      value: totalOrdersToday.toString(), 
+      change: "+18%", 
+      icon: UtensilsCrossed, 
+      color: "text-amber-500" 
+    },
+    { 
+      title: "Active Tables", 
+      value: activeTables.toString(), 
+      change: `${activeTables} occupied`, 
+      icon: Users, 
+      color: "text-blue-500" 
+    },
+    { 
+      title: "Revenue Today", 
+      value: `ETB ${revenueToday.toLocaleString()}`, 
+      change: "+12%", 
+      icon: TrendingUp, 
+      color: "text-green-500" 
+    },
+    { 
+      title: "Avg. Prep Time", 
+      value: avgPrepTime, 
+      change: "-4 min", 
+      icon: Clock, 
+      color: "text-purple-500" 
+    },
   ];
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <PageHeader 
         title="Admin Dashboard" 
-        description="Overview of Lumina Grand Restaurant Operations"
+        description="Real-time overview of Lumina Grand Restaurant Operations"
       >
         <button 
           onClick={toggleTheme}
@@ -57,33 +126,39 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders */}
+        {/* Recent Orders - Now Dynamic */}
         <Card className="bg-zinc-900 border-white/10">
           <CardContent className="p-6">
             <h3 className="text-xl font-semibold mb-6">Recent Orders</h3>
             <div className="space-y-5">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-xl">
-                      🍽️
+              {recentOrders.length > 0 ? (
+                recentOrders.map((order) => (
+                  <div key={order.id} className="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-xl">
+                        🍽️
+                      </div>
+                      <div>
+                        <p className="font-medium">Table #{order.tableNumber || "—"}</p>
+                        <p className="text-sm text-zinc-400">{order.id?.slice(0, 12) || "—"}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">Table #{10 + i}</p>
-                      <p className="text-sm text-zinc-400">LUM-ORD-7849{i}</p>
+                    <div className="text-right">
+                      <p className="font-semibold">ETB {order.total || 0}</p>
+                      <Badge variant="outline" className="text-xs mt-1">
+                        {order.status || "Preparing"}
+                      </Badge>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold">ETB 420</p>
-                    <Badge variant="outline" className="text-xs mt-1">Preparing</Badge>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-zinc-400 text-center py-8">No orders yet today</p>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Actions & System Status */}
+        {/* System Status & Quick Actions */}
         <Card className="bg-zinc-900 border-white/10">
           <CardContent className="p-6">
             <h3 className="text-xl font-semibold mb-6">System Status</h3>

@@ -1,8 +1,9 @@
 /* =============================================
    PAGE NAME: PaymentsManagement
-   FILE PATH: src/pages/PaymentsManagement.tsx
-   DESCRIPTION: Payments Management - Admin Panel
+   FILE PATH: src/pages/admin/PaymentsManagement.tsx
+   IMPROVED: Mark as Paid + Real-time + Better UX
    ============================================= */
+
 import React, { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import {
@@ -35,35 +36,30 @@ import {
   DollarSign,
   CreditCard,
   TrendingUp,
+  CheckCircle,
 } from "lucide-react";
-import { useFirestore } from "../../hooks/useFirestore";
+import { useFirestore, updateDocument } from "../../hooks/useFirestore";
 
 interface Payment {
-  id: string;
+  id?: string;
   transactionId: string;
   orderId: string;
   tableNumber: string;
   customerName: string;
   amount: number;
-  paymentMethod:
-    | "Telebirr"
-    | "CBE Birr"
-    | "Mobile Banking"
-    | "Cash"
-    | "Cards"
-    | "Chapa";
-  status: "PAID" | "PENDING" | "CASH_PENDING" | "FAILED" | "REFUNDED";
-  timestamp: string;
-  createdAt: string;
+  paymentMethod?: string;
+  status?: string;
+  timestamp?: any;
 }
 
 export default function PaymentsManagement() {
-  const { data: payments, loading } = useFirestore<Payment>("payments");
+  const { data: payments = [], loading } = useFirestore<Payment>("payments");
 
   const [isDark, setIsDark] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterMethod, setFilterMethod] = useState("All");
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   // Theme
   useEffect(() => {
@@ -73,52 +69,78 @@ export default function PaymentsManagement() {
 
   const toggleTheme = () => setIsDark(!isDark);
 
+  // Calculations
+  const totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+  const paidRevenue = payments
+    .filter((p) => p.status === "PAID")
+    .reduce((sum, p) => sum + (p.amount || 0), 0);
+  const pendingAmount = payments
+    .filter((p) => ["PENDING", "CASH_PENDING"].includes(p.status || ""))
+    .reduce((sum, p) => sum + (p.amount || 0), 0);
+  const failedCount = payments.filter((p) => p.status === "FAILED").length;
+
+  const methodStats = payments.reduce((acc: any, p) => {
+    const method = p.paymentMethod || "Other";
+    acc[method] = (acc[method] || 0) + 1;
+    return acc;
+  }, {});
+
   const filteredPayments = payments.filter((payment) => {
     const matchesSearch =
-      payment.transactionId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.orderId.toLowerCase().includes(searchTerm.toLowerCase());
+      payment.transactionId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.orderId?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      filterStatus === "All" || payment.status === filterStatus;
-    const matchesMethod =
-      filterMethod === "All" || payment.paymentMethod === filterMethod;
+    const matchesStatus = filterStatus === "All" || payment.status === filterStatus;
+    const matchesMethod = filterMethod === "All" || payment.paymentMethod === filterMethod;
 
     return matchesSearch && matchesStatus && matchesMethod;
   });
 
-  // Summary Calculations
-  const totalRevenue = payments
-    .filter((p) => p.status === "PAID")
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const pendingAmount = payments
-    .filter((p) => ["PENDING", "CASH_PENDING"].includes(p.status))
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const failedCount = payments.filter((p) => p.status === "FAILED").length;
-
-  const methodStats = payments.reduce((acc: any, p) => {
-    acc[p.paymentMethod] = (acc[p.paymentMethod] || 0) + 1;
-    return acc;
-  }, {});
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "PAID":
-        return "bg-green-600";
-      case "PENDING":
-        return "bg-yellow-600";
-      case "CASH_PENDING":
-        return "bg-amber-600";
-      case "FAILED":
-        return "bg-red-600";
-      case "REFUNDED":
-        return "bg-purple-600";
-      default:
-        return "bg-zinc-600";
+  // Mark as Paid Function
+  const markAsPaid = async (paymentId: string) => {
+    if (!paymentId) return;
+    setUpdatingId(paymentId);
+    try {
+      await updateDocument("payments", paymentId, { 
+        status: "PAID",
+        timestamp: new Date() 
+      });
+      // Real-time update will automatically refresh the table
+    } catch (error) {
+      console.error("Failed to update payment:", error);
+      alert("Failed to mark as paid. Check console.");
+    } finally {
+      setUpdatingId(null);
     }
   };
+
+  const getStatusColor = (status?: string) => {
+    switch (status) {
+      case "PAID": return "bg-green-600";
+      case "PENDING": return "bg-yellow-600";
+      case "CASH_PENDING": return "bg-amber-600";
+      case "FAILED": return "bg-red-600";
+      case "REFUNDED": return "bg-purple-600";
+      default: return "bg-zinc-600";
+    }
+  };
+
+  const getStatusText = (status?: string) => {
+    if (!status) return "UNKNOWN";
+    return status.replace("_", " ");
+  };
+
+  const formatTimestamp = (ts: any): string => {
+    if (!ts) return "N/A";
+    if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleString();
+    if (typeof ts === "string") return ts;
+    return "N/A";
+  };
+
+  if (loading) {
+    return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">Loading payments...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -130,83 +152,62 @@ export default function PaymentsManagement() {
               <DollarSign className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">
-                Payments Management
-              </h1>
-              <p className="text-sm text-amber-500">Lumina Grand Restaurant</p>
+              <h1 className="text-2xl md:text-3xl font-bold">Payments Management</h1>
+              <p className="text-sm text-amber-500">Lumina Grand Restaurant • Real-time</p>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
         </div>
       </div>
 
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">
-        {/* Revenue Summary Cards */}
+        {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <Card className="bg-zinc-900 border-white/10">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
-                Total Revenue
-              </CardTitle>
+              <CardTitle className="text-sm text-zinc-400">Total Revenue</CardTitle>
               <DollarSign className="h-5 w-5 text-emerald-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl md:text-4xl font-bold">
-                ETB {totalRevenue.toLocaleString()}
-              </div>
+              <div className="text-3xl md:text-4xl font-bold">ETB {totalRevenue.toLocaleString()}</div>
+              <p className="text-emerald-500 text-sm mt-1">PAID: ETB {paidRevenue.toLocaleString()}</p>
             </CardContent>
           </Card>
 
           <Card className="bg-zinc-900 border-white/10">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
-                Pending Amount
-              </CardTitle>
+              <CardTitle className="text-sm text-zinc-400">Pending Amount</CardTitle>
               <TrendingUp className="h-5 w-5 text-amber-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl md:text-4xl font-bold text-amber-500">
-                ETB {pendingAmount.toLocaleString()}
-              </div>
+              <div className="text-3xl md:text-4xl font-bold text-amber-500">ETB {pendingAmount.toLocaleString()}</div>
             </CardContent>
           </Card>
 
           <Card className="bg-zinc-900 border-white/10">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
-                Total Transactions
-              </CardTitle>
+              <CardTitle className="text-sm text-zinc-400">Total Transactions</CardTitle>
               <CreditCard className="h-5 w-5 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl md:text-4xl font-bold">
-                {payments.length}
-              </div>
+              <div className="text-3xl md:text-4xl font-bold">{payments.length}</div>
             </CardContent>
           </Card>
 
           <Card className="bg-zinc-900 border-white/10">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
-                Failed Transactions
-              </CardTitle>
+              <CardTitle className="text-sm text-zinc-400">Failed Transactions</CardTitle>
               <div className="text-red-500 text-xl">⚠️</div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl md:text-4xl font-bold text-red-500">
-                {failedCount}
-              </div>
+              <div className="text-3xl md:text-4xl font-bold text-red-500">{failedCount}</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Payment Method Stats */}
+        {/* Payment Methods */}
         <Card className="bg-zinc-900 border-white/10">
           <CardHeader>
             <CardTitle>Payment Methods Overview</CardTitle>
@@ -214,10 +215,7 @@ export default function PaymentsManagement() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {Object.entries(methodStats).map(([method, count]) => (
-                <div
-                  key={method}
-                  className="bg-zinc-950 rounded-xl p-4 border border-white/10"
-                >
+                <div key={method} className="bg-zinc-950 rounded-xl p-4 border border-white/10">
                   <p className="text-sm text-zinc-400">{method}</p>
                   <p className="text-2xl font-bold mt-1">{count}</p>
                 </div>
@@ -226,13 +224,11 @@ export default function PaymentsManagement() {
           </CardContent>
         </Card>
 
-        {/* Filters & Table */}
+        {/* Main Table with Mark as Paid Button */}
         <Card className="bg-zinc-900 border-white/10">
           <CardHeader>
             <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-              <CardTitle>
-                Payment Transactions ({filteredPayments.length})
-              </CardTitle>
+              <CardTitle>Payment Transactions ({filteredPayments.length})</CardTitle>
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <div className="relative flex-1 md:w-80">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
@@ -264,9 +260,7 @@ export default function PaymentsManagement() {
                     <SelectItem value="All">All Methods</SelectItem>
                     <SelectItem value="Telebirr">Telebirr</SelectItem>
                     <SelectItem value="CBE Birr">CBE Birr</SelectItem>
-                    <SelectItem value="Mobile Banking">
-                      Mobile Banking
-                    </SelectItem>
+                    <SelectItem value="Mobile Banking">Mobile Banking</SelectItem>
                     <SelectItem value="Cash">Cash</SelectItem>
                     <SelectItem value="Cards">Cards</SelectItem>
                     <SelectItem value="Chapa">Chapa</SelectItem>
@@ -288,42 +282,76 @@ export default function PaymentsManagement() {
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Time</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredPayments.map((payment) => (
                   <TableRow key={payment.id}>
-                    <TableCell className="font-mono font-medium">
-                      {payment.transactionId}
-                    </TableCell>
-                    <TableCell className="font-mono">
-                      {payment.orderId}
-                    </TableCell>
+                    <TableCell className="font-mono font-medium">{payment.transactionId}</TableCell>
+                    <TableCell className="font-mono">{payment.orderId}</TableCell>
                     <TableCell>#{payment.tableNumber}</TableCell>
                     <TableCell>{payment.customerName}</TableCell>
+                    <TableCell><Badge variant="outline">{payment.paymentMethod}</Badge></TableCell>
+                    <TableCell className="font-semibold">ETB {payment.amount}</TableCell>
                     <TableCell>
-                      <Badge variant="outline">{payment.paymentMethod}</Badge>
-                    </TableCell>
-                    <TableCell className="font-semibold">
-                      ETB {payment.amount}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        className={`${getStatusColor(payment.status)} text-white`}
-                      >
-                        {payment.status.replace("_", " ")}
+                      <Badge className={`${getStatusColor(payment.status)} text-white`}>
+                        {getStatusText(payment.status)}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-zinc-400 text-sm">
-                      {payment.timestamp}
+                      {formatTimestamp(payment.timestamp)}
+                    </TableCell>
+                    <TableCell>
+                      {(payment.status === "PENDING" || payment.status === "CASH_PENDING") && (
+                        <Button
+                          size="sm"
+                          onClick={() => markAsPaid(payment.id!)}
+                          disabled={updatingId === payment.id}
+                          className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                          {updatingId === payment.id ? "Updating..." : "Mark as Paid"}
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+
+            {filteredPayments.length === 0 && (
+              <div className="text-center py-16 text-zinc-400">
+                No payments found matching your filters
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
+
+// Helper Functions
+const getStatusColor = (status?: string) => {
+  switch (status) {
+    case "PAID": return "bg-green-600";
+    case "PENDING": return "bg-yellow-600";
+    case "CASH_PENDING": return "bg-amber-600";
+    case "FAILED": return "bg-red-600";
+    case "REFUNDED": return "bg-purple-600";
+    default: return "bg-zinc-600";
+  }
+};
+
+const getStatusText = (status?: string) => {
+  if (!status) return "UNKNOWN";
+  return status.replace("_", " ");
+};
+
+const formatTimestamp = (ts: any): string => {
+  if (!ts) return "N/A";
+  if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleString();
+  if (typeof ts === "string") return ts;
+  return "N/A";
+};
