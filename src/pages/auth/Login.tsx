@@ -1,6 +1,7 @@
 /* =============================================
    PAGE NAME: Login
    FILE PATH: src/pages/auth/Login.tsx
+   CONNECTED WITH FIREBASE AUTH
    ============================================= */
 
 import React, { useState } from 'react';
@@ -11,6 +12,10 @@ import { Label } from '../../components/ui/label';
 import { Checkbox } from '../../components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { BedDouble, UtensilsCrossed, Sun, Moon } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 export default function Login() {
   const [isDark, setIsDark] = useState(true);
@@ -18,40 +23,55 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-      // Mock user data (In real app, this comes from Firebase/Auth API)
-      const mockUser = {
-        email: email,
-        role: email.includes('admin') ? 'Admin' 
-            : email.includes('kitchen') ? 'Kitchen' 
-            : email.includes('waiter') ? 'Waiter' 
-            : 'Staff' // default for other staff
-      };
+      // Get user role from Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      
+      let role = "Staff";
 
-      alert(`Login successful as ${mockUser.role}!`);
+      if (userDoc.exists()) {
+        role = userDoc.data().role || "Staff";
+      } else {
+        // Fallback: Check email pattern
+        if (email.includes('admin')) role = 'Admin';
+        else if (email.includes('kitchen')) role = 'Kitchen';
+        else if (email.includes('waiter')) role = 'Waiter';
+      }
 
-      // Role-based Redirection
-      if (mockUser.role === 'Admin') {
+      alert(`Login successful as ${role}!`);
+
+      // Role-based Navigation
+      if (role === 'Admin') {
         navigate('/admin');
-      } else if (mockUser.role === 'Kitchen' || mockUser.role === 'Waiter') {
+      } else if (role === 'Kitchen' || role === 'Waiter') {
         navigate('/staff/kitchen');
       } else {
-        // Default for staff or customer-facing login
-        navigate('/customer/menu');
+        navigate('/customer/menu?table=01'); // Default for staff or testing
       }
-    }, 1300);
+
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message.includes('auth/invalid-credential') 
+        ? "Invalid email or password" 
+        : "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -76,6 +96,12 @@ export default function Login() {
 
       <CardContent>
         <form onSubmit={handleLogin} className="space-y-5">
+          {error && (
+            <div className="bg-red-500/10 text-red-500 text-sm p-3 rounded-lg border border-red-500/30">
+              {error}
+            </div>
+          )}
+
           <div>
             <Label htmlFor="email">Email Address</Label>
             <Input
