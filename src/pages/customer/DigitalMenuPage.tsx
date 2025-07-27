@@ -1,7 +1,7 @@
 /* =============================================
    PAGE NAME: DigitalMenuPage
    FILE PATH: src/pages/customer/DigitalMenuPage.tsx
-   WITH BETTER IMAGE HANDLING
+   FIXED BOTTOM OVERLAP + BETTER ALERT VISIBILITY
    ============================================= */
 
 import React, { useState, useEffect } from "react";
@@ -66,19 +66,19 @@ export default function DigitalMenuPage() {
 
   const handleAddToCart = (item: any) => {
     addItem({ ...item, quantity: 1 });
+    // Optional: Show toast (if you have sonner or similar)
+    // toast.success(`${item.name} added to cart`);
   };
 
-  // Image fallback function
   const getFoodImage = (item: any) => {
     if (item.image) return item.image;
-    // Simple category-based placeholder
     if (item.category === "Breakfast")
       return "https://picsum.photos/id/201/600/300";
     if (item.category === "Lunch" || item.category === "Dinner")
       return "https://picsum.photos/id/1080/600/300";
     if (item.category === "Drinks")
       return "https://picsum.photos/id/870/600/300";
-    return "https://picsum.photos/id/292/600/300"; // default
+    return "https://picsum.photos/id/292/600/300";
   };
 
   if (loading) {
@@ -90,7 +90,9 @@ export default function DigitalMenuPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-24">
+    <div className="min-h-screen bg-black text-white pb-28">
+      {" "}
+      {/* Increased bottom padding */}
       {/* Header */}
       <div className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-lg border-b border-white/10">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -125,35 +127,25 @@ export default function DigitalMenuPage() {
           </div>
         </div>
       </div>
-
       <div className="max-w-2xl mx-auto px-4">
-        {/* Categories */}
+        {/* Categories & Filters */}
         <div className="flex gap-2 overflow-x-auto no-scrollbar py-4">
           {allCategories.map((cat) => (
             <Button
               key={cat}
               variant={activeCategory === cat ? "default" : "outline"}
               onClick={() => setActiveCategory(cat)}
-              className={`
-              rounded-full
-              whitespace-nowrap
-              px-5
-              h-10
-              text-sm
-              border-white/10
-              ${
+              className={`rounded-full whitespace-nowrap px-5 h-10 text-sm ${
                 activeCategory === cat
-                  ? "bg-amber-500 text-black hover:bg-amber-400"
+                  ? "bg-amber-500 text-black"
                   : "bg-zinc-900 text-white"
-              }
-            `}
+              }`}
             >
               {cat}
             </Button>
           ))}
         </div>
 
-        {/* Fasting Filter */}
         <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar">
           {(["All", "Fasting", "Non-Fasting"] as const).map((filter) => (
             <Button
@@ -161,26 +153,17 @@ export default function DigitalMenuPage() {
               variant={activeFilter === filter ? "default" : "outline"}
               size="sm"
               onClick={() => setActiveFilter(filter)}
-              className={`
-              rounded-full
-              px-4
-              h-9
-              border-white/10
-              whitespace-nowrap
-              ${
-                activeFilter === filter
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-zinc-900"
-              }
-            `}
+              className={`rounded-full px-4 h-9 ${
+                activeFilter === filter ? "bg-green-600" : "bg-zinc-900"
+              }`}
             >
               {filter}
             </Button>
           ))}
         </div>
 
-        {/* Menu Items with Better Images */}
-        <div className="space-y-6">
+        {/* Menu Items */}
+        <div className="space-y-6 pb-8">
           {filteredItems.length === 0 ? (
             <div className="text-center py-16 text-zinc-400">
               No items found matching your criteria
@@ -195,7 +178,7 @@ export default function DigitalMenuPage() {
                   <img
                     src={getFoodImage(item)}
                     alt={item.name}
-                    className="w-full h-full object-contain object-center bg-zinc-800"
+                    className="w-full h-full object-cover bg-zinc-800"
                   />
                 </div>
 
@@ -217,21 +200,11 @@ export default function DigitalMenuPage() {
                   <div className="flex gap-2 mt-4">
                     {(item.fasting === "FASTING" ||
                       item.fasting === "BOTH") && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-gray-800 text-white"
-                      >
-                        Fasting
-                      </Badge>
+                      <Badge className="bg-green-600">Fasting</Badge>
                     )}
                     {(item.fasting === "NON_FASTING" ||
                       item.fasting === "BOTH") && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-gray-800 text-white"
-                      >
-                        Non-Fasting
-                      </Badge>
+                      <Badge className="bg-green-600">Non-Fasting</Badge>
                     )}
                   </div>
 
@@ -247,10 +220,9 @@ export default function DigitalMenuPage() {
           )}
         </div>
       </div>
-
-      {/* Sticky Cart */}
+      {/* Sticky Cart Button - Raised Higher */}
       {totalItems() > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50">
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50">
           <Button
             onClick={() => navigate(`/customer/cart?table=${tableNumber}`)}
             className="w-full h-16 bg-gradient-to-r from-amber-600 to-orange-600 text-lg font-medium shadow-2xl flex justify-between items-center"
