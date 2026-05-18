@@ -1,316 +1,126 @@
 /* =============================================
    PAGE NAME: AdminDashboard
-   FILE PATH: src/pages/AdminDashboard.tsx
-   DESCRIPTION: Real-time Admin Dashboard with Firebase
+   FILE PATH: src/pages/admin/AdminDashboard.tsx
+   DESCRIPTION: Main Admin Dashboard
    ============================================= */
-import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
-import {
-  Moon,
-  Sun,
-  DollarSign,
-  Users,
-  UtensilsCrossed,
-  Clock,
-} from "lucide-react";
-import { useFirestore } from "../../hooks/useFirestore";
 
-// Charts
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-
-interface Order {
-  id: string;
-  total: number;
-  status: string;
-  paymentMethod: string;
-  createdAt: string;
-  tableNumber: string;
-}
-
-interface FoodItem {
-  id: string;
-  name: string;
-  category: string;
-}
+import React, { useState } from 'react';
+import { Card, CardContent } from '../../components/ui/card';
+import { Badge } from '../../components/ui/badge';
+import PageHeader from '../../components/common/PageHeader';
+import { Moon, Sun, Users, UtensilsCrossed, TrendingUp, Clock } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { data: orders } = useFirestore<Order>("orders");
-  const { data: foods } = useFirestore<FoodItem>("foods");
-  const { data: tables } = useFirestore<any>("tables");
-
   const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  // Calculations
-  const totalSales = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-  const activeTables = tables.filter((t: any) =>
-    ["Occupied", "Reserved"].includes(t.status),
-  ).length;
-  const pendingOrders = orders.filter((o) =>
-    ["Pending", "Preparing"].includes(o.status),
-  ).length;
-
-  const paymentStats = orders.reduce((acc: any, order) => {
-    const method = order.paymentMethod || "Other";
-    acc[method] = (acc[method] || 0) + 1;
-    return acc;
-  }, {});
-
-  const paymentData = Object.entries(paymentStats).map(([name, count]) => ({
-    name,
-    value: Math.round(((count as number) / (orders.length || 1)) * 100),
-    color: name.includes("Mobile")
-      ? "#10b981"
-      : name === "Cash"
-        ? "#eab308"
-        : "#3b82f6",
-  }));
-
-  const topItems = foods.slice(0, 5).map((food, i) => ({
-    name: food.name,
-    count: 15 + i * 5,
-    revenue: `ETB ${((food.name.length + 20) * 80).toLocaleString()}`,
-  }));
-
-  const recentOrders = [...orders]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt || 0).getTime() -
-        new Date(a.createdAt || 0).getTime(),
-    )
-    .slice(0, 5);
-
-  const summary = [
-    {
-      title: "Total Sales",
-      value: `ETB ${totalSales.toLocaleString()}`,
-      change: "+12.5%",
-      icon: DollarSign,
-      color: "text-emerald-500",
-    },
-    {
-      title: "Active Tables",
-      value: activeTables.toString(),
-      change: "occupied now",
-      icon: Users,
-      color: "text-amber-500",
-    },
-    {
-      title: "Total Orders",
-      value: orders.length.toString(),
-      change: "Today",
-      icon: UtensilsCrossed,
-      color: "text-blue-500",
-    },
-    {
-      title: "Pending Orders",
-      value: pendingOrders.toString(),
-      change: "Need attention",
-      icon: Clock,
-      color: "text-orange-500",
-    },
+  const stats = [
+    { title: "Total Orders Today", value: "142", change: "+18%", icon: UtensilsCrossed, color: "text-amber-500" },
+    { title: "Active Tables", value: "24", change: "8 occupied", icon: Users, color: "text-blue-500" },
+    { title: "Revenue Today", value: "ETB 48,920", change: "+12%", icon: TrendingUp, color: "text-green-500" },
+    { title: "Avg. Prep Time", value: "27 min", change: "-4 min", icon: Clock, color: "text-purple-500" },
   ];
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-4 md:px-6 py-4">
-        <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
-              <UtensilsCrossed className="h-7 w-7 md:h-8 md:w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold">
-                Admin Dashboard
-              </h1>
-              <p className="text-xs md:text-sm text-amber-500">
-                Lumina Grand Restaurant • Live
-              </p>
-            </div>
-          </div>
+      <PageHeader 
+        title="Admin Dashboard" 
+        description="Overview of Lumina Grand Restaurant Operations"
+      >
+        <button 
+          onClick={toggleTheme}
+          className="p-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-colors"
+        >
+          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </button>
+      </PageHeader>
 
-          <div className="flex items-center gap-2 md:gap-4">
-            <Badge variant="outline" className="hidden sm:flex">
-              LIVE
-            </Badge>
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-            <Button size="sm" className="hidden md:flex">
-              Report
-            </Button>
-          </div>
-        </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        {stats.map((stat, index) => (
+          <Card key={index} className="bg-zinc-900 border-white/10">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-zinc-400">{stat.title}</p>
+                  <p className="text-3xl font-bold mt-2">{stat.value}</p>
+                </div>
+                <div className={`${stat.color}`}>
+                  <stat.icon className="h-10 w-10" />
+                </div>
+              </div>
+              <p className="text-sm mt-4 text-green-400">{stat.change} from yesterday</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6 md:space-y-8">
-        {/* Summary Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {summary.map((item, index) => (
-            <Card key={index} className="bg-zinc-900 border-white/10">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-sm text-zinc-400">
-                    {item.title}
-                  </CardTitle>
-                  <item.icon className={`h-5 w-5 ${item.color}`} />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl md:text-4xl font-bold">
-                  {item.value}
-                </div>
-                <p className="text-emerald-500 text-sm mt-1">{item.change}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Sales Chart */}
-          <Card className="xl:col-span-2 bg-zinc-900 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-lg md:text-xl">
-                Sales Trend (Last 7 Days)
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="h-[280px] md:h-[340px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={Array.from({ length: 7 }, (_, i) => ({
-                    name: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i],
-                    sales: 18000 + Math.random() * 15000,
-                  }))}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="name" stroke="#9ca3af" />
-                  <YAxis stroke="#9ca3af" />
-                  <Tooltip />
-                  <Line
-                    type="natural"
-                    dataKey="sales"
-                    stroke="#f59e0b"
-                    strokeWidth={3}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Payment Methods */}
-          <Card className="bg-zinc-900 border-white/10">
-            <CardHeader>
-              <CardTitle>Payment Methods</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
-                  <Pie
-                    data={paymentData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={65}
-                    outerRadius={110}
-                    dataKey="value"
-                  >
-                    {paymentData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-zinc-900 border-white/10">
-            <CardHeader>
-              <CardTitle>Most Ordered Items</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {topItems.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between items-center py-3 border-b border-white/10 last:border-0"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="text-xl font-bold text-amber-500">
-                        #{i + 1}
-                      </span>
-                      <div>
-                        <p>{item.name}</p>
-                        <p className="text-sm text-zinc-500">
-                          {item.count} orders
-                        </p>
-                      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Orders */}
+        <Card className="bg-zinc-900 border-white/10">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-semibold mb-6">Recent Orders</h3>
+            <div className="space-y-5">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-xl">
+                      🍽️
                     </div>
-                    <p className="font-mono text-amber-500">{item.revenue}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-zinc-900 border-white/10">
-            <CardHeader>
-              <CardTitle>Recent Orders</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {recentOrders.map((order, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-zinc-950 rounded-xl"
-                  >
                     <div>
-                      <p className="font-mono text-sm">
-                        #{order.id.slice(0, 8)}
-                      </p>
-                      <p className="text-sm">Table {order.tableNumber}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">ETB {order.total}</p>
-                      <Badge>{order.status}</Badge>
+                      <p className="font-medium">Table #{10 + i}</p>
+                      <p className="text-sm text-zinc-400">LUM-ORD-7849{i}</p>
                     </div>
                   </div>
-                ))}
+                  <div className="text-right">
+                    <p className="font-semibold">ETB 420</p>
+                    <Badge variant="outline" className="text-xs mt-1">Preparing</Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions & System Status */}
+        <Card className="bg-zinc-900 border-white/10">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-semibold mb-6">System Status</h3>
+            
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                  <span>Kitchen Online</span>
+                </div>
+                <Badge>12 Staff Active</Badge>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full" />
+                  <span>All POS Terminals Online</span>
+                </div>
+                <span className="text-sm text-zinc-400">4 Terminals</span>
+              </div>
+
+              <div className="pt-4 border-t border-white/10">
+                <h4 className="font-medium mb-4">Quick Actions</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <button className="h-20 bg-zinc-800 hover:bg-zinc-700 rounded-2xl flex flex-col items-center justify-center transition-colors">
+                    <span className="text-2xl mb-1">📋</span>
+                    <span className="text-sm">New Order</span>
+                  </button>
+                  <button className="h-20 bg-zinc-800 hover:bg-zinc-700 rounded-2xl flex flex-col items-center justify-center transition-colors">
+                    <span className="text-2xl mb-1">📊</span>
+                    <span className="text-sm">View Reports</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
