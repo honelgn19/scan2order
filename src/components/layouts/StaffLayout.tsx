@@ -1,11 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 
-function App() {
+export default function StaffLayout() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <Outlet />
     </div>
   );
 }
-
-export default App;
