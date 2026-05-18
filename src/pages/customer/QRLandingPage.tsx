@@ -1,8 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Moon, Sun, UtensilsCrossed, BedDouble, Bell, Menu } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import {
+  Moon,
+  Sun,
+  UtensilsCrossed,
+  BedDouble,
+  Bell,
+  Menu,
+} from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function QRLandingPage() {
   const navigate = useNavigate();
@@ -10,11 +17,11 @@ export default function QRLandingPage() {
   const [isDark, setIsDark] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const tableNumber = searchParams.get('table') || '01';
+  const tableNumber = searchParams.get("table") || "01";
 
   useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
+    if (isDark) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
