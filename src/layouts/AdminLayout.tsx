@@ -14,18 +14,19 @@ export default function AdminLayout() {
   const toggleTheme = () => setIsDark(!isDark);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-zinc-950 text-white">
+    <div className="flex h-screen overflow-hidden bg-zinc-950">
       {/* Sidebar */}
       <AdminSidebar />
 
-      {/* Main Content Area */}
+      {/* Main Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <TopNavbar 
           title="Admin Dashboard" 
           isDark={isDark} 
           toggleTheme={toggleTheme} 
         />
-        
+
+        {/* Page Content */}
         <main className="flex-1 overflow-auto p-6 bg-zinc-950">
           <Outlet />
         </main>
