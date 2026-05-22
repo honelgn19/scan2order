@@ -2,69 +2,98 @@
    PAGE NAME: FoodManagement
    FILE PATH: src/pages/FoodManagement.tsx
    ============================================= */
-import React, { useState, useEffect } from 'react';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Switch } from '../../components/ui/switch';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from '../../components/ui/table';
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Switch } from "../../components/ui/switch";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
-} from '../../components/ui/dialog';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '../../components/ui/select';
-import { Moon, Sun, Plus, Edit2, Trash2, Search, Upload } from 'lucide-react';
-import { useFirestore, addDocument, updateDocument, deleteDocument } from '../../hooks/useFirestore';
-import { useAuth } from '../../hooks/useAuth';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { Moon, Sun, Plus, Edit2, Trash2, Search, Upload } from "lucide-react";
+import {
+  useFirestore,
+  addDocument,
+  updateDocument,
+  deleteDocument,
+} from "../../hooks/useFirestore";
+import type { MenuItem } from '../../types';
 
-interface FoodItem {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  fastingType: 'FASTING' | 'NON_FASTING' | 'BOTH';
-  isAvailable: boolean;
-  description?: string;
-}
-
-const categories = ['Main Course', 'Vegetarian', 'Beverage', 'Dessert', 'Starter', 'Side'];
+const categories = [
+  "Main Course",
+  "Vegetarian",
+  "Beverage",
+  "Dessert",
+  "Starter",
+  "Side",
+];
 
 export default function FoodManagement() {
-  const { user } = useAuth();
-  const { data: foods, loading } = useFirestore<FoodItem>('foods');
+  const { data: foods, loading } = useFirestore<MenuItem>("foods");
 
   const [isDark, setIsDark] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('All');
-  const [filterFasting, setFilterFasting] = useState('All');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCategory, setFilterCategory] = useState("All");
+  const [filterFasting, setFilterFasting] = useState("All");
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
-  const [newFood, setNewFood] = useState<Partial<FoodItem>>({
-    name: '', category: '', price: 0, image: '', fastingType: 'BOTH', isAvailable: true,
+  const [selectedFood, setSelectedFood] = useState<MenuItem | null>(null);
+
+  const [newFood, setNewFood] = useState<Partial<MenuItem>>({
+    name: "",
+    category: "",
+    price: 0,
+    image: "",
+    fasting: "BOTH",
+    available: true,
   });
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [imagePreview, setImagePreview] = useState<string>("");
 
   // Theme
   useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
+    if (isDark) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  const filteredFoods = foods.filter(food => {
-    const matchesSearch = food.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'All' || food.category === filterCategory;
-    const matchesFasting = filterFasting === 'All' || food.fastingType === filterFasting;
+  const filteredFoods = foods.filter((food) => {
+    const matchesSearch = food.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      filterCategory === "All" || food.category === filterCategory;
+    const matchesFasting =
+      filterFasting === "All" || food.fasting === filterFasting;
     return matchesSearch && matchesCategory && matchesFasting;
   });
 
@@ -75,84 +104,108 @@ export default function FoodManagement() {
       reader.onload = (event) => {
         const result = event.target?.result as string;
         setImagePreview(result);
-        setNewFood(prev => ({ ...prev, image: result }));
+        setNewFood((prev) => ({ ...prev, image: result }));
       };
       reader.readAsDataURL(file);
     }
   };
 
   const openAddModal = () => {
-    setNewFood({ name: '', category: '', price: 0, image: '', fastingType: 'BOTH', isAvailable: true });
-    setImagePreview('');
+    setNewFood({
+      name: "",
+      category: "",
+      price: 0,
+      image: "",
+      fasting: "BOTH",
+      available: true,
+    });
+    setImagePreview("");
     setIsAddModalOpen(true);
   };
 
-  const openEditModal = (food: FoodItem) => {
+  const openEditModal = (food: MenuItem) => {
     setSelectedFood(food);
     setNewFood({ ...food });
-    setImagePreview(food.image);
+    setImagePreview(food.image || "");
     setIsEditModalOpen(true);
   };
 
-  const openDeleteModal = (food: FoodItem) => {
+  const openDeleteModal = (food: MenuItem) => {
     setSelectedFood(food);
     setIsDeleteModalOpen(true);
   };
 
   const saveFood = async () => {
-    if (!newFood.name || !newFood.category || !newFood.price || !newFood.image) return;
+    if (!newFood.name || !newFood.category || !newFood.price) return;
 
     if (isEditModalOpen && selectedFood) {
-      await updateDocument('foods', selectedFood.id, newFood);
+      await updateDocument("foods", selectedFood.id, newFood);
       setIsEditModalOpen(false);
     } else {
-      await addDocument('foods', newFood);
+      await addDocument("foods", newFood);
       setIsAddModalOpen(false);
     }
-    setNewFood({ name: '', category: '', price: 0, image: '', fastingType: 'BOTH', isAvailable: true });
-    setImagePreview('');
+
+    setNewFood({
+      name: "",
+      category: "",
+      price: 0,
+      image: "",
+      fasting: "BOTH",
+      available: true,
+    });
+    setImagePreview("");
   };
 
   const deleteFood = async () => {
     if (selectedFood) {
-      await deleteDocument('foods', selectedFood.id);
+      await deleteDocument("foods", selectedFood.id);
       setIsDeleteModalOpen(false);
     }
   };
 
-  const toggleAvailability = async (food: FoodItem) => {
-    await updateDocument('foods', food.id, { isAvailable: !food.isAvailable });
+  const toggleAvailability = async (food: MenuItem) => {
+    await updateDocument("foods", food.id, { available: !food.available });
   };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-6 py-4">
-        <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
+      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-4 md:px-6 py-4">
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
               <span className="text-3xl">🍲</span>
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Food Management</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                Food Management
+              </h1>
               <p className="text-sm text-amber-500">Lumina Grand Restaurant</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <Button onClick={toggleTheme} variant="ghost" size="icon">
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDark ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
-            <Button onClick={openAddModal} className="bg-amber-600 hover:bg-amber-700">
+            <Button
+              onClick={openAddModal}
+              className="bg-amber-600 hover:bg-amber-700"
+            >
               <Plus className="mr-2 h-4 w-4" /> Add New Food
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto p-6">
+      <div className="max-w-screen-2xl mx-auto p-4 md:p-6">
         <Card className="bg-zinc-900 border-white/10">
           <CardHeader>
-            <div className="flex flex-col sm:flex-row gap-4 justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
               <CardTitle>Menu Items ({foods.length})</CardTitle>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <div className="relative">
@@ -164,13 +217,20 @@ export default function FoodManagement() {
                     className="pl-10 w-full sm:w-80"
                   />
                 </div>
-                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <Select
+                  value={filterCategory}
+                  onValueChange={setFilterCategory}
+                >
                   <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="All">All Categories</SelectItem>
-                    {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <Select value={filterFasting} onValueChange={setFilterFasting}>
@@ -196,7 +256,7 @@ export default function FoodManagement() {
                   <TableHead>Name</TableHead>
                   <TableHead>Category</TableHead>
                   <TableHead>Price</TableHead>
-                  <TableHead>Fasting Type</TableHead>
+                  <TableHead>Fasting</TableHead>
                   <TableHead>Available</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -205,25 +265,46 @@ export default function FoodManagement() {
                 {filteredFoods.map((food) => (
                   <TableRow key={food.id}>
                     <TableCell>
-                      <img src={food.image} alt={food.name} className="w-14 h-14 object-cover rounded-lg" />
+                      <img
+                        src={food.image || "https://via.placeholder.com/150"}
+                        alt={food.name}
+                        className="w-14 h-14 object-cover rounded-lg"
+                      />
                     </TableCell>
                     <TableCell className="font-medium">{food.name}</TableCell>
                     <TableCell>{food.category}</TableCell>
-                    <TableCell className="font-mono">ETB {food.price}</TableCell>
+                    <TableCell className="font-mono">
+                      ETB {food.price}
+                    </TableCell>
                     <TableCell>
-                      <Badge variant={food.fastingType === 'FASTING' ? "default" : "secondary"}>
-                        {food.fastingType.replace('_', ' ')}
+                      <Badge
+                        variant={
+                          food.fasting === "FASTING" ? "default" : "secondary"
+                        }
+                      >
+                        {food.fasting.replace("_", " ")}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Switch checked={food.isAvailable} onCheckedChange={() => toggleAvailability(food)} />
+                      <Switch
+                        checked={food.available}
+                        onCheckedChange={() => toggleAvailability(food)}
+                      />
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button variant="outline" size="icon" onClick={() => openEditModal(food)}>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => openEditModal(food)}
+                        >
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="destructive" size="icon" onClick={() => openDeleteModal(food)}>
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => openDeleteModal(food)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -236,21 +317,41 @@ export default function FoodManagement() {
         </Card>
       </div>
 
-      {/* Add/Edit Modal */}
-      <Dialog open={isAddModalOpen || isEditModalOpen} onOpenChange={() => { setIsAddModalOpen(false); setIsEditModalOpen(false); }}>
+      {/* ==================== ADD / EDIT MODAL ==================== */}
+      <Dialog
+        open={isAddModalOpen || isEditModalOpen}
+        onOpenChange={() => {
+          setIsAddModalOpen(false);
+          setIsEditModalOpen(false);
+        }}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{isEditModalOpen ? 'Edit Food Item' : 'Add New Food Item'}</DialogTitle>
+            <DialogTitle>
+              {isEditModalOpen ? "Edit Food Item" : "Add New Food Item"}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            {/* Image Upload */}
             <div>
               <Label>Food Image</Label>
               <div className="mt-2 border-2 border-dashed border-zinc-700 rounded-xl p-6 text-center">
-                {imagePreview && <img src={imagePreview} alt="preview" className="mx-auto w-32 h-32 object-cover rounded-lg mb-4" />}
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="preview"
+                    className="mx-auto w-32 h-32 object-cover rounded-lg mb-4"
+                  />
+                ) : (
+                  <Upload className="h-12 w-12 text-zinc-500 mx-auto mb-3" />
+                )}
                 <label className="cursor-pointer text-amber-500 hover:underline">
-                  <Input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
                   Upload Image
                 </label>
               </div>
@@ -258,29 +359,59 @@ export default function FoodManagement() {
 
             <div>
               <Label>Food Name</Label>
-              <Input value={newFood.name} onChange={(e) => setNewFood({ ...newFood, name: e.target.value })} />
+              <Input
+                value={newFood.name || ""}
+                onChange={(e) =>
+                  setNewFood({ ...newFood, name: e.target.value })
+                }
+                placeholder="e.g. Doro Wot"
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Category</Label>
-                <Select value={newFood.category} onValueChange={(val) => setNewFood({ ...newFood, category: val })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select
+                  value={newFood.category}
+                  onValueChange={(val) =>
+                    setNewFood({ ...newFood, category: val })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
                   <SelectContent>
-                    {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div>
                 <Label>Price (ETB)</Label>
-                <Input type="number" value={newFood.price} onChange={(e) => setNewFood({ ...newFood, price: Number(e.target.value) })} />
+                <Input
+                  type="number"
+                  value={newFood.price || ""}
+                  onChange={(e) =>
+                    setNewFood({ ...newFood, price: Number(e.target.value) })
+                  }
+                />
               </div>
             </div>
 
             <div>
               <Label>Fasting Type</Label>
-              <Select value={newFood.fastingType} onValueChange={(val: any) => setNewFood({ ...newFood, fastingType: val })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select
+                value={newFood.fasting}
+                onValueChange={(val: any) =>
+                  setNewFood({ ...newFood, fasting: val })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="FASTING">Fasting</SelectItem>
                   <SelectItem value="NON_FASTING">Non-Fasting</SelectItem>
@@ -290,15 +421,31 @@ export default function FoodManagement() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Switch checked={newFood.isAvailable} onCheckedChange={(checked) => setNewFood({ ...newFood, isAvailable: checked })} />
+              <Switch
+                checked={newFood.available || false}
+                onCheckedChange={(checked) =>
+                  setNewFood({ ...newFood, available: checked })
+                }
+              />
               <Label>Available for ordering</Label>
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setIsAddModalOpen(false); setIsEditModalOpen(false); }}>Cancel</Button>
-            <Button onClick={saveFood} className="bg-amber-600 hover:bg-amber-700">
-              {isEditModalOpen ? 'Save Changes' : 'Add Food'}
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setIsEditModalOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveFood}
+              className="bg-amber-600 hover:bg-amber-700"
+            >
+              {isEditModalOpen ? "Save Changes" : "Add Food"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -308,14 +455,23 @@ export default function FoodManagement() {
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Food</DialogTitle>
+            <DialogTitle>Delete Food Item</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete <strong>{selectedFood?.name}</strong>?
+              Are you sure you want to delete{" "}
+              <strong>{selectedFood?.name}</strong>? This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={deleteFood}>Delete</Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={deleteFood}>
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

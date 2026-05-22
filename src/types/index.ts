@@ -4,11 +4,11 @@
    ============================================= */
 
 export interface MenuItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
-  description: string;
-  image: string;
+  description?: string;
+  image?: string;
   category: string;
   fasting: 'FASTING' | 'NON_FASTING' | 'BOTH';
   available: boolean;
@@ -20,7 +20,7 @@ export interface CartItem extends MenuItem {
 }
 
 export interface OrderItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
   quantity: number;
@@ -32,23 +32,29 @@ export interface Order {
   orderId: string;
   items: OrderItem[];
   total: number;
-  status: 'Pending' | 'Preparing' | 'Ready' | 'Delivered';
+  status: 'Pending' | 'Preparing' | 'Ready' | 'Delivered' | 'Cancelled';
   paymentMethod: string;
-  paymentStatus: 'Paid' | 'Pending' | 'Cash';
-  timestamp: Date;
+  paymentStatus: 'Paid' | 'Pending' | 'Cash Pending' | 'Failed' | 'Refunded';
+  timestamp: string;
+  createdAt?: string;
 }
 
 export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'Admin' | 'Kitchen' | 'Waiter';
+  role: 'Admin' | 'Kitchen' | 'Waiter' | 'Customer';
   status: 'Active' | 'Inactive';
 }
 
 export interface Table {
+  id: string;
   number: string;
-  status: 'Available' | 'Occupied' | 'Reserved';
-  guests?: number;
-  currentOrderId?: string;
+  capacity?: number;
+  status: 'Available' | 'Occupied' | 'Reserved' | 'Cleaning';
+  currentSession?: {
+    customerName: string;
+    startedAt: string;
+    guests: number;
+  };
 }

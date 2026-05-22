@@ -1,29 +1,17 @@
 /* =============================================
    PAGE NAME: DigitalMenuPage
    FILE PATH: src/pages/customer/DigitalMenuPage.tsx
-   FULL VERSION - CONNECTED TO FIRESTORE
    ============================================= */
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Card, CardContent } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
-import { Moon, Sun, Plus, Minus, Search, ShoppingCart } from 'lucide-react';
-import { listenToFoods } from '../../services/firebase/foods';
+import { Moon, Sun, Search, ShoppingCart } from 'lucide-react';
+import { useFirestore } from '../../hooks/useFirestore';
 import { useCartStore } from '../../store/cartStore';
-
-interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  image?: string;
-  fasting: 'FASTING' | 'NON_FASTING' | 'BOTH';
-  available: boolean;
-  description: string;
-}
+import type { MenuItem } from '../../types/index';
 
 export default function DigitalMenuPage() {
   const [isDark, setIsDark] = useState(true);
@@ -35,22 +23,9 @@ export default function DigitalMenuPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeFilter, setActiveFilter] = useState<"All" | "Fasting" | "Non-Fasting">("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [foods, setFoods] = useState<MenuItem[]>([]);
-  const [loading, setLoading] = useState(true);
 
+  const { data: foods, loading } = useFirestore<MenuItem>('foods');
   const { items, addItem, totalItems, totalPrice } = useCartStore();
-
-  const categories = ["All", "Breakfast", "Lunch", "Dinner", "Drinks", "Desserts"];
-
-  // Real-time Firestore Listener
-  useEffect(() => {
-    const unsubscribe = listenToFoods((fetchedFoods) => {
-      setFoods(fetchedFoods);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   // Theme
   useEffect(() => {
@@ -60,24 +35,28 @@ export default function DigitalMenuPage() {
 
   const toggleTheme = () => setIsDark(!isDark);
 
+  // Dynamic Categories from Firestore Data
+  const categories = ["All", ...new Set(foods.map(item => item.category))];
+
   const filteredItems = foods.filter(item => {
     const categoryMatch = activeCategory === "All" || item.category === activeCategory;
+    
     let fastingMatch = true;
-    if (activeFilter === "Fasting") fastingMatch = item.fasting === "FASTING" || item.fasting === "BOTH";
-    if (activeFilter === "Non-Fasting") fastingMatch = item.fasting === "NON_FASTING" || item.fasting === "BOTH";
+    if (activeFilter === "Fasting") {
+      fastingMatch = item.fasting === "FASTING" || item.fasting === "BOTH";
+    } else if (activeFilter === "Non-Fasting") {
+      fastingMatch = item.fasting === "NON_FASTING" || item.fasting === "BOTH";
+    }
 
     const searchMatch = 
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
 
     return categoryMatch && fastingMatch && searchMatch && item.available;
   });
 
   const handleAddToCart = (item: MenuItem) => {
-    addItem({
-      ...item,
-      quantity: 1
-    });
+    addItem({ ...item, quantity: 1 });
   };
 
   if (loading) {
@@ -91,7 +70,7 @@ export default function DigitalMenuPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-950/90 backdrop-blur-lg border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-lg border-b border-white/10">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -115,14 +94,14 @@ export default function DigitalMenuPage() {
               placeholder="Search dishes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 bg-zinc-900 border-white/10 h-12 text-base"
+              className="pl-12 bg-zinc-900 border-white/10 h-12"
             />
           </div>
         </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-4">
-        {/* Category Tabs */}
+        {/* Dynamic Category Tabs */}
         <div className="flex gap-2 overflow-x-auto pb-4 pt-2 no-scrollbar">
           {categories.map(cat => (
             <Button
@@ -154,18 +133,19 @@ export default function DigitalMenuPage() {
         {/* Menu Items */}
         <div className="space-y-6">
           {filteredItems.length === 0 ? (
-            <p className="text-center text-zinc-400 py-12">No items found</p>
+            <div className="text-center py-16 text-zinc-400">
+              No items found matching your criteria
+            </div>
           ) : (
             filteredItems.map((item) => (
               <Card key={item.id} className="bg-zinc-900 border-white/10 overflow-hidden">
-                <div className="relative">
+                {item.image && (
                   <img 
-                    src={item.image || `https://picsum.photos/id/${Math.floor(Math.random()*100)+1}/600/300`} 
+                    src={item.image} 
                     alt={item.name}
                     className="w-full h-52 object-cover"
                   />
-                </div>
-
+                )}
                 <CardContent className="p-5">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -177,16 +157,17 @@ export default function DigitalMenuPage() {
 
                   <div className="flex gap-2 mt-4">
                     {(item.fasting === "FASTING" || item.fasting === "BOTH") && (
-                      <Badge className="bg-green-900 text-green-300">Fasting</Badge>
+                      <Badge className="bg-green-900 text-green-300">🌿 Fasting</Badge>
                     )}
                     {(item.fasting === "NON_FASTING" || item.fasting === "BOTH") && (
-                      <Badge variant="outline">Non-Fasting</Badge>
+                      <Badge variant="outline">🍖 Non-Fasting</Badge>
                     )}
                   </div>
 
                   <Button 
                     onClick={() => handleAddToCart(item)}
-                    className="w-full mt-5 h-12 bg-amber-600 hover:bg-amber-700"
+                    disabled={!item.available}
+                    className="w-full mt-5 h-12 bg-amber-600 hover:bg-amber-700 disabled:opacity-50"
                   >
                     Add to Cart
                   </Button>
@@ -197,11 +178,11 @@ export default function DigitalMenuPage() {
         </div>
       </div>
 
-      {/* Sticky Cart */}
+      {/* Floating Cart Button */}
       {totalItems() > 0 && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50">
           <Button 
-            onClick={() => navigate(`/customer/cart?table=${tableNumber}`)}
+            onClick={() => navigate(`/cart?table=${tableNumber}`)}
             className="w-full h-16 bg-gradient-to-r from-amber-600 to-orange-600 text-lg font-medium shadow-2xl flex justify-between items-center"
           >
             <div className="flex items-center gap-3">
