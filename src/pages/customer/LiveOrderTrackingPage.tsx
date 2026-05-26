@@ -3,27 +3,29 @@
    FILE PATH: src/pages/customer/LiveOrderTrackingPage.tsx
    ============================================= */
 
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Moon, Sun, Clock, Phone, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Moon, Sun, Clock, Phone, ArrowLeft } from "lucide-react";
 
 export default function LiveOrderTrackingPage() {
   const [isDark, setIsDark] = useState(true);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const tableNumber = searchParams.get('table') || "01";
-  const orderId = searchParams.get('orderId') || "LUM-ORD-XXXXX";
+  const tableNumber = searchParams.get("table") || "01";
+  const orderId = searchParams.get("orderId") || "LUM-ORD-XXXXX";
 
-  const [currentStatus, setCurrentStatus] = useState<'Pending' | 'Preparing' | 'Ready' | 'Delivered'>('Preparing');
+  const [currentStatus, setCurrentStatus] = useState<
+    "Pending" | "Preparing" | "Ready" | "Delivered"
+  >("Preparing");
   const [estimatedTime, setEstimatedTime] = useState(28);
 
   useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
+    if (isDark) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
@@ -31,7 +33,7 @@ export default function LiveOrderTrackingPage() {
   // Simulate live status update
   useEffect(() => {
     const timer = setInterval(() => {
-      if (estimatedTime > 5) setEstimatedTime(prev => prev - 1);
+      if (estimatedTime > 5) setEstimatedTime((prev) => prev - 1);
     }, 10000);
 
     return () => clearInterval(timer);
@@ -44,7 +46,7 @@ export default function LiveOrderTrackingPage() {
     { label: "Delivered", value: "Delivered" },
   ];
 
-  const currentStep = statuses.findIndex(s => s.value === currentStatus);
+  const currentStep = statuses.findIndex((s) => s.value === currentStatus);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -69,7 +71,10 @@ export default function LiveOrderTrackingPage() {
             LIVE TRACKING
           </div>
           <h2 className="text-3xl font-bold">Order #{orderId}</h2>
-          <p className="text-amber-500 mt-2">Estimated ready in <span className="font-bold">{estimatedTime}</span> minutes</p>
+          <p className="text-amber-500 mt-2">
+            Estimated ready in{" "}
+            <span className="font-bold">{estimatedTime}</span> minutes
+          </p>
         </div>
 
         {/* Progress Tracker */}
@@ -78,20 +83,31 @@ export default function LiveOrderTrackingPage() {
             <div className="relative flex justify-between">
               {statuses.map((status, index) => (
                 <div key={status.value} className="flex flex-col items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all
-                    ${currentStep === index ? 'bg-amber-500 border-amber-500 text-black scale-110' : 
-                      currentStep > index ? 'bg-green-500 border-green-500 text-white' : 'bg-zinc-800 border-white/20'}`}>
-                    {currentStep > index ? '✓' : index + 1}
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all
+                    ${
+                      currentStep === index
+                        ? "bg-amber-500 border-amber-500 text-black scale-110"
+                        : currentStep > index
+                          ? "bg-green-500 border-green-500 text-white"
+                          : "bg-zinc-800 border-white/20"
+                    }`}
+                  >
+                    {currentStep > index ? "✓" : index + 1}
                   </div>
-                  <p className={`text-xs mt-3 ${currentStep === index ? 'text-amber-500 font-medium' : currentStep > index ? 'text-green-400' : 'text-zinc-500'}`}>
+                  <p
+                    className={`text-xs mt-3 ${currentStep === index ? "text-amber-500 font-medium" : currentStep > index ? "text-green-400" : "text-zinc-500"}`}
+                  >
                     {status.label}
                   </p>
                 </div>
               ))}
               <div className="absolute top-5 left-6 right-6 h-0.5 bg-white/10 -z-10">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-green-500 to-amber-500 transition-all"
-                  style={{ width: `${(currentStep / (statuses.length - 1)) * 100}%` }}
+                  style={{
+                    width: `${(currentStep / (statuses.length - 1)) * 100}%`,
+                  }}
                 />
               </div>
             </div>
@@ -100,14 +116,18 @@ export default function LiveOrderTrackingPage() {
 
         <Card className="bg-zinc-900 border-white/10">
           <CardContent className="p-6 text-center">
-            <p className="text-zinc-400">Your order is being prepared in the kitchen.</p>
-            <p className="text-sm text-zinc-500 mt-4">You can place additional orders while waiting.</p>
+            <p className="text-zinc-400">
+              Your order is being prepared in the kitchen.
+            </p>
+            <p className="text-sm text-zinc-500 mt-4">
+              You can place additional orders while waiting.
+            </p>
           </CardContent>
         </Card>
       </div>
 
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-md px-4">
-        <Button 
+        <Button
           onClick={() => navigate(`/customer/menu?table=${tableNumber}`)}
           className="w-full h-14 text-base border-white/30 hover:bg-white/5"
           variant="outline"
