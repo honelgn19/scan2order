@@ -1,42 +1,114 @@
 /* =============================================
    PAGE NAME: UserManagement
    FILE PATH: src/pages/admin/UserManagement.tsx
-   DESCRIPTION: User Management for Admin
+   FULLY WORKING ADD + EDIT + DELETE
    ============================================= */
 
-import React, { useState } from 'react';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Input } from '../../components/ui/input';
-import { Moon, Sun, Plus, Search, Edit, Trash2 } from 'lucide-react';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'Admin' | 'Kitchen' | 'Waiter' | 'Customer';
-  status: 'Active' | 'Inactive';
-  joinDate: string;
-}
+import React, { useState } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../../components/ui/dialog";
+import { Moon, Sun, Plus, Search, Edit, Trash2 } from "lucide-react";
+import {
+  useFirestore,
+  addDocument,
+  updateDocument,
+  deleteDocument,
+} from "../../hooks/useFirestore";
+import type { User } from "../../types";
 
 export default function UserManagement() {
+  const { data: users = [], loading } = useFirestore<User>("users");
+
   const [isDark, setIsDark] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [users] = useState<User[]>([
-    { id: "1", name: "Abebe Kebede", email: "abebe@lumina.com", role: "Admin", status: "Active", joinDate: "12 Jan 2026" },
-    { id: "2", name: "Sara Tesfaye", email: "sara@lumina.com", role: "Kitchen", status: "Active", joinDate: "05 Feb 2026" },
-    { id: "3", name: "Yonas Alem", email: "yonas@lumina.com", role: "Waiter", status: "Active", joinDate: "18 Mar 2026" },
-    { id: "4", name: "Meron Hailu", email: "meron@lumina.com", role: "Customer", status: "Inactive", joinDate: "22 Apr 2026" },
-  ]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const [newUser, setNewUser] = useState<Partial<User>>({
+    name: "",
+    email: "",
+    role: "Waiter",
+    status: "Active",
+    joinDate: new Date().toLocaleDateString("en-GB"),
+  });
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user?.email?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  const openAddModal = () => {
+    setNewUser({
+      name: "",
+      email: "",
+      role: "Waiter",
+      status: "Active",
+      joinDate: new Date().toLocaleDateString("en-GB"),
+    });
+    setIsAddModalOpen(true);
+  };
+
+  const openEditModal = (user: User) => {
+    setSelectedUser(user);
+    setNewUser({ ...user });
+    setIsEditModalOpen(true);
+  };
+
+  const saveUser = async () => {
+    if (!newUser.name || !newUser.email) {
+      alert("Name and Email are required");
+      return;
+    }
+
+    try {
+      if (isEditModalOpen && selectedUser?.id) {
+        await updateDocument("users", selectedUser.id, newUser);
+        alert("User updated successfully!");
+        setIsEditModalOpen(false);
+      } else {
+        await addDocument("users", newUser);
+        alert("User added successfully!");
+        setIsAddModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+      alert("Failed to save user. Check console.");
+    }
+  };
+
+  const handleDelete = async (userId: string) => {
+    if (window.confirm("Delete this user?")) {
+      try {
+        await deleteDocument("users", userId);
+        alert("User deleted successfully");
+      } catch (error) {
+        console.error("Delete error:", error);
+        alert("Failed to delete user");
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-6">
@@ -48,9 +120,16 @@ export default function UserManagement() {
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDark ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
-            <Button className="bg-amber-600 hover:bg-amber-700">
+            <Button
+              className="bg-amber-600 hover:bg-amber-700"
+              onClick={openAddModal}
+            >
               <Plus className="mr-2 h-5 w-5" /> Add New User
             </Button>
           </div>
@@ -72,7 +151,7 @@ export default function UserManagement() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="border-b border-white/10">
+                <thead className="border-b border-white/10 text-white">
                   <tr>
                     <th className="text-left p-6">User</th>
                     <th className="text-left p-6">Role</th>
@@ -83,28 +162,46 @@ export default function UserManagement() {
                 </thead>
                 <tbody>
                   {filteredUsers.map((user) => (
-                    <tr key={user.id} className="border-b border-white/10 hover:bg-white/5">
-                      <td className="p-6">
+                    <tr
+                      key={user.id}
+                      className="border-b border-white/10 hover:bg-white/5"
+                    >
+                      <td className="p-6 ">
                         <div>
-                          <p className="font-medium">{user.name}</p>
-                          <p className="text-sm text-zinc-500">{user.email}</p>
+                          <p className="font-medium text-white">{user.name}</p>
+                          <p className="text-sm text-zinc-400">{user.email}</p>
                         </div>
                       </td>
                       <td className="p-6">
-                        <Badge variant="outline">{user.role}</Badge>
+                        <Badge variant="secondary">{user.role}</Badge>
                       </td>
                       <td className="p-6">
-                        <Badge className={user.status === "Active" ? "bg-green-600" : "bg-zinc-600"}>
+                        <Badge
+                          className={
+                            user.status === "Active"
+                              ? "bg-green-600"
+                              : "bg-zinc-600"
+                          }
+                        >
                           {user.status}
                         </Badge>
                       </td>
                       <td className="p-6 text-zinc-400">{user.joinDate}</td>
                       <td className="p-6 text-right">
                         <div className="flex justify-end gap-3">
-                          <Button variant="ghost" size="icon">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => openEditModal(user)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-red-500">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-red-500"
+                            onClick={() => handleDelete(user.id)}
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -117,6 +214,104 @@ export default function UserManagement() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Add / Edit Modal */}
+      <Dialog
+        open={isAddModalOpen || isEditModalOpen}
+        onOpenChange={() => {
+          setIsAddModalOpen(false);
+          setIsEditModalOpen(false);
+        }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {isEditModalOpen ? "Edit User" : "Add New User"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Full Name</Label>
+              <Input
+                value={newUser.name || ""}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, name: e.target.value })
+                }
+                placeholder="Abebe Kebede"
+              />
+            </div>
+
+            <div>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={newUser.email || ""}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, email: e.target.value })
+                }
+                placeholder="abebe@lumina.com"
+              />
+            </div>
+
+            <div>
+              <Label>Role</Label>
+              <Select
+                value={newUser.role}
+                onValueChange={(val: any) =>
+                  setNewUser({ ...newUser, role: val })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                  <SelectItem value="Kitchen">Kitchen Staff</SelectItem>
+                  <SelectItem value="Waiter">Waiter</SelectItem>
+                  <SelectItem value="Customer">Customer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Status</Label>
+              <Select
+                value={newUser.status}
+                onValueChange={(val: any) =>
+                  setNewUser({ ...newUser, status: val })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setIsEditModalOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveUser}
+              className="bg-amber-600 hover:bg-amber-700"
+            >
+              {isEditModalOpen ? "Save Changes" : "Add User"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

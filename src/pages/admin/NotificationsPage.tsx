@@ -1,7 +1,7 @@
 /* =============================================
    PAGE NAME: NotificationsPage
    FILE PATH: src/pages/admin/NotificationsPage.tsx
-   DESCRIPTION: System Notifications
+   FIXED VISIBILITY + FIRESTORE
    ============================================= */
 
 import React, { useState } from 'react';
@@ -9,38 +9,54 @@ import { Button } from '../../components/ui/button';
 import { Card, CardContent } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Moon, Sun, Bell, Check } from 'lucide-react';
+import { useFirestore } from '../../hooks/useFirestore';
+
+interface Notification {
+  id: string;
+  type: "Kitchen" | "Waiter" | "System";
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
+}
 
 export default function NotificationsPage() {
+  const { data: notifications = [], loading } = useFirestore<Notification>("notifications");
+
   const [isDark, setIsDark] = useState(true);
   const [filter, setFilter] = useState<"All" | "Kitchen" | "Waiter" | "System">("All");
 
-  const notifications = [
-    { id: 1, type: "Kitchen", title: "New Order #LUM-ORD-78501", message: "Table 12 placed a new order", time: "2 min ago", read: false },
-    { id: 2, type: "Waiter", title: "Assistance Request", message: "Table 08 requested waiter", time: "11 min ago", read: false },
-    { id: 3, type: "System", title: "Low Stock Alert", message: "Shiro ingredient is running low", time: "45 min ago", read: true },
-  ];
-
   const toggleTheme = () => setIsDark(!isDark);
+
+  const filteredNotifications = notifications.filter((notif) => 
+    filter === "All" || notif.type === filter
+  );
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
-            <Bell className="h-8 w-8" />
-            <h1 className="text-3xl font-bold">Notifications</h1>
+            <Bell className="h-8 w-8 text-amber-500" />
+            <h1 className="text-3xl font-bold text-white">Notifications</h1>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
         </div>
 
+        {/* Improved Filter Buttons */}
         <div className="flex gap-3 mb-6">
           {["All", "Kitchen", "Waiter", "System"].map((f) => (
             <Button
               key={f}
               variant={filter === f ? "default" : "outline"}
               onClick={() => setFilter(f as any)}
+              className={`font-medium transition-all ${
+                filter === f 
+                  ? "bg-amber-500 hover:bg-amber-600 text-black font-semibold shadow-md" 
+                  : "bg-zinc-900 border-white/30 text-white hover:bg-zinc-800 hover:border-amber-500"
+              }`}
             >
               {f}
             </Button>
@@ -48,28 +64,36 @@ export default function NotificationsPage() {
         </div>
 
         <div className="space-y-4">
-          {notifications.map((notif) => (
-            <Card key={notif.id} className="bg-zinc-900 border-white/10">
-              <CardContent className="p-6 flex gap-4">
-                <div className="mt-1">
-                  <Bell className="h-6 w-6 text-amber-500" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between">
-                    <h4 className="font-semibold">{notif.title}</h4>
-                    <span className="text-xs text-zinc-500">{notif.time}</span>
+          {loading ? (
+            <p className="text-center py-12 text-white">Loading notifications...</p>
+          ) : filteredNotifications.length === 0 ? (
+            <p className="text-center py-12 text-zinc-400">No notifications found</p>
+          ) : (
+            filteredNotifications.map((notif) => (
+              <Card key={notif.id} className="bg-zinc-900 border-white/10">
+                <CardContent className="p-6 flex gap-4">
+                  <div className="mt-1">
+                    <Bell className="h-6 w-6 text-amber-500" />
                   </div>
-                  <p className="text-zinc-400 mt-1">{notif.message}</p>
-                  <Badge variant="outline" className="mt-3 text-xs">{notif.type}</Badge>
-                </div>
-                {!notif.read && (
-                  <Button variant="ghost" size="sm">
-                    <Check className="h-4 w-4" />
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+                  <div className="flex-1">
+                    <div className="flex justify-between">
+                      <h4 className="font-semibold text-white">{notif.title}</h4>
+                      <span className="text-xs text-zinc-400">{notif.time}</span>
+                    </div>
+                    <p className="text-zinc-300 mt-1">{notif.message}</p>
+                    <Badge variant="outline" className="mt-3 text-xs text-white border-white/30">
+                      {notif.type}
+                    </Badge>
+                  </div>
+                  {!notif.read && (
+                    <Button variant="ghost" size="sm" className="text-white">
+                      <Check className="h-4 w-4" />
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </div>
     </div>
