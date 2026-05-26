@@ -1,14 +1,39 @@
 /* =============================================
    PAGE NAME: WaiterDashboard
-   FILE PATH: src/pages/WaiterDashboard.tsx
-   DESCRIPTION: Waiter Dashboard for Smart Restaurant Ordering System
+   FILE PATH: src/pages/staff/WaiterDashboard.tsx
+   DESCRIPTION:
+   REALTIME WAITER DASHBOARD
+   CONNECTED TO FIRESTORE
    ============================================= */
 
 import React, { useState, useEffect } from "react";
+
 import { Button } from "../../components/ui/button";
+
 import { Card, CardContent } from "../../components/ui/card";
+
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Bell, CheckCircle, Clock, Users } from "lucide-react";
+
+import {
+  Moon,
+  Sun,
+  Bell,
+  CheckCircle,
+  Clock3,
+  Users,
+  ChefHat,
+} from "lucide-react";
+
+import {
+  listenToOrders,
+  updateOrderStatus,
+} from "../../services/firebase/orders";
+
+import { useFirestore } from "../../hooks/useFirestore";
+
+// =============================================
+// TYPES
+// =============================================
 
 interface OrderItem {
   name: string;
@@ -19,69 +44,50 @@ interface WaiterOrder {
   id: string;
   tableNumber: string;
   orderId: string;
+
   items: OrderItem[];
+
   status: "Ready" | "Delivered";
-  paymentStatus: "Paid" | "Cash Pending";
-  timestamp: string;
-  isUrgent?: boolean;
+
+  paymentStatus: string;
+
+  createdAt?: any;
 }
 
 interface AssistanceRequest {
+  id: string;
+
   tableNumber: string;
+
   requestType: string;
-  time: string;
-  isNew: boolean;
+
+  status: string;
+
+  createdAt?: any;
 }
+
+// =============================================
+// COMPONENT
+// =============================================
 
 export default function WaiterDashboard() {
   const [isDark, setIsDark] = useState(true);
-  const [orders, setOrders] = useState<WaiterOrder[]>([
-    {
-      id: "1",
-      tableNumber: "12",
-      orderId: "LUM-ORD-78492",
-      items: [
-        { name: "Injera Be Wot", quantity: 2 },
-        { name: "Shiro", quantity: 1 },
-        { name: "Mango Juice", quantity: 3 },
-      ],
-      status: "Ready",
-      paymentStatus: "Paid",
-      timestamp: "3 min ago",
-      isUrgent: true,
-    },
-    {
-      id: "2",
-      tableNumber: "07",
-      orderId: "LUM-ORD-78488",
-      items: [
-        { name: "Doro Wot", quantity: 1 },
-        { name: "Avocado Toast", quantity: 2 },
-      ],
-      status: "Ready",
-      paymentStatus: "Cash Pending",
-      timestamp: "7 min ago",
-    },
-  ]);
 
-  const [assistanceRequests, setAssistanceRequests] = useState<
-    AssistanceRequest[]
-  >([
-    {
-      tableNumber: "15",
-      requestType: "Call Waiter",
-      time: "1 min ago",
-      isNew: true,
-    },
-    {
-      tableNumber: "09",
-      requestType: "Extra Water",
-      time: "4 min ago",
-      isNew: false,
-    },
-  ]);
+  const [orders, setOrders] = useState<WaiterOrder[]>([]);
 
-  // Theme
+  const [loading, setLoading] = useState(true);
+
+  // =============================================
+  // CUSTOMER REQUESTS FROM FIRESTORE
+  // =============================================
+
+  const { data: assistanceRequests = [] } =
+    useFirestore<AssistanceRequest>("notifications");
+
+  // =============================================
+  // THEME
+  // =============================================
+
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add("dark");
@@ -92,34 +98,118 @@ export default function WaiterDashboard() {
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  const markAsDelivered = (orderId: string) => {
-    setOrders((prev) => prev.filter((order) => order.orderId !== orderId));
+  // =============================================
+  // LISTEN TO READY ORDERS
+  // =============================================
+
+  useEffect(() => {
+    const unsubscribe = listenToOrders((fetchedOrders: any[]) => {
+      const readyOrders = fetchedOrders.filter(
+        (order) => order.status === "Ready"
+      );
+
+      setOrders(readyOrders);
+
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // =============================================
+  // MARK AS DELIVERED
+  // =============================================
+
+  const markAsDelivered = async (orderId: string) => {
+    try {
+      await updateOrderStatus(orderId, "Delivered");
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to update order");
+    }
   };
+
+  // =============================================
+  // TIMER
+  // =============================================
+
+  const getElapsedMinutes = (createdAt: any) => {
+    if (!createdAt) return 0;
+
+    const created =
+      createdAt?.toDate?.() || new Date(createdAt);
+
+    const now = new Date();
+
+    return Math.floor(
+      (now.getTime() - created.getTime()) / 60000
+    );
+  };
+
+  // =============================================
+  // URGENCY
+  // =============================================
+
+  const isUrgent = (minutes: number) => {
+    return minutes >= 10;
+  };
+
+  // =============================================
+  // LOADING
+  // =============================================
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
+        Loading waiter dashboard...
+      </div>
+    );
+  }
+
+  // =============================================
+  // UI
+  // =============================================
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-6 py-4">
-        <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
-          <div className="flex items-center gap-4">
+      {/* =============================================
+          HEADER
+      ============================================= */}
+
+      <div className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur border-b border-white/10">
+        <div className="max-w-screen-2xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
-              <Users className="h-8 w-8 text-white" />
+              <Users className="h-7 w-7 text-white" />
             </div>
+
             <div>
-              <h1 className="text-3xl font-bold">Waiter Dashboard</h1>
-              <p className="text-sm text-amber-500">Lumina Grand Restaurant</p>
+              <h1 className="text-xl md:text-3xl font-bold">
+                Waiter Dashboard
+              </h1>
+
+              <p className="text-xs md:text-sm text-amber-500">
+                Live Restaurant Operations
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Badge
               variant="outline"
-              className="px-4 py-2 flex items-center gap-2"
+              className="hidden sm:flex px-4 py-2 border-white/20"
             >
-              <Bell className="h-4 w-4" />
+              <Bell className="h-4 w-4 mr-2" />
+
               {assistanceRequests.length} Requests
             </Badge>
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+            >
               {isDark ? (
                 <Sun className="h-5 w-5" />
               ) : (
@@ -130,131 +220,263 @@ export default function WaiterDashboard() {
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Ready to Deliver Orders */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold flex items-center gap-3">
-                Ready to Deliver
-                <Badge className="bg-green-600">{orders.length}</Badge>
+      {/* =============================================
+          CONTENT
+      ============================================= */}
+
+      <div className="max-w-screen-2xl mx-auto p-4 md:p-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* =============================================
+              READY ORDERS
+          ============================================= */}
+
+          <div className="xl:col-span-2">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
+                <ChefHat className="h-6 w-6 text-green-500" />
+
+                Ready Orders
+
+                <Badge className="bg-green-600 border-none">
+                  {orders.length}
+                </Badge>
               </h2>
-              <p className="text-sm text-zinc-400">
-                Pull to refresh in real app
-              </p>
             </div>
 
-            <div className="space-y-6">
-              {orders.map((order) => (
-                <Card
-                  key={order.id}
-                  className={`bg-zinc-900 border-white/10 ${order.isUrgent ? "border-amber-500" : ""}`}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start mb-5">
-                      <div>
-                        <p className="text-4xl font-bold text-amber-500">
-                          Table #{order.tableNumber}
-                        </p>
-                        <p className="font-mono text-sm text-zinc-500 mt-1">
-                          {order.orderId}
-                        </p>
-                      </div>
-                      <Badge
-                        variant={
-                          order.paymentStatus === "Paid"
-                            ? "default"
-                            : "secondary"
-                        }
-                      >
-                        {order.paymentStatus}
-                      </Badge>
-                    </div>
+            <div className="space-y-5">
+              {orders.map((order) => {
+                const elapsedMinutes = getElapsedMinutes(
+                  order.createdAt
+                );
 
-                    <div className="space-y-3 mb-6">
-                      {order.items.map((item, idx) => (
-                        <div key={idx} className="flex justify-between">
-                          <span className="text-zinc-200">{item.name}</span>
-                          <span className="font-medium">×{item.quantity}</span>
+                const urgent = isUrgent(elapsedMinutes);
+
+                return (
+                  <Card
+                    key={order.id}
+                    className={`
+                      bg-zinc-900
+                      border-white/10
+                      overflow-hidden
+                      rounded-2xl
+                      ${
+                        urgent
+                          ? "border-l-4 border-l-red-500"
+                          : ""
+                      }
+                    `}
+                  >
+                    <CardContent className="p-5">
+                      {/* TOP */}
+
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-3xl md:text-4xl font-bold text-amber-500">
+                            Table #{order.tableNumber}
+                          </p>
+
+                          <p className="font-mono text-xs text-zinc-500 mt-1">
+                            {order.orderId}
+                          </p>
                         </div>
-                      ))}
-                    </div>
 
-                    <div className="flex items-center justify-between text-sm text-zinc-400 mb-5">
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        {order.timestamp}
+                        <div className="flex flex-col items-end gap-2">
+                          {urgent && (
+                            <Badge className="bg-red-600 text-white">
+                              URGENT
+                            </Badge>
+                          )}
+
+                          <Badge
+                            className={
+                              order.paymentStatus === "PAID"
+                                ? "bg-green-600"
+                                : "bg-amber-600"
+                            }
+                          >
+                            {order.paymentStatus}
+                          </Badge>
+                        </div>
                       </div>
-                      {order.isUrgent && (
-                        <Badge className="bg-red-600">URGENT</Badge>
-                      )}
-                    </div>
 
-                    <Button
-                      onClick={() => markAsDelivered(order.orderId)}
-                      className="w-full h-14 text-lg bg-green-600 hover:bg-green-700"
-                    >
-                      <CheckCircle className="mr-3 h-6 w-6" />
-                      Mark as Delivered
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                      {/* TIMER */}
+
+                      <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
+                        <Clock3 className="h-4 w-4" />
+
+                        <span>
+                          Ready {elapsedMinutes} min ago
+                        </span>
+                      </div>
+
+                      {/* ITEMS */}
+
+                      <div className="space-y-3 mt-5">
+                        {order.items?.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="
+                              flex
+                              justify-between
+                              items-center
+                              bg-zinc-950
+                              border
+                              border-white/5
+                              rounded-xl
+                              px-4
+                              py-3
+                            "
+                          >
+                            <span className="text-white font-medium">
+                              {item.name}
+                            </span>
+
+                            <span className="font-bold text-amber-400">
+                              ×{item.quantity}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* BUTTON */}
+
+                      <Button
+                        onClick={() =>
+                          markAsDelivered(order.id)
+                        }
+                        className="
+                          w-full
+                          mt-6
+                          h-12
+                          bg-green-600
+                          hover:bg-green-700
+                          text-white
+                          font-semibold
+                        "
+                      >
+                        <CheckCircle className="mr-2 h-5 w-5" />
+
+                        Mark as Delivered
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+
+              {/* EMPTY */}
 
               {orders.length === 0 && (
-                <Card className="bg-zinc-900 border-white/10 p-12 text-center">
-                  <p className="text-6xl mb-4">🎉</p>
-                  <h3 className="text-xl font-medium">
-                    No orders ready for delivery
-                  </h3>
-                  <p className="text-zinc-500 mt-2">
-                    New orders will appear here automatically
-                  </p>
+                <Card className="bg-zinc-900 border-white/10 rounded-2xl">
+                  <CardContent className="p-14 text-center">
+                    <div className="text-6xl mb-4">
+                      🎉
+                    </div>
+
+                    <h3 className="text-2xl font-bold">
+                      No Ready Orders
+                    </h3>
+
+                    <p className="text-zinc-500 mt-2">
+                      Orders from kitchen will appear here
+                    </p>
+                  </CardContent>
                 </Card>
               )}
             </div>
           </div>
 
-          {/* Customer Assistance Requests */}
+          {/* =============================================
+              CUSTOMER REQUESTS
+          ============================================= */}
+
           <div>
-            <h2 className="text-2xl font-semibold mb-6 flex items-center gap-3">
-              Customer Requests
-              <Badge variant="destructive">{assistanceRequests.length}</Badge>
-            </h2>
+            <div className="flex items-center gap-3 mb-5">
+              <h2 className="text-xl md:text-2xl font-bold">
+                Customer Requests
+              </h2>
 
-            <div className="space-y-4">
-              {assistanceRequests.map((req, index) => (
-                <Card
-                  key={index}
-                  className={`bg-zinc-900 border-white/10 ${req.isNew ? "border-amber-500" : ""}`}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-2xl font-bold">
-                          Table #{req.tableNumber}
-                        </p>
-                        <p className="text-amber-500 font-medium mt-1">
-                          {req.requestType}
-                        </p>
-                      </div>
-                      <p className="text-xs text-zinc-500">{req.time}</p>
-                    </div>
-
-                    <Button className="w-full mt-6 h-12" variant="outline">
-                      Respond Now
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+              <Badge className="bg-red-600">
+                {assistanceRequests.length}
+              </Badge>
             </div>
 
-            <div className="mt-10">
+            <div className="space-y-4">
+              {assistanceRequests.map((req) => {
+                const elapsedMinutes = getElapsedMinutes(
+                  req.createdAt
+                );
+
+                return (
+                  <Card
+                    key={req.id}
+                    className="bg-zinc-900 border-white/10 rounded-2xl"
+                  >
+                    <CardContent className="p-5">
+                      <div className="flex justify-between">
+                        <div>
+                          <p className="text-2xl font-bold text-amber-500">
+                            Table #{req.tableNumber}
+                          </p>
+
+                          <p className="text-white mt-2 font-medium">
+                            {req.requestType}
+                          </p>
+                        </div>
+
+                        <Badge className="bg-red-600 h-fit">
+                          NEW
+                        </Badge>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
+                        <Clock3 className="h-4 w-4" />
+
+                        {elapsedMinutes} min ago
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        className="w-full mt-5 h-11 border-white/10 hover:bg-white/5"
+                      >
+                        Respond Now
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+
+              {/* EMPTY */}
+
+              {assistanceRequests.length === 0 && (
+                <Card className="bg-zinc-900 border-white/10 rounded-2xl">
+                  <CardContent className="p-10 text-center">
+                    <Bell className="h-10 w-10 mx-auto mb-4 text-zinc-500" />
+
+                    <h3 className="text-lg font-semibold">
+                      No Customer Requests
+                    </h3>
+
+                    <p className="text-zinc-500 text-sm mt-2">
+                      New assistance calls will appear here
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* ACTIVE TABLES BUTTON */}
+
+            <div className="mt-6">
               <Button
                 variant="outline"
-                className="w-full h-14 border-white/30 hover:bg-white/5"
+                className="
+                  w-full
+                  h-12
+                  border-white/10
+                  hover:bg-white/5
+                "
               >
-                View All Active Tables
+                View Active Tables
               </Button>
             </div>
           </div>
