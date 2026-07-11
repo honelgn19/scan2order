@@ -150,7 +150,7 @@ export default function ReportsAnalytics() {
                 Reports & Analytics
               </h1>
               <p className="text-sm text-amber-500">
-                Lumina Grand Restaurant • Insights
+                Bright Day Restaurant • Insights
               </p>
             </div>
           </div>

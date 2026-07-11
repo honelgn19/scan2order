@@ -32,7 +32,7 @@ export default function StaffSidebar() {
           {!isCollapsed && (
             <div>
               <h1 className="text-2xl font-bold">Staff Portal</h1>
-              <p className="text-xs text-amber-500">Lumina Grand</p>
+              <p className="text-xs text-amber-500">Bright Day Grand</p>
             </div>
           )}
         </div>
@@ -71,7 +71,7 @@ export default function StaffSidebar() {
       {/* Footer */}
       <div className="p-4 border-t border-white/10">
         {!isCollapsed && (
-          <p className="text-xs text-zinc-500 text-center">© 2026 Lumina Grand</p>
+          <p className="text-xs text-zinc-500 text-center">© 2026 Bright Day Grand</p>
         )}
       </div>
     </div>

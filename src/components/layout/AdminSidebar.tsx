@@ -38,7 +38,7 @@ export default function AdminSidebar() {
           </div>
           {!isCollapsed && (
             <div>
-              <h1 className="text-2xl font-bold">Lumina</h1>
+              <h1 className="text-2xl font-bold">Bright Day</h1>
               <p className="text-xs text-amber-500 -mt-1">ADMIN PANEL</p>
             </div>
           )}
@@ -78,7 +78,7 @@ export default function AdminSidebar() {
       {/* Bottom Section */}
       <div className="p-4 border-t border-white/10">
         {!isCollapsed && (
-          <p className="text-xs text-zinc-500 text-center">© 2026 Lumina Grand</p>
+          <p className="text-xs text-zinc-500 text-center">© 2026 Bright Day Grand</p>
         )}
       </div>
     </div>

@@ -1,23 +1,40 @@
-// src/main.tsx
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import { router } from './routes/router';
-import './index.css';
+/* =============================================
+   FILE: src/main.tsx
+   ============================================= */
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
+
+import { router } from "./routes/router";
+import { AuthProvider } from "./context/AuthContext";
+
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
 
-// Suppress AbortError
+// =============================================
+// Suppress AbortError in development
+// =============================================
 if (import.meta.env.DEV) {
   const originalError = console.error;
+
   console.error = (...args) => {
-    if (args[0]?.includes?.('AbortError') || args[0]?.includes?.('user aborted')) {
+    const message = String(args[0]);
+
+    if (
+      message.includes("AbortError") ||
+      message.includes("user aborted")
+    ) {
       return;
     }
+
     originalError(...args);
   };
 }

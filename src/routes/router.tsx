@@ -1,9 +1,11 @@
 /* =============================================
    FILE: src/routes/router.tsx
-   CORRECTED VERSION - NO CIRCULAR IMPORT
    ============================================= */
 
 import { createBrowserRouter, Navigate } from "react-router-dom";
+
+// Protected Route
+import ProtectedRoute from "../components/ProtectedRoute";
 
 // Layouts
 import AuthLayout from "../layouts/AuthLayout";
@@ -11,7 +13,7 @@ import CustomerLayout from "../layouts/CustomerLayout";
 import StaffLayout from "../layouts/StaffLayout";
 import AdminLayout from "../layouts/AdminLayout";
 
-// Pages
+// Auth Pages
 import Login from "../pages/auth/Login";
 
 // Customer Pages
@@ -44,69 +46,177 @@ export const router = createBrowserRouter([
   {
     path: "/",
     children: [
-      // ======================
-      // AUTH ROUTES
-      // ======================
+      /* ==========================
+         AUTH
+      ========================== */
+
       {
         element: <AuthLayout />,
         children: [
-          { path: "login", element: <Login /> },
+          {
+            path: "login",
+            element: <Login />,
+          },
         ],
       },
 
-      // ======================
-      // CUSTOMER ROUTES
-      // ======================
+      /* ==========================
+         CUSTOMER
+      ========================== */
+
       {
         path: "customer",
-        element: <CustomerLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <CustomerLayout />
+          </ProtectedRoute>
+        ),
         children: [
-          { index: true, element: <QRLandingPage /> },
-          { path: "menu", element: <DigitalMenuPage /> },
-          { path: "cart", element: <CartPage /> },
-          { path: "checkout", element: <CheckoutPage /> },
-          { path: "order-success", element: <OrderSuccessPage /> },
-          { path: "live-tracking", element: <LiveOrderTrackingPage /> },
+          {
+            index: true,
+            element: <QRLandingPage />,
+          },
+          {
+            path: "menu",
+            element: <DigitalMenuPage />,
+          },
+          {
+            path: "cart",
+            element: <CartPage />,
+          },
+          {
+            path: "checkout",
+            element: <CheckoutPage />,
+          },
+          {
+            path: "order-success",
+            element: <OrderSuccessPage />,
+          },
+          {
+            path: "live-tracking",
+            element: <LiveOrderTrackingPage />,
+          },
         ],
       },
 
-      // ======================
-      // STAFF ROUTES
-      // ======================
+      /* ==========================
+         STAFF
+      ========================== */
+
       {
         path: "staff",
-        element: <StaffLayout />,
+        element: (
+          <ProtectedRoute
+            allowedRoles={[
+              "admin",
+              "kitchen",
+              "waiter",
+              "cashier",
+            ]}
+          >
+            <StaffLayout />
+          </ProtectedRoute>
+        ),
         children: [
-          { path: "kitchen", element: <KitchenDashboard /> },
-          { path: "waiter", element: <WaiterDashboard /> },
-          { path: "ready-orders", element: <ReadyOrdersPage /> },
-          { path: "active-tables", element: <ActiveTablesPage /> },
+          {
+            path: "kitchen",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "kitchen"]}>
+                <KitchenDashboard />
+              </ProtectedRoute>
+            ),
+          },
+
+          {
+            path: "waiter",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "waiter"]}>
+                <WaiterDashboard />
+              </ProtectedRoute>
+            ),
+          },
+
+          {
+            path: "ready-orders",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "waiter"]}>
+                <ReadyOrdersPage />
+              </ProtectedRoute>
+            ),
+          },
+
+          {
+            path: "active-tables",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "waiter"]}>
+                <ActiveTablesPage />
+              </ProtectedRoute>
+            ),
+          },
         ],
       },
 
-      // ======================
-      // ADMIN ROUTES
-      // ======================
+      /* ==========================
+         ADMIN
+      ========================== */
+
       {
         path: "admin",
-        element: <AdminLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminLayout />
+          </ProtectedRoute>
+        ),
         children: [
-          { index: true, element: <AdminDashboard /> },
-          { path: "foods", element: <FoodManagement /> },
-          { path: "categories", element: <CategoryManagement /> },
-          { path: "tables", element: <TableManagement /> },
-          { path: "orders", element: <OrdersManagement /> },
-          { path: "payments", element: <PaymentsManagement /> },
-          { path: "reports", element: <ReportsAnalytics /> },
-          { path: "users", element: <UserManagement /> },
-          { path: "notifications", element: <NotificationsPage /> },
-          { path: "settings", element: <SettingsPage /> },
+          {
+            index: true,
+            element: <AdminDashboard />,
+          },
+          {
+            path: "foods",
+            element: <FoodManagement />,
+          },
+          {
+            path: "categories",
+            element: <CategoryManagement />,
+          },
+          {
+            path: "tables",
+            element: <TableManagement />,
+          },
+          {
+            path: "orders",
+            element: <OrdersManagement />,
+          },
+          {
+            path: "payments",
+            element: <PaymentsManagement />,
+          },
+          {
+            path: "reports",
+            element: <ReportsAnalytics />,
+          },
+          {
+            path: "users",
+            element: <UserManagement />,
+          },
+          {
+            path: "notifications",
+            element: <NotificationsPage />,
+          },
+          {
+            path: "settings",
+            element: <SettingsPage />,
+          },
         ],
       },
 
-      // Redirect root to customer
+      /* ==========================
+         DEFAULT REDIRECT
+      ========================== */
+
       {
-        path: "/",
+        path: "",
         element: <Navigate to="/customer" replace />,
       },
     ],

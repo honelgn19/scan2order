@@ -178,7 +178,7 @@ export default function CategoryManagement() {
             </div>
             <div>
               <h1 className="text-3xl font-bold">Category Management</h1>
-              <p className="text-sm text-amber-500">Lumina Grand Restaurant</p>
+              <p className="text-sm text-amber-500">Bright Day Restaurant</p>
             </div>
           </div>
           <div className="flex items-center gap-4">

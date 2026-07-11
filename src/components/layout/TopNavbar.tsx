@@ -6,7 +6,7 @@
 import React from "react";
 import { ThemeToggle } from "../common/ThemeToggle";
 import { Bell, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 
 interface TopNavbarProps {
   title: string;

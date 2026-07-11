@@ -168,7 +168,7 @@ export default function PaymentsManagement() {
                 Payments Management
               </h1>
               <p className="text-sm text-amber-500">
-                Lumina Grand Restaurant • Real-time
+                Bright Day Restaurant • Real-time
               </p>
             </div>
           </div>

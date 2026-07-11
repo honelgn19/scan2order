@@ -119,7 +119,7 @@ export default function OrdersManagement() {
                 Orders Management
               </h1>
               <p className="text-sm text-amber-500">
-                Lumina Grand Restaurant • Live Orders
+                Bright Day Restaurant • Live Orders
               </p>
             </div>
           </div>
