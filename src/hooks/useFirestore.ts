@@ -26,7 +26,7 @@ export function useFirestore<T extends { id?: string }>(
     setLoading(true);
     setError(null);
 
-    console.log(`Fetching collection: ${collectionName}`);
+    // start fetching collection
 
     const colRef = collection(db, collectionName);
     const q = query(colRef, ...queryConstraints);
@@ -34,21 +34,15 @@ export function useFirestore<T extends { id?: string }>(
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        console.log("Firestore snapshot:", snapshot.docs);
-
         const items = snapshot.docs.map((document) => ({
           id: document.id,
           ...document.data(),
         })) as T[];
 
-        console.log("Mapped Firestore data:", items);
-
         setData(items);
         setLoading(false);
       },
       (err) => {
-        console.error(`Firestore Error (${collectionName}):`, err);
-
         setError(err);
         setLoading(false);
       },
@@ -70,18 +64,30 @@ export function useFirestore<T extends { id?: string }>(
    Helper Functions
 ========================================= */
 
-export const addDocument = async (collectionName: string, data: any) => {
-  return await addDoc(collection(db, collectionName), data);
+export const addDocument = async <D = any>(collectionName: string, data: D) => {
+  try {
+    return await addDoc(collection(db, collectionName), data as any);
+  } catch (err) {
+    throw err;
+  }
 };
 
-export const updateDocument = async (
+export const updateDocument = async <D = any>(
   collectionName: string,
   id: string,
-  data: any,
+  data: D,
 ) => {
-  return await updateDoc(doc(db, collectionName, id), data);
+  try {
+    return await updateDoc(doc(db, collectionName, id), data as any);
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const deleteDocument = async (collectionName: string, id: string) => {
-  return await deleteDoc(doc(db, collectionName, id));
+  try {
+    return await deleteDoc(doc(db, collectionName, id));
+  } catch (err) {
+    throw err;
+  }
 };

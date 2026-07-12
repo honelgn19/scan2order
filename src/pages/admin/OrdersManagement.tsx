@@ -37,6 +37,7 @@ import {
 } from "../../components/ui/select";
 import { Moon, Sun, Eye, Plus } from "lucide-react";
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
+import { error as loggerError } from "../../lib/logger";
 import type { Order } from "../../types";
 
 export default function OrdersManagement() {
@@ -78,7 +79,7 @@ export default function OrdersManagement() {
       await updateDocument("orders", orderId, { status: newStatus });
       alert(`Order status updated to ${newStatus}`);
     } catch (err) {
-      console.error("Update failed:", err);
+      loggerError("Update failed:", err);
       alert("Failed to update status");
     }
   };

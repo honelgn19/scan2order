@@ -28,6 +28,10 @@ import {
   updateDocument,
   deleteDocument,
 } from "../../hooks/useFirestore";
+import { error as loggerError, log } from "../../lib/logger";
+import { serverTimestamp } from "firebase/firestore";
+import { parseTable, parseTablePartial } from "../../lib/schemas";
+import { formatTimestamp } from "../../lib/utils";
 import { useAuth } from "../../hooks/useAuth";
 
 interface RestaurantTable {
@@ -36,10 +40,10 @@ interface RestaurantTable {
   capacity: number;
   status: "Available" | "Occupied" | "Reserved" | "Cleaning";
   currentSession?: {
-    customerName: string;
-    startedAt: string;
-    guests: number;
-  };
+    customerName?: string;
+    startedAt?: any;
+    guests?: number;
+  } | null;
   qrCode?: string;
 }
 
@@ -87,14 +91,35 @@ export default function TableManagement() {
     id: string,
     newStatus: RestaurantTable["status"],
   ) => {
-    await updateDocument("tables", id, {
-      status: newStatus,
-      ...(newStatus === "Available" && { currentSession: null }),
-    });
+    try {
+      const payload = {
+        status: newStatus,
+        updatedAt: serverTimestamp(),
+        ...(newStatus === "Available" && { currentSession: null }),
+      } as const;
+
+      // validate partial update
+      try {
+        parseTablePartial(payload);
+      } catch (ve) {
+        loggerError("Table update validation failed:", ve);
+        // still attempt update, but log the validation error
+      }
+
+      await updateDocument("tables", id, payload as any);
+    } catch (err) {
+      loggerError("Failed to change table status:", err);
+    }
   };
 
   const deleteTable = async (id: string) => {
-    await deleteDocument("tables", id);
+    try {
+      await deleteDocument("tables", id);
+      log("Deleted table", id);
+    } catch (err) {
+      loggerError("Failed to delete table:", err);
+      alert("Failed to delete table");
+    }
   };
 
   const addNewTable = async () => {
@@ -107,9 +132,23 @@ export default function TableManagement() {
       qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TABLE-${newTable.number}-LUMINA`,
     };
 
-    await addDocument("tables", tableData);
-    setIsAddModalOpen(false);
-    setNewTable({ number: "", capacity: 4 });
+    try {
+      const toInsert = { ...tableData, createdAt: serverTimestamp() };
+
+      // validate table data before inserting
+      parseTable(toInsert);
+
+      await addDocument("tables", toInsert as any);
+      setIsAddModalOpen(false);
+      setNewTable({ number: "", capacity: 4 });
+    } catch (err: any) {
+      loggerError("Failed to add new table:", err);
+      if (err?.issues) {
+        alert(`Validation failed: ${err.message}`);
+      } else {
+        alert("Failed to create table");
+      }
+    }
   };
 
   return (
@@ -183,7 +222,7 @@ export default function TableManagement() {
                         </p>
                         <p className="text-sm text-zinc-400 flex items-center gap-1">
                           <Clock className="h-3 w-3" />{" "}
-                          {table.currentSession.startedAt} •{" "}
+                          {formatTimestamp(table.currentSession.startedAt)} •{" "}
                           {table.currentSession.guests} guests
                         </p>
                       </div>

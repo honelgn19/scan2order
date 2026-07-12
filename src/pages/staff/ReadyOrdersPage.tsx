@@ -24,6 +24,8 @@ import {
   listenToOrders,
   updateOrderStatus,
 } from "../../services/firebase/orders";
+import type { Order } from "../../types";
+import { error as loggerError } from "../../lib/logger";
 
 interface ReadyOrder {
   id: string;
@@ -53,11 +55,9 @@ export default function ReadyOrdersPage() {
   // =============================================
 
   useEffect(() => {
-    const unsubscribe = listenToOrders((orders: any[]) => {
+    const unsubscribe = listenToOrders((orders: Order[]) => {
       // Only READY orders
-      const ready = orders.filter(
-        (order) => order.status === "Ready"
-      );
+      const ready = orders.filter((order) => order.status === "Ready");
 
       setReadyOrders(ready);
 
@@ -83,8 +83,7 @@ export default function ReadyOrdersPage() {
     try {
       await updateOrderStatus(id, "Delivered");
     } catch (error) {
-      console.error(error);
-
+      loggerError(error);
       alert("Failed to mark delivered");
     }
   };
@@ -93,17 +92,19 @@ export default function ReadyOrdersPage() {
   // TIMER
   // =============================================
 
-  const getElapsedMinutes = (createdAt: any) => {
+  const getElapsedMinutes = (createdAt: string | Date | undefined | null) => {
     if (!createdAt) return 0;
 
     const created =
-      createdAt?.toDate?.() || new Date(createdAt);
+      typeof createdAt === "string"
+        ? new Date(createdAt)
+        : createdAt instanceof Date
+          ? createdAt
+          : new Date(createdAt as any);
 
     const now = new Date();
 
-    return Math.floor(
-      (now.getTime() - created.getTime()) / 60000
-    );
+    return Math.floor((now.getTime() - created.getTime()) / 60000);
   };
 
   // =============================================
@@ -140,9 +141,7 @@ export default function ReadyOrdersPage() {
             </div>
 
             <div>
-              <h1 className="text-xl md:text-3xl font-bold">
-                Ready Orders
-              </h1>
+              <h1 className="text-xl md:text-3xl font-bold">Ready Orders</h1>
 
               <p className="text-xs md:text-sm text-green-400">
                 Orders waiting for delivery
@@ -156,11 +155,7 @@ export default function ReadyOrdersPage() {
               {readyOrders.length} Ready
             </Badge>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-            >
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {isDark ? (
                 <Sun className="h-5 w-5" />
               ) : (
@@ -178,9 +173,7 @@ export default function ReadyOrdersPage() {
       <div className="max-w-5xl mx-auto p-4 md:p-6">
         <div className="space-y-5">
           {readyOrders.map((order) => {
-            const elapsedMinutes = getElapsedMinutes(
-              order.createdAt
-            );
+            const elapsedMinutes = getElapsedMinutes(order.createdAt);
 
             const urgent = isUrgent(elapsedMinutes);
 
@@ -192,11 +185,7 @@ export default function ReadyOrdersPage() {
                   border-white/10
                   overflow-hidden
                   rounded-2xl
-                  ${
-                    urgent
-                      ? "border-l-4 border-l-red-500"
-                      : ""
-                  }
+                  ${urgent ? "border-l-4 border-l-red-500" : ""}
                 `}
               >
                 <CardContent className="p-5">
@@ -217,14 +206,12 @@ export default function ReadyOrdersPage() {
 
                     <div className="flex flex-col gap-2 items-end">
                       {urgent && (
-                        <Badge className="bg-red-600 text-white">
-                          URGENT
-                        </Badge>
+                        <Badge className="bg-red-600 text-white">URGENT</Badge>
                       )}
 
                       <Badge
                         className={
-                          order.paymentStatus === "PAID"
+                          order.paymentStatus?.toUpperCase() === "PAID"
                             ? "bg-green-600"
                             : "bg-red-600"
                         }
@@ -241,9 +228,7 @@ export default function ReadyOrdersPage() {
                   <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
                     <Clock3 className="h-4 w-4" />
 
-                    <span>
-                      Ready {elapsedMinutes} min ago
-                    </span>
+                    <span>Ready {elapsedMinutes} min ago</span>
                   </div>
 
                   {/* =============================================
@@ -294,7 +279,6 @@ export default function ReadyOrdersPage() {
                       "
                     >
                       <CheckCircle className="mr-2 h-5 w-5" />
-
                       Mark Delivered
                     </Button>
                   </div>
@@ -310,17 +294,11 @@ export default function ReadyOrdersPage() {
           {readyOrders.length === 0 && (
             <Card className="bg-zinc-900 border-white/10 rounded-2xl">
               <CardContent className="p-16 text-center">
-                <div className="text-6xl mb-5">
-                  🎉
-                </div>
+                <div className="text-6xl mb-5">🎉</div>
 
-                <h3 className="text-2xl font-bold">
-                  All Orders Delivered
-                </h3>
+                <h3 className="text-2xl font-bold">All Orders Delivered</h3>
 
-                <p className="text-zinc-400 mt-2">
-                  No ready orders waiting
-                </p>
+                <p className="text-zinc-400 mt-2">No ready orders waiting</p>
               </CardContent>
             </Card>
           )}

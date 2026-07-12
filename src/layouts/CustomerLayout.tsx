@@ -7,6 +7,7 @@ import { Outlet } from "react-router-dom";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import { ThemeToggle } from "../components/common/ThemeToggle";
 import { signInCustomer } from "../services/firebase/auth";
+import { error as loggerError } from "../lib/logger";
 
 export default function CustomerLayout() {
   const [isDark, setIsDark] = useState(true);
@@ -19,7 +20,7 @@ export default function CustomerLayout() {
       try {
         await signInCustomer();
       } catch (error) {
-        console.error("Anonymous sign in failed:", error);
+        loggerError("Anonymous sign in failed:", error);
       } finally {
         setLoading(false);
       }
@@ -51,16 +52,11 @@ export default function CustomerLayout() {
 
             <div>
               <h1 className="text-xl font-bold">Lumina</h1>
-              <p className="text-[10px] text-amber-500">
-                Grand Restaurant
-              </p>
+              <p className="text-[10px] text-amber-500">Grand Restaurant</p>
             </div>
           </div>
 
-          <ThemeToggle
-            isDark={isDark}
-            toggle={toggleTheme}
-          />
+          <ThemeToggle isDark={isDark} toggle={toggleTheme} />
         </div>
       </header>
 

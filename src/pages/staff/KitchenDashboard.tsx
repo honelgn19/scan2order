@@ -14,20 +14,10 @@ import {
   listenToOrders,
   updateOrderStatus,
 } from "../../services/firebase/orders";
+import type { Order } from "../../types";
+import { error as loggerError } from "../../lib/logger";
 
-interface KitchenOrder {
-  id: string;
-  tableNumber: string;
-  orderId: string;
-  items: {
-    name: string;
-    quantity: number;
-  }[];
-  status: "Pending" | "Preparing" | "Ready" | "Delivered";
-  paymentStatus: string;
-  createdAt?: any;
-  timestamp?: string;
-}
+type KitchenOrder = Partial<Order> & { id: string; timestamp?: string };
 
 export default function KitchenDashboard() {
   const [isDark, setIsDark] = useState(true);
@@ -35,8 +25,8 @@ export default function KitchenDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = listenToOrders((fetchedOrders) => {
-      const formatted = fetchedOrders.map((order: any) => ({
+    const unsubscribe = listenToOrders((fetchedOrders: Order[]) => {
+      const formatted = fetchedOrders.map((order) => ({
         id: order.id,
         tableNumber: order.tableNumber || "??",
         orderId: order.orderId || order.id,
@@ -45,7 +35,7 @@ export default function KitchenDashboard() {
         paymentStatus: order.paymentStatus || "PAID",
         createdAt: order.createdAt,
         timestamp: new Date(
-          order.createdAt?.toDate?.() || order.createdAt,
+          order.createdAt ? order.createdAt : Date.now(),
         ).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
@@ -70,7 +60,7 @@ export default function KitchenDashboard() {
     try {
       await updateOrderStatus(orderId, newStatus);
     } catch (error) {
-      console.error(error);
+      loggerError(error);
       alert("Failed to update order");
     }
   };
@@ -79,10 +69,15 @@ export default function KitchenDashboard() {
     return orders.filter((order) => order.status === status);
   };
 
-  const getElapsedMinutes = (createdAt: any) => {
+  const getElapsedMinutes = (createdAt: string | Date | undefined | null) => {
     if (!createdAt) return 0;
 
-    const created = createdAt?.toDate?.() || new Date(createdAt);
+    const created =
+      typeof createdAt === "string"
+        ? new Date(createdAt)
+        : createdAt instanceof Date
+          ? createdAt
+          : new Date(createdAt as any);
 
     const now = new Date();
 
@@ -204,7 +199,7 @@ export default function KitchenDashboard() {
 
                           <Badge
                             className={
-                              order.paymentStatus === "PAID"
+                              order.paymentStatus?.toUpperCase() === "PAID"
                                 ? "bg-green-600"
                                 : "bg-red-600"
                             }
@@ -222,7 +217,7 @@ export default function KitchenDashboard() {
 
                         {/* Items */}
                         <div className="space-y-2 mt-4">
-                          {order.items.map((item, idx) => (
+                          {(order.items ?? []).map((item, idx) => (
                             <div
                               key={idx}
                               className="flex justify-between text-sm bg-zinc-900 rounded-xl px-3 py-2"

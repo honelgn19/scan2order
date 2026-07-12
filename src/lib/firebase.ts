@@ -18,5 +18,4 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 export const storage = getStorage(app);
-console.log("PROJECT ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
 export default app;

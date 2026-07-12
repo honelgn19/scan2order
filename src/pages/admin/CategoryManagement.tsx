@@ -48,6 +48,7 @@ import {
   updateDocument,
   deleteDocument,
 } from "../../hooks/useFirestore";
+import { log, error as loggerError } from "../../lib/logger";
 
 interface Category {
   id: string;
@@ -59,7 +60,8 @@ interface Category {
 }
 
 export default function CategoryManagement() {
-  const { data: categories = [], loading } = useFirestore<Category>("categories");
+  const { data: categories = [], loading } =
+    useFirestore<Category>("categories");
 
   const [isDark, setIsDark] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,7 +69,9 @@ export default function CategoryManagement() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
 
   const [newCategory, setNewCategory] = useState<Partial<Category>>({
     name: "",
@@ -86,7 +90,7 @@ export default function CategoryManagement() {
   const toggleTheme = () => setIsDark(!isDark);
 
   const filteredCategories = categories.filter((cat) =>
-    cat.name.toLowerCase().includes(searchTerm.toLowerCase())
+    cat.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,7 +147,7 @@ export default function CategoryManagement() {
       setNewCategory({ name: "", description: "", image: "", isActive: true });
       setImagePreview("");
     } catch (error) {
-      console.error("Save error:", error);
+      loggerError("Save error:", error);
       alert("Failed to save category");
     }
   };
@@ -155,7 +159,7 @@ export default function CategoryManagement() {
         alert("Category deleted successfully");
         setIsDeleteModalOpen(false);
       } catch (error) {
-        console.error("Delete error:", error);
+        loggerError("Delete error:", error);
         alert("Failed to delete category");
       }
     }
@@ -164,7 +168,7 @@ export default function CategoryManagement() {
   const moveCategory = (index: number, direction: "up" | "down") => {
     // Note: Reordering in Firestore requires more complex logic (order field)
     // For now, we keep local reordering as in your original code
-    console.log(`Move category ${direction} - implement order field later`);
+    log(`Move category ${direction} - implement order field later`);
   };
 
   return (
@@ -183,9 +187,16 @@ export default function CategoryManagement() {
           </div>
           <div className="flex items-center gap-4">
             <Button onClick={toggleTheme} variant="ghost" size="icon">
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDark ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
-            <Button onClick={openAddModal} className="bg-amber-600 hover:bg-amber-700">
+            <Button
+              onClick={openAddModal}
+              className="bg-amber-600 hover:bg-amber-700"
+            >
               <Plus className="mr-2 h-4 w-4" /> New Category
             </Button>
           </div>

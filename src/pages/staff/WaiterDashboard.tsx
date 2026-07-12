@@ -28,6 +28,8 @@ import {
   listenToOrders,
   updateOrderStatus,
 } from "../../services/firebase/orders";
+import type { Order } from "../../types";
+import { log, error as loggerError } from "../../lib/logger";
 
 import { useFirestore } from "../../hooks/useFirestore";
 
@@ -40,19 +42,7 @@ interface OrderItem {
   quantity: number;
 }
 
-interface WaiterOrder {
-  id: string;
-  tableNumber: string;
-  orderId: string;
-
-  items: OrderItem[];
-
-  status: "Ready" | "Delivered";
-
-  paymentStatus: string;
-
-  createdAt?: any;
-}
+type WaiterOrder = Order;
 
 interface AssistanceRequest {
   id: string;
@@ -103,9 +93,9 @@ export default function WaiterDashboard() {
   // =============================================
 
   useEffect(() => {
-    const unsubscribe = listenToOrders((fetchedOrders: any[]) => {
+    const unsubscribe = listenToOrders((fetchedOrders: Order[]) => {
       const readyOrders = fetchedOrders.filter(
-        (order) => order.status === "Ready"
+        (order) => order.status === "Ready",
       );
 
       setOrders(readyOrders);
@@ -124,8 +114,7 @@ export default function WaiterDashboard() {
     try {
       await updateOrderStatus(orderId, "Delivered");
     } catch (error) {
-      console.error(error);
-
+      loggerError(error);
       alert("Failed to update order");
     }
   };
@@ -134,17 +123,19 @@ export default function WaiterDashboard() {
   // TIMER
   // =============================================
 
-  const getElapsedMinutes = (createdAt: any) => {
+  const getElapsedMinutes = (createdAt: string | Date | undefined | null) => {
     if (!createdAt) return 0;
 
     const created =
-      createdAt?.toDate?.() || new Date(createdAt);
+      typeof createdAt === "string"
+        ? new Date(createdAt)
+        : createdAt instanceof Date
+          ? createdAt
+          : new Date(createdAt as any);
 
     const now = new Date();
 
-    return Math.floor(
-      (now.getTime() - created.getTime()) / 60000
-    );
+    return Math.floor((now.getTime() - created.getTime()) / 60000);
   };
 
   // =============================================
@@ -201,15 +192,10 @@ export default function WaiterDashboard() {
               className="hidden sm:flex px-4 py-2 border-white/20"
             >
               <Bell className="h-4 w-4 mr-2" />
-
               {assistanceRequests.length} Requests
             </Badge>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-            >
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {isDark ? (
                 <Sun className="h-5 w-5" />
               ) : (
@@ -234,9 +220,7 @@ export default function WaiterDashboard() {
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
                 <ChefHat className="h-6 w-6 text-green-500" />
-
                 Ready Orders
-
                 <Badge className="bg-green-600 border-none">
                   {orders.length}
                 </Badge>
@@ -245,9 +229,7 @@ export default function WaiterDashboard() {
 
             <div className="space-y-5">
               {orders.map((order) => {
-                const elapsedMinutes = getElapsedMinutes(
-                  order.createdAt
-                );
+                const elapsedMinutes = getElapsedMinutes(order.createdAt);
 
                 const urgent = isUrgent(elapsedMinutes);
 
@@ -259,11 +241,7 @@ export default function WaiterDashboard() {
                       border-white/10
                       overflow-hidden
                       rounded-2xl
-                      ${
-                        urgent
-                          ? "border-l-4 border-l-red-500"
-                          : ""
-                      }
+                      ${urgent ? "border-l-4 border-l-red-500" : ""}
                     `}
                   >
                     <CardContent className="p-5">
@@ -289,7 +267,7 @@ export default function WaiterDashboard() {
 
                           <Badge
                             className={
-                              order.paymentStatus === "PAID"
+                              order.paymentStatus?.toUpperCase() === "PAID"
                                 ? "bg-green-600"
                                 : "bg-amber-600"
                             }
@@ -304,9 +282,7 @@ export default function WaiterDashboard() {
                       <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
                         <Clock3 className="h-4 w-4" />
 
-                        <span>
-                          Ready {elapsedMinutes} min ago
-                        </span>
+                        <span>Ready {elapsedMinutes} min ago</span>
                       </div>
 
                       {/* ITEMS */}
@@ -341,9 +317,7 @@ export default function WaiterDashboard() {
                       {/* BUTTON */}
 
                       <Button
-                        onClick={() =>
-                          markAsDelivered(order.id)
-                        }
+                        onClick={() => markAsDelivered(order.id)}
                         className="
                           w-full
                           mt-6
@@ -355,7 +329,6 @@ export default function WaiterDashboard() {
                         "
                       >
                         <CheckCircle className="mr-2 h-5 w-5" />
-
                         Mark as Delivered
                       </Button>
                     </CardContent>
@@ -368,13 +341,9 @@ export default function WaiterDashboard() {
               {orders.length === 0 && (
                 <Card className="bg-zinc-900 border-white/10 rounded-2xl">
                   <CardContent className="p-14 text-center">
-                    <div className="text-6xl mb-4">
-                      🎉
-                    </div>
+                    <div className="text-6xl mb-4">🎉</div>
 
-                    <h3 className="text-2xl font-bold">
-                      No Ready Orders
-                    </h3>
+                    <h3 className="text-2xl font-bold">No Ready Orders</h3>
 
                     <p className="text-zinc-500 mt-2">
                       Orders from kitchen will appear here
@@ -395,16 +364,12 @@ export default function WaiterDashboard() {
                 Customer Requests
               </h2>
 
-              <Badge className="bg-red-600">
-                {assistanceRequests.length}
-              </Badge>
+              <Badge className="bg-red-600">{assistanceRequests.length}</Badge>
             </div>
 
             <div className="space-y-4">
               {assistanceRequests.map((req) => {
-                const elapsedMinutes = getElapsedMinutes(
-                  req.createdAt
-                );
+                const elapsedMinutes = getElapsedMinutes(req.createdAt);
 
                 return (
                   <Card
@@ -423,14 +388,11 @@ export default function WaiterDashboard() {
                           </p>
                         </div>
 
-                        <Badge className="bg-red-600 h-fit">
-                          NEW
-                        </Badge>
+                        <Badge className="bg-red-600 h-fit">NEW</Badge>
                       </div>
 
                       <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
                         <Clock3 className="h-4 w-4" />
-
                         {elapsedMinutes} min ago
                       </div>
 

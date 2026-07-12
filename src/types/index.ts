@@ -36,6 +36,8 @@ export interface Order {
   paymentMethod: string;
   paymentStatus: "Paid" | "Pending" | "Cash Pending" | "Failed" | "Refunded";
   timestamp: string;
+  customerName?: string;
+  updatedAt?: string;
   createdAt?: string;
 }
 
@@ -45,6 +47,7 @@ export interface User {
   email: string;
   role: "Admin" | "Kitchen" | "Waiter" | "Customer";
   status: "Active" | "Inactive";
+  joinDate?: string;
 }
 
 export interface Table {

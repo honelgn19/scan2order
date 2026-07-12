@@ -4,39 +4,33 @@
    ============================================= */
 
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { db } from "../../lib/firebase";   // ← Correct path
+import { db } from "../../lib/firebase";
+import type { MenuItem } from "../../types";
+import { parseMenuItem } from "../../lib/schemas";
+import { error as loggerError } from "../../lib/logger";
 
-// Define the type here (better than importing from page)
-export interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  fasting: string;
-  available: boolean;
-  description: string;
-}
-
-// Real-time listener
 export const listenToFoods = (callback: (foods: MenuItem[]) => void) => {
-  console.log("🔄 Listening to 'foods' collection...");
-
   const foodsCollection = collection(db, "foods");
   const q = query(foodsCollection, orderBy("name"));
 
-  return onSnapshot(q, 
+  return onSnapshot(
+    q,
     (snapshot) => {
-      const foods = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as MenuItem[];
+      const foods = snapshot.docs.map((doc) => {
+        const raw = { id: doc.id, ...doc.data() };
+        try {
+          const parsed = parseMenuItem(raw);
+          return parsed as MenuItem;
+        } catch (err) {
+          loggerError("Invalid menu item", doc.id, err);
+          return raw as MenuItem;
+        }
+      }) as MenuItem[];
 
-      console.log(`📦 Received ${foods.length} food items from Firestore`);
       callback(foods);
     },
-    (error) => {
-      console.error("❌ Firestore error in foods:", error);
-      callback([]); // Return empty array on error
-    }
+    () => {
+      callback([]);
+    },
   );
 };

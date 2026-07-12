@@ -31,6 +31,7 @@ import {
   updateDocument,
   deleteDocument,
 } from "../../hooks/useFirestore";
+import { error as loggerError } from "../../lib/logger";
 import type { User } from "../../types";
 
 export default function UserManagement() {
@@ -93,7 +94,7 @@ export default function UserManagement() {
         setIsAddModalOpen(false);
       }
     } catch (error) {
-      console.error("Save error:", error);
+      loggerError("Save error:", error);
       alert("Failed to save user. Check console.");
     }
   };
@@ -104,7 +105,7 @@ export default function UserManagement() {
         await deleteDocument("users", userId);
         alert("User deleted successfully");
       } catch (error) {
-        console.error("Delete error:", error);
+        loggerError("Delete error:", error);
         alert("Failed to delete user");
       }
     }

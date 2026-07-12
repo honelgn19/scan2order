@@ -4,17 +4,15 @@
    FIXED VISIBILITY + FIRESTORE
    ============================================= */
 
-import React, { useState, useEffect } from 'react';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent } from '../../components/ui/card';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Switch } from '../../components/ui/switch';
-import { Moon, Sun } from 'lucide-react';
-import {
-  useFirestore,
-  updateDocument,
-} from '../../hooks/useFirestore';
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Switch } from "../../components/ui/switch";
+import { Moon, Sun } from "lucide-react";
+import { useFirestore, updateDocument } from "../../hooks/useFirestore";
+import { error as loggerError } from "../../lib/logger";
 
 interface SystemSettings {
   id: string;
@@ -62,7 +60,7 @@ export default function SettingsPage() {
       await updateDocument("settings", settingsDoc.id || "main", settings);
       alert("✅ Settings saved successfully!");
     } catch (error) {
-      console.error("Save failed:", error);
+      loggerError("Save failed:", error);
       alert("❌ Failed to save settings.");
     }
   };
@@ -73,7 +71,11 @@ export default function SettingsPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white">Settings</h1>
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {isDark ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
           </Button>
         </div>
 
@@ -81,14 +83,21 @@ export default function SettingsPage() {
           {/* Restaurant Info */}
           <Card className="bg-zinc-900 border-white/10">
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold mb-6 text-white">Restaurant Information</h2>
+              <h2 className="text-xl font-semibold mb-6 text-white">
+                Restaurant Information
+              </h2>
               <div className="space-y-6">
                 <div>
                   <Label className="text-white">Restaurant Name</Label>
-                  <Input 
-                    value={settings.restaurantName} 
-                    onChange={(e) => setSettings({ ...settings, restaurantName: e.target.value })}
-                    className="mt-2 bg-zinc-800 border-white/20 text-white" 
+                  <Input
+                    value={settings.restaurantName}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        restaurantName: e.target.value,
+                      })
+                    }
+                    className="mt-2 bg-zinc-800 border-white/20 text-white"
                   />
                 </div>
               </div>
@@ -98,24 +107,33 @@ export default function SettingsPage() {
           {/* Billing Settings */}
           <Card className="bg-zinc-900 border-white/10">
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold mb-6 text-white">Billing & Tax</h2>
+              <h2 className="text-xl font-semibold mb-6 text-white">
+                Billing & Tax
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label className="text-white">VAT Rate (%)</Label>
-                  <Input 
-                    type="number" 
-                    value={settings.vatRate} 
-                    onChange={(e) => setSettings({ ...settings, vatRate: e.target.value })}
-                    className="mt-2 bg-zinc-800 border-white/20 text-white" 
+                  <Input
+                    type="number"
+                    value={settings.vatRate}
+                    onChange={(e) =>
+                      setSettings({ ...settings, vatRate: e.target.value })
+                    }
+                    className="mt-2 bg-zinc-800 border-white/20 text-white"
                   />
                 </div>
                 <div>
                   <Label className="text-white">Service Charge (%)</Label>
-                  <Input 
-                    type="number" 
-                    value={settings.serviceCharge} 
-                    onChange={(e) => setSettings({ ...settings, serviceCharge: e.target.value })}
-                    className="mt-2 bg-zinc-800 border-white/20 text-white" 
+                  <Input
+                    type="number"
+                    value={settings.serviceCharge}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        serviceCharge: e.target.value,
+                      })
+                    }
+                    className="mt-2 bg-zinc-800 border-white/20 text-white"
                   />
                 </div>
               </div>
@@ -125,45 +143,59 @@ export default function SettingsPage() {
           {/* System Preferences */}
           <Card className="bg-zinc-900 border-white/10">
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold mb-6 text-white">System Preferences</h2>
+              <h2 className="text-xl font-semibold mb-6 text-white">
+                System Preferences
+              </h2>
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white">Fasting / Non-Fasting Filter</p>
-                    <p className="text-sm text-zinc-400">Enable category filter on customer menu</p>
+                    <p className="text-sm text-zinc-400">
+                      Enable category filter on customer menu
+                    </p>
                   </div>
-                  <Switch 
-                    checked={settings.enableFastingFilter} 
-                    onCheckedChange={(checked) => setSettings({ ...settings, enableFastingFilter: checked })}
+                  <Switch
+                    checked={settings.enableFastingFilter}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, enableFastingFilter: checked })
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white">Real-time Notifications</p>
-                    <p className="text-sm text-zinc-400">Kitchen & waiter alerts</p>
+                    <p className="text-sm text-zinc-400">
+                      Kitchen & waiter alerts
+                    </p>
                   </div>
-                  <Switch 
-                    checked={settings.enableNotifications} 
-                    onCheckedChange={(checked) => setSettings({ ...settings, enableNotifications: checked })}
+                  <Switch
+                    checked={settings.enableNotifications}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, enableNotifications: checked })
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white">Auto Print Kitchen Orders</p>
-                    <p className="text-sm text-zinc-400">Print order automatically when received</p>
+                    <p className="text-sm text-zinc-400">
+                      Print order automatically when received
+                    </p>
                   </div>
-                  <Switch 
-                    checked={settings.autoPrintOrders} 
-                    onCheckedChange={(checked) => setSettings({ ...settings, autoPrintOrders: checked })}
+                  <Switch
+                    checked={settings.autoPrintOrders}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, autoPrintOrders: checked })
+                    }
                   />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Button 
+          <Button
             onClick={saveSettings}
             className="w-full h-14 text-lg bg-amber-600 hover:bg-amber-700"
           >

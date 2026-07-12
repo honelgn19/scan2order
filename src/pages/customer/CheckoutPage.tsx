@@ -13,6 +13,7 @@ import { Label } from "../../components/ui/label";
 import { Moon, Sun, ArrowLeft } from "lucide-react";
 import { useCartStore } from "../../store/cartStore";
 import { addDocument } from "../../hooks/useFirestore";
+import { error as loggerError } from "../../lib/logger";
 
 export default function CheckoutPage() {
   const [isDark, setIsDark] = useState(true);
@@ -83,8 +84,8 @@ export default function CheckoutPage() {
       navigate(
         `/customer/order-success?table=${tableNumber}&orderId=${orderId}`,
       );
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      loggerError(error);
       alert("Failed to place order. Please try again.");
     } finally {
       setIsProcessing(false);

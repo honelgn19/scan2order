@@ -6,17 +6,12 @@ import {
   type ReactNode,
 } from "react";
 
-import {
-  onAuthStateChanged,
-  type User,
-} from "firebase/auth";
+import { onAuthStateChanged, type User } from "firebase/auth";
 
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 import { auth, db } from "../lib/firebase";
+import { error as loggerError } from "../lib/logger";
 
 type UserRole = "admin" | "kitchen" | "waiter" | "cashier" | null;
 
@@ -32,11 +27,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
 });
 
-export function AuthProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true);
@@ -72,7 +63,7 @@ export function AuthProvider({
           setRole(null);
         }
       } catch (error) {
-        console.error("Failed to load user role:", error);
+        loggerError("Failed to load user role:", error);
         setRole(null);
       }
 

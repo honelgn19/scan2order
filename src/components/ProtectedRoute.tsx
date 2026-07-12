@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: ("admin" | "kitchen" | "waiter" | "cashier")[];
+  allowedRoles?: string[];
 }
 
 export default function ProtectedRoute({
@@ -40,11 +40,12 @@ export default function ProtectedRoute({
   }
 
   // Role check
-  if (
-    allowedRoles &&
-    (!role || !allowedRoles.includes(role))
-  ) {
-    return <Navigate to="/login" replace />;
+  if (allowedRoles) {
+    const normalizedRole = role ? String(role).toLowerCase() : null;
+    const allowed = allowedRoles.map((r) => String(r).toLowerCase());
+    if (!normalizedRole || !allowed.includes(normalizedRole)) {
+      return <Navigate to="/login" replace />;
+    }
   }
 
   return <>{children}</>;

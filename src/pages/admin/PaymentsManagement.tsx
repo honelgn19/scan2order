@@ -39,6 +39,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
+import { error as loggerError } from "../../lib/logger";
 
 interface Payment {
   id?: string;
@@ -79,11 +80,14 @@ export default function PaymentsManagement() {
     .reduce((sum, p) => sum + (p.amount || 0), 0);
   const failedCount = payments.filter((p) => p.status === "FAILED").length;
 
-  const methodStats = payments.reduce((acc: any, p) => {
-    const method = p.paymentMethod || "Other";
-    acc[method] = (acc[method] || 0) + 1;
-    return acc;
-  }, {});
+  const methodStats: Record<string, number> = payments.reduce(
+    (acc, p) => {
+      const method = p.paymentMethod || "Other";
+      acc[method] = (acc[method] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const filteredPayments = payments.filter((payment) => {
     const matchesSearch =
@@ -110,7 +114,7 @@ export default function PaymentsManagement() {
       });
       // Real-time update will automatically refresh the table
     } catch (error) {
-      console.error("Failed to update payment:", error);
+      loggerError("Failed to update payment:", error);
       alert("Failed to mark as paid. Check console.");
     } finally {
       setUpdatingId(null);

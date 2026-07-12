@@ -47,6 +47,7 @@ import {
   updateDocument,
   deleteDocument,
 } from "../../hooks/useFirestore";
+import { error as loggerError } from "../../lib/logger";
 import type { MenuItem } from "../../types";
 
 const categories = [
@@ -171,7 +172,7 @@ export default function FoodManagement() {
       });
       setImagePreview("");
     } catch (error) {
-      console.error("Save failed:", error);
+      loggerError("Save failed:", error);
       alert("Failed to save. Check console.");
     }
   };
@@ -182,7 +183,7 @@ export default function FoodManagement() {
         await deleteDocument("foods", selectedFood.id);
         setIsDeleteModalOpen(false);
       } catch (error) {
-        console.error("Delete failed:", error);
+        loggerError("Delete failed:", error);
         alert("Failed to delete");
       }
     }
