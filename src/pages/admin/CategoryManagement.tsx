@@ -174,7 +174,7 @@ export default function CategoryManagement() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       {/* Header - UNCHANGED */}
-      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-6 py-4">
+      <div className="bg-zinc-900 border-b border-white/10 px-6 py-4">
         <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
