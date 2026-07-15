@@ -15,6 +15,9 @@ import { useCartStore } from "../../store/cartStore";
 import { addDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
 
+const generateOrderId = () => `LUM-ORD-${Date.now().toString().slice(-6)}`;
+const generateTransactionId = () => `TX-${Date.now().toString().slice(-8)}`;
+
 export default function CheckoutPage() {
   const [isDark, setIsDark] = useState(true);
   const [searchParams] = useSearchParams();
@@ -43,7 +46,7 @@ export default function CheckoutPage() {
     setIsProcessing(true);
 
     try {
-      const orderId = `LUM-ORD-${Date.now().toString().slice(-6)}`;
+      const orderId = generateOrderId();
 
       const orderData = {
         orderId,
@@ -71,7 +74,7 @@ export default function CheckoutPage() {
 
       await addDocument("orders", orderData);
       await addDocument("payments", {
-        transactionId: `TX-${Date.now().toString().slice(-8)}`,
+        transactionId: generateTransactionId(),
         orderId,
         tableNumber,
         amount: total,
@@ -84,7 +87,7 @@ export default function CheckoutPage() {
       navigate(
         `/customer/order-success?table=${tableNumber}&orderId=${orderId}`,
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       loggerError(error);
       alert("Failed to place order. Please try again.");
     } finally {

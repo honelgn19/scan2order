@@ -42,6 +42,8 @@ export default function SettingsPage() {
   useEffect(() => {
     if (settingsData.length > 0) {
       const doc = settingsData[0];
+      // Sync Firestore settings into local component state.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSettings({
         restaurantName: doc.restaurantName || "Lumina Grand Hotel & Restaurant",
         vatRate: doc.vatRate || "15",
