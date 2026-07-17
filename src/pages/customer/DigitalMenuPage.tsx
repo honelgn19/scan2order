@@ -10,12 +10,12 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Search, ShoppingCart } from 'lucide-react';
+import { Moon, Sun, Search, ShoppingCart } from "lucide-react";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useCartStore } from "../../store/cartStore";
 
 export default function DigitalMenuPage() {
-    const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const tableNumber = searchParams.get("table") || "01";
 
@@ -28,7 +28,6 @@ export default function DigitalMenuPage() {
   const { data: foods = [], loading } = useFirestore("foods");
   const { addItem, totalItems, totalPrice } = useCartStore();
 
-  
   const fixedCategories = [
     "All",
     "Breakfast",
@@ -103,7 +102,7 @@ export default function DigitalMenuPage() {
               <p className="text-xs text-amber-500">Table #{tableNumber}</p>
             </div>
           </div>
-                  </div>
+        </div>
 
         {/* Search */}
         <div className="max-w-2xl mx-auto px-4 pb-4">
@@ -113,7 +112,7 @@ export default function DigitalMenuPage() {
               placeholder="Search dishes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 bg-zinc-900 border-border h-12"
+              className="pl-12 bg-input border-border h-12"
             />
           </div>
         </div>
@@ -129,7 +128,7 @@ export default function DigitalMenuPage() {
               className={`rounded-full whitespace-nowrap px-5 h-10 text-sm ${
                 activeCategory === cat
                   ? "bg-amber-500 text-black"
-                  : "bg-zinc-900 text-white"
+                  : "bg-card text-white"
               }`}
             >
               {cat}
@@ -145,7 +144,7 @@ export default function DigitalMenuPage() {
               size="sm"
               onClick={() => setActiveFilter(filter)}
               className={`rounded-full px-4 h-9 ${
-                activeFilter === filter ? "bg-green-600" : "bg-zinc-900"
+                activeFilter === filter ? "bg-green-600" : "bg-muted"
               }`}
             >
               {filter}
@@ -163,7 +162,7 @@ export default function DigitalMenuPage() {
             filteredItems.map((item: any) => (
               <Card
                 key={item.id}
-                className="bg-zinc-900 border-border overflow-hidden"
+                className="bg-card border-border overflow-hidden"
               >
                 <div className="relative h-52">
                   <img

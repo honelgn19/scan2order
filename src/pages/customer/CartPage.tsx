@@ -67,7 +67,7 @@ export default function CartPage() {
           <>
             <div className="space-y-4 mb-8">
               {items.map((item) => (
-                <Card key={item.id} className="bg-zinc-900 border-border">
+                <Card key={item.id} className="bg-card border-border">
                   <CardContent className="p-4">
                     <div className="flex gap-4">
                       <img
@@ -123,7 +123,7 @@ export default function CartPage() {
             </div>
 
             {/* Bill Summary */}
-            <Card className="bg-zinc-900 border-border">
+            <Card className="bg-card border-border">
               <CardContent className="p-6 space-y-3">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
@@ -150,7 +150,7 @@ export default function CartPage() {
       </div>
       {/* CHECKOUT BUTTON - Higher position */}
       {items.length > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 z-40 bg-zinc-950 border-t border-border p-4">
+        <div className="fixed bottom-20 left-0 right-0 z-40 bg-background/95 border-t border-border p-4">
           {" "}
           {/* bottom-20 = 80px */}
           <div className="max-w-2xl mx-auto space-y-3">

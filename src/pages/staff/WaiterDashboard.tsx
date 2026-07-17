@@ -213,7 +213,7 @@ export default function WaiterDashboard() {
                   <Card
                     key={order.id}
                     className={`
-                      bg-zinc-900
+                      bg-card
                       border-border
                       overflow-hidden
                       rounded-2xl
@@ -271,7 +271,7 @@ export default function WaiterDashboard() {
                               flex
                               justify-between
                               items-center
-                              bg-zinc-950
+                              bg-card
                               border
                               border-white/5
                               rounded-xl
@@ -315,7 +315,7 @@ export default function WaiterDashboard() {
               {/* EMPTY */}
 
               {orders.length === 0 && (
-                <Card className="bg-zinc-900 border-border rounded-2xl">
+                <Card className="bg-card border-border rounded-2xl">
                   <CardContent className="p-14 text-center">
                     <div className="text-6xl mb-4">🎉</div>
 
@@ -350,7 +350,7 @@ export default function WaiterDashboard() {
                 return (
                   <Card
                     key={req.id}
-                    className="bg-zinc-900 border-border rounded-2xl"
+                    className="bg-card border-border rounded-2xl"
                   >
                     <CardContent className="p-5">
                       <div className="flex justify-between">
@@ -386,7 +386,7 @@ export default function WaiterDashboard() {
               {/* EMPTY */}
 
               {assistanceRequests.length === 0 && (
-                <Card className="bg-zinc-900 border-border rounded-2xl">
+                <Card className="bg-card border-border rounded-2xl">
                   <CardContent className="p-10 text-center">
                     <Bell className="h-10 w-10 mx-auto mb-4 text-zinc-500" />
 

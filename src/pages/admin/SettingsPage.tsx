@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
         <div className="space-y-8">
           {/* Restaurant Info */}
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardContent className="p-8">
               <h2 className="text-xl font-semibold mb-6 text-white">
                 Restaurant Information
@@ -98,7 +98,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Billing Settings */}
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardContent className="p-8">
               <h2 className="text-xl font-semibold mb-6 text-white">
                 Billing & Tax
@@ -134,7 +134,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* System Preferences */}
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardContent className="p-8">
               <h2 className="text-xl font-semibold mb-6 text-white">
                 System Preferences

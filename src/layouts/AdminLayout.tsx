@@ -37,7 +37,7 @@ export default function AdminLayout() {
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div
                       key={index}
-                      className="h-40 rounded-3xl bg-zinc-900 animate-pulse"
+                      className="h-40 rounded-3xl bg-card animate-pulse"
                     />
                   ))}
                 </div>

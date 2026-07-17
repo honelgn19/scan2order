@@ -134,12 +134,12 @@ export default function UserManagement() {
               placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-zinc-900 border-border"
+              className="pl-10 bg-card border-border"
             />
           </div>
         </div>
 
-        <Card className="bg-zinc-900 border-border">
+        <Card className="bg-card border-border">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">

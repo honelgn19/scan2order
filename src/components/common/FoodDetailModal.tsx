@@ -40,7 +40,7 @@ export default function FoodDetailModal({ item, open, onOpenChange, onAddToCart 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-0 bg-zinc-900 border-border text-white overflow-hidden">
+      <DialogContent className="max-w-lg p-0 bg-card border-border text-white overflow-hidden">
         <div className="relative h-72">
           <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
           {!item.available && (

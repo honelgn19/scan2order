@@ -107,7 +107,7 @@ export default function AdminDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((stat, index) => (
-          <Card key={index} className="bg-zinc-900 border-border">
+          <Card key={index} className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders - Now Dynamic */}
-        <Card className="bg-zinc-900 border-border">
+        <Card className="bg-card border-border">
           <CardContent className="p-6">
             <h3 className="text-xl font-semibold mb-6">Recent Orders</h3>
             <div className="space-y-5">
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
         </Card>
 
         {/* System Status & Quick Actions */}
-        <Card className="bg-zinc-900 border-border">
+        <Card className="bg-card border-border">
           <CardContent className="p-6">
             <h3 className="text-xl font-semibold mb-6">System Status</h3>
 

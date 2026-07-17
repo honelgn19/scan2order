@@ -50,7 +50,7 @@ export default function NotificationsPage() {
               className={`font-medium transition-all ${
                 filter === f 
                   ? "bg-amber-500 hover:bg-amber-600 text-black font-semibold shadow-md" 
-                  : "bg-zinc-900 border-white/30 text-white hover:bg-zinc-800 hover:border-amber-500"
+                  : "bg-card border-white/30 text-white hover:bg-zinc-800 hover:border-amber-500"
               }`}
             >
               {f}
@@ -65,7 +65,7 @@ export default function NotificationsPage() {
             <p className="text-center py-12 text-zinc-400">No notifications found</p>
           ) : (
             filteredNotifications.map((notif) => (
-              <Card key={notif.id} className="bg-zinc-900 border-border">
+              <Card key={notif.id} className="bg-card border-border">
                 <CardContent className="p-6 flex gap-4">
                   <div className="mt-1">
                     <Bell className="h-6 w-6 text-amber-500" />

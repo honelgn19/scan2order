@@ -107,7 +107,7 @@ export default function CheckoutPage() {
       </div>
       <div className="max-w-2xl mx-auto px-4 pt-6 pb-8">
         {/* Order Summary */}
-        <Card className="bg-zinc-900 border-border rounded-3xl mb-6">
+        <Card className="bg-card border-border rounded-3xl mb-6">
           <CardContent className="p-6">
             <h2 className="text-xl font-bold mb-4">Order Summary</h2>
             {items.map((item) => (
@@ -126,7 +126,7 @@ export default function CheckoutPage() {
         </Card>
 
         {/* Bill Summary */}
-        <Card className="bg-zinc-900 border-border rounded-3xl mb-6">
+        <Card className="bg-card border-border rounded-3xl mb-6">
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between">
               <span>Subtotal</span>
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
         </div>
       </div>
       {/* PLACE ORDER BUTTON - Raised higher */}
-      <div className="fixed bottom-20 left-0 right-0 z-40 bg-zinc-950 border-t border-border p-4">
+      <div className="fixed bottom-20 left-0 right-0 z-40 bg-background/95 border-t border-border p-4">
         <div className="max-w-2xl mx-auto">
           <Button
             onClick={handlePlaceOrder}

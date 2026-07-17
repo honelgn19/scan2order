@@ -44,7 +44,7 @@ export default function LiveOrderTrackingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-border px-4 py-4 flex items-center justify-between">
+      <div className="sticky top-0 z-50 bg-card border-b border-border px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-5 w-5" />
@@ -69,7 +69,7 @@ export default function LiveOrderTrackingPage() {
         </div>
 
         {/* Progress Tracker */}
-        <Card className="bg-zinc-900 border-border mb-8">
+        <Card className="bg-card border-border mb-8">
           <CardContent className="p-8">
             <div className="relative flex justify-between">
               {statuses.map((status, index) => (
@@ -105,7 +105,7 @@ export default function LiveOrderTrackingPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-zinc-900 border-border">
+        <Card className="bg-card border-border">
           <CardContent className="p-6 text-center">
             <p className="text-zinc-400">
               Your order is being prepared in the kitchen.

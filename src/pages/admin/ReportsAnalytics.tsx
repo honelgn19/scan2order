@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Download, TrendingUp, Users } from 'lucide-react';
+import { Moon, Sun, Download, TrendingUp, Users } from "lucide-react";
 import { useFirestore } from "../../hooks/useFirestore";
 
 // Charts
@@ -52,13 +52,12 @@ export default function ReportsAnalytics() {
   const { data: orders = [] } = useFirestore<Order>("orders");
   const { data: payments = [] } = useFirestore<any>("payments");
 
-    const [period, setPeriod] = useState<"daily" | "weekly" | "monthly">(
+  const [period, setPeriod] = useState<"daily" | "weekly" | "monthly">(
     "weekly",
   );
 
   // Theme
-  
-  
+
   const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
   const avgOrderValue = orders.length
     ? Math.round(totalRevenue / orders.length)
@@ -133,7 +132,7 @@ export default function ReportsAnalytics() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-zinc-900 border-b border-border px-4 md:px-6 py-4">
+      <div className="bg-card border-b border-border px-4 md:px-6 py-4">
         <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -167,15 +166,14 @@ export default function ReportsAnalytics() {
             <Button variant="outline" onClick={() => exportReport("Excel")}>
               <Download className="mr-2 h-4 w-4" /> Excel
             </Button>
-
-                      </div>
+          </div>
         </div>
       </div>
 
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6 md:space-y-8">
         {/* KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-sm">Total Revenue</CardTitle>
             </CardHeader>
@@ -188,7 +186,7 @@ export default function ReportsAnalytics() {
               </p>
             </CardContent>
           </Card>
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-sm">Total Orders</CardTitle>
             </CardHeader>
@@ -201,7 +199,7 @@ export default function ReportsAnalytics() {
               </p>
             </CardContent>
           </Card>
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-sm">Avg Order Value</CardTitle>
             </CardHeader>
@@ -211,7 +209,7 @@ export default function ReportsAnalytics() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-sm">Peak Hour</CardTitle>
             </CardHeader>
@@ -225,7 +223,7 @@ export default function ReportsAnalytics() {
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sales Trend */}
-          <Card className="lg:col-span-2 bg-zinc-900 border-border">
+          <Card className="lg:col-span-2 bg-card border-border">
             <CardHeader>
               <CardTitle>Sales Trend ({period})</CardTitle>
             </CardHeader>
@@ -248,7 +246,7 @@ export default function ReportsAnalytics() {
           </Card>
 
           {/* Payment Methods */}
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle>Payment Distribution</CardTitle>
             </CardHeader>
@@ -277,7 +275,7 @@ export default function ReportsAnalytics() {
         {/* Bottom Analytics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Most Ordered Foods */}
-          <Card className="bg-zinc-900 border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle>Top Selling Items</CardTitle>
             </CardHeader>
@@ -308,7 +306,7 @@ export default function ReportsAnalytics() {
 
           {/* Peak Hours & Table Performance */}
           <div className="space-y-6">
-            <Card className="bg-zinc-900 border-border">
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle>Peak Ordering Hours</CardTitle>
               </CardHeader>
@@ -325,7 +323,7 @@ export default function ReportsAnalytics() {
               </CardContent>
             </Card>
 
-            <Card className="bg-zinc-900 border-border">
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle>Table Performance</CardTitle>
               </CardHeader>
@@ -334,7 +332,7 @@ export default function ReportsAnalytics() {
                   {tablePerformance.map((table, i) => (
                     <div
                       key={i}
-                      className="flex justify-between items-center bg-zinc-950 p-4 rounded-xl"
+                      className="flex justify-between items-center bg-card p-4 rounded-xl"
                     >
                       <div>
                         <p className="font-bold">Table #{table.table}</p>

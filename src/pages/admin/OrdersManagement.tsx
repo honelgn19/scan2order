@@ -100,7 +100,7 @@ export default function OrdersManagement() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-zinc-900 border-b border-border px-4 md:px-6 py-4">
+      <div className="bg-card border-b border-border px-4 md:px-6 py-4">
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -120,7 +120,7 @@ export default function OrdersManagement() {
 
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">
         {/* Filters */}
-        <Card className="bg-zinc-900 border-border">
+        <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle>Filters</CardTitle>
           </CardHeader>
@@ -168,7 +168,7 @@ export default function OrdersManagement() {
         </Card>
 
         {/* Orders Table */}
-        <Card className="bg-zinc-900 border-border">
+        <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle>All Orders ({filteredOrders.length})</CardTitle>
           </CardHeader>
@@ -265,7 +265,7 @@ export default function OrdersManagement() {
                     {selectedOrder.items?.map((item, idx) => (
                       <div
                         key={idx}
-                        className="flex justify-between bg-zinc-900 p-4 rounded-xl"
+                        className="flex justify-between bg-card p-4 rounded-xl"
                       >
                         <div>
                           <p>{item.name}</p>

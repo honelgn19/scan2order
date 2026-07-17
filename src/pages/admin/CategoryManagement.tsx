@@ -158,7 +158,7 @@ export default function CategoryManagement() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header - UNCHANGED */}
-      <div className="bg-zinc-900 border-b border-border px-6 py-4">
+      <div className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -181,7 +181,7 @@ export default function CategoryManagement() {
       </div>
 
       <div className="max-w-screen-2xl mx-auto p-6">
-        <Card className="bg-zinc-900 border-border">
+        <Card className="bg-card border-border">
           <CardHeader>
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
               <CardTitle>Menu Categories ({categories.length})</CardTitle>

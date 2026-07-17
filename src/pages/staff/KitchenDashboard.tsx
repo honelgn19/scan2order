@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2 } from 'lucide-react';
+import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2 } from "lucide-react";
 
 import {
   listenToOrders,
@@ -20,7 +20,7 @@ import { error as loggerError } from "../../lib/logger";
 type KitchenOrder = Partial<Order> & { id: string; timestamp?: string };
 
 export default function KitchenDashboard() {
-    const [orders, setOrders] = useState<KitchenOrder[]>([]);
+  const [orders, setOrders] = useState<KitchenOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -48,7 +48,6 @@ export default function KitchenDashboard() {
     return () => unsubscribe();
   }, []);
 
-  
   const handleStatusUpdate = async (
     orderId: string,
     newStatus: "Pending" | "Preparing" | "Ready" | "Delivered",
@@ -137,8 +136,7 @@ export default function KitchenDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               Live
             </Badge>
-
-                      </div>
+          </div>
         </div>
       </div>
 
@@ -148,10 +146,10 @@ export default function KitchenDashboard() {
           {columns.map((column) => (
             <div
               key={column.status}
-              className="bg-zinc-900 rounded-2xl border border-border p-3"
+              className="bg-card rounded-2xl border border-border p-3"
             >
               {/* Column Header */}
-              <div className="sticky top-20 z-30 bg-zinc-900 pb-3 flex items-center justify-between">
+              <div className="sticky top-20 z-30 bg-card pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${column.color}`} />
 
@@ -171,7 +169,7 @@ export default function KitchenDashboard() {
                   return (
                     <Card
                       key={order.id}
-                      className="bg-zinc-950 border-border rounded-2xl"
+                      className="bg-card border-border rounded-2xl"
                     >
                       <CardContent className="p-4">
                         {/* Top */}
@@ -209,7 +207,7 @@ export default function KitchenDashboard() {
                           {(order.items ?? []).map((item, idx) => (
                             <div
                               key={idx}
-                              className="flex justify-between text-sm bg-zinc-900 rounded-xl px-3 py-2"
+                              className="flex justify-between text-sm bg-card rounded-xl px-3 py-2"
                             >
                               <span className="text-white font-medium">
                                 {item.name}

@@ -11,7 +11,14 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 
-import { Moon, Sun, CheckCircle, Clock3, BellRing, ChefHat } from 'lucide-react';
+import {
+  Moon,
+  Sun,
+  CheckCircle,
+  Clock3,
+  BellRing,
+  ChefHat,
+} from "lucide-react";
 
 import {
   listenToOrders,
@@ -37,7 +44,6 @@ interface ReadyOrder {
 }
 
 export default function ReadyOrdersPage() {
-  
   const [readyOrders, setReadyOrders] = useState<ReadyOrder[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -63,7 +69,6 @@ export default function ReadyOrdersPage() {
   // THEME
   // =============================================
 
-  
   // =============================================
   // MARK AS DELIVERED
   // =============================================
@@ -143,8 +148,7 @@ export default function ReadyOrdersPage() {
               <BellRing className="h-4 w-4 mr-2" />
               {readyOrders.length} Ready
             </Badge>
-
-                      </div>
+          </div>
         </div>
       </div>
 
@@ -163,7 +167,7 @@ export default function ReadyOrdersPage() {
               <Card
                 key={order.id}
                 className={`
-                  bg-zinc-900
+                  bg-card
                   border-border
                   overflow-hidden
                   rounded-2xl
@@ -225,7 +229,7 @@ export default function ReadyOrdersPage() {
                           flex
                           justify-between
                           items-center
-                          bg-zinc-950
+                          bg-card
                           border
                           border-white/5
                           rounded-xl
@@ -274,7 +278,7 @@ export default function ReadyOrdersPage() {
           ============================================= */}
 
           {readyOrders.length === 0 && (
-            <Card className="bg-zinc-900 border-border rounded-2xl">
+            <Card className="bg-card border-border rounded-2xl">
               <CardContent className="p-16 text-center">
                 <div className="text-6xl mb-5">🎉</div>
 
