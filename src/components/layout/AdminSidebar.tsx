@@ -47,13 +47,8 @@ export default function AdminSidebar({
 
   return (
     <>
-      <div
-        className={`fixed inset-0 z-30 bg-black/70 backdrop-blur-sm transition-all duration-300 lg:hidden ${isMobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        onClick={onMobileClose}
-      />
-
       <aside
-        className={`fixed inset-x-2 top-16 z-40 max-h-[calc(100vh-4rem)] overflow-hidden rounded-b-2xl border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur-sm flex flex-col transition-all duration-300 lg:static lg:h-screen lg:rounded-none lg:border-r lg:border-white/10 lg:w-auto lg:flex lg:shadow-none lg:bg-zinc-900 ${isMobileOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0 pointer-events-none lg:translate-y-0 lg:opacity-100 lg:pointer-events-auto"} ${isCollapsed ? "lg:w-20" : "lg:w-72"}`}
+        className={`fixed top-16 left-2 right-2 z-40 mx-auto w-[min(95%,24rem)] max-h-[calc(100vh-6rem)] overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur-sm flex flex-col transition-all duration-300 lg:static lg:h-screen lg:rounded-none lg:border-r lg:border-white/10 lg:w-auto lg:flex lg:shadow-none lg:bg-zinc-900 ${isMobileOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0 pointer-events-none lg:translate-y-0 lg:opacity-100 lg:pointer-events-auto"} ${isCollapsed ? "lg:w-20" : "lg:w-72"}`}
       >
         <div className="p-5 border-b border-white/10 flex items-center justify-between">
           <div
