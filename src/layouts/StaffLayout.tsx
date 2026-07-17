@@ -7,12 +7,11 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import StaffSidebar from "../components/layout/StaffSidebar";
 import TopNavbar from "../components/layout/TopNavbar";
+import { useDarkMode } from "../hooks/useDarkMode";
 
 export default function StaffLayout() {
-  const [isDark, setIsDark] = useState(true);
+  const { isDark, toggleTheme } = useDarkMode(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const toggleTheme = () => setIsDark(!isDark);
 
   return (
     <div className="flex h-screen overflow-hidden bg-zinc-950 text-white">

@@ -8,12 +8,11 @@ import MobileBottomNav from "../components/layout/MobileBottomNav";
 import { ThemeToggle } from "../components/common/ThemeToggle";
 import { signInCustomer } from "../services/firebase/auth";
 import { error as loggerError } from "../lib/logger";
+import { useDarkMode } from "../hooks/useDarkMode";
 
 export default function CustomerLayout() {
-  const [isDark, setIsDark] = useState(true);
+  const { isDark, toggleTheme } = useDarkMode(true);
   const [loading, setLoading] = useState(true);
-
-  const toggleTheme = () => setIsDark(!isDark);
 
   useEffect(() => {
     const authenticateCustomer = async () => {
