@@ -152,9 +152,9 @@ export default function TableManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-zinc-900 border-b border-white/10 px-6 py-4">
+      <div className="bg-zinc-900 border-b border-border px-6 py-4">
         <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -183,7 +183,7 @@ export default function TableManagement() {
           {tables.map((table) => (
             <Card
               key={table.id}
-              className="bg-zinc-900 border-white/10 hover:border-amber-500/50 transition-all"
+              className="bg-zinc-900 border-border hover:border-amber-500/50 transition-all"
             >
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start">
@@ -206,7 +206,7 @@ export default function TableManagement() {
               <CardContent className="space-y-5">
                 {/* Active Session */}
                 {table.currentSession ? (
-                  <div className="bg-zinc-950 rounded-xl p-4 border border-white/10">
+                  <div className="bg-zinc-950 rounded-xl p-4 border border-border">
                     <div className="flex items-center gap-3 mb-3">
                       <Users className="h-5 w-5 text-amber-500" />
                       <div>

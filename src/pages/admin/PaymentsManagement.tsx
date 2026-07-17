@@ -138,16 +138,16 @@ export default function PaymentsManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">
+      <div className="min-h-screen bg-background flex items-center justify-center text-foreground">
         Loading payments...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-zinc-900 border-b border-white/10 px-4 md:px-6 py-4">
+      <div className="bg-zinc-900 border-b border-border px-4 md:px-6 py-4">
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -168,7 +168,7 @@ export default function PaymentsManagement() {
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <CardTitle className="text-sm text-zinc-400">
                 Total Revenue
@@ -185,7 +185,7 @@ export default function PaymentsManagement() {
             </CardContent>
           </Card>
 
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <CardTitle className="text-sm text-zinc-400">
                 Pending Amount
@@ -199,7 +199,7 @@ export default function PaymentsManagement() {
             </CardContent>
           </Card>
 
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <CardTitle className="text-sm text-zinc-400">
                 Total Transactions
@@ -213,7 +213,7 @@ export default function PaymentsManagement() {
             </CardContent>
           </Card>
 
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <CardTitle className="text-sm text-zinc-400">
                 Failed Transactions
@@ -229,7 +229,7 @@ export default function PaymentsManagement() {
         </div>
 
         {/* Payment Methods */}
-        <Card className="bg-zinc-900 border-white/10">
+        <Card className="bg-zinc-900 border-border">
           <CardHeader>
             <CardTitle>Payment Methods Overview</CardTitle>
           </CardHeader>
@@ -238,7 +238,7 @@ export default function PaymentsManagement() {
               {Object.entries(methodStats).map(([method, count]) => (
                 <div
                   key={method}
-                  className="bg-zinc-950 rounded-xl p-4 border border-white/10"
+                  className="bg-zinc-950 rounded-xl p-4 border border-border"
                 >
                   <p className="text-sm text-zinc-400">{method}</p>
                   <p className="text-2xl font-bold mt-1">{count}</p>
@@ -249,7 +249,7 @@ export default function PaymentsManagement() {
         </Card>
 
         {/* Main Table with Mark as Paid Button */}
-        <Card className="bg-zinc-900 border-white/10">
+        <Card className="bg-zinc-900 border-border">
           <CardHeader>
             <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
               <CardTitle>

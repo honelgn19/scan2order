@@ -7,7 +7,7 @@ import { Outlet } from "react-router-dom";
 
 export default function App() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background text-foreground">Loading...</div>}>
       <Outlet />
     </Suspense>
   );

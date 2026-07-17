@@ -23,7 +23,7 @@ export default function TopNavbar({
   onMobileMenuClick,
 }: TopNavbarProps) {
   return (
-    <div className="h-16 bg-zinc-900 border-b border-white/10 px-4 flex items-center justify-between">
+    <div className="h-16 bg-background/95 border-b border-border px-4 flex items-center justify-between">
       <div className="flex items-center gap-3">
         {onMobileMenuClick && (
           <Button

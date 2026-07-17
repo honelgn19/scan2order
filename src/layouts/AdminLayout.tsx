@@ -14,7 +14,7 @@ export default function AdminLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-zinc-950">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground">
       <AdminSidebar
         isMobileOpen={isMobileMenuOpen}
         onMobileClose={() => setIsMobileMenuOpen(false)}
@@ -28,7 +28,7 @@ export default function AdminLayout() {
           onMobileMenuClick={() => setIsMobileMenuOpen((prev) => !prev)}
         />
 
-        <main className="flex-1 overflow-auto p-6 bg-zinc-950">
+        <main className="flex-1 overflow-auto p-6 bg-background">
           <Suspense
             fallback={
               <div className="space-y-6">

@@ -31,7 +31,7 @@ export default function NotificationsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-6">
+    <div className="min-h-screen bg-background text-foreground p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
@@ -65,7 +65,7 @@ export default function NotificationsPage() {
             <p className="text-center py-12 text-zinc-400">No notifications found</p>
           ) : (
             filteredNotifications.map((notif) => (
-              <Card key={notif.id} className="bg-zinc-900 border-white/10">
+              <Card key={notif.id} className="bg-zinc-900 border-border">
                 <CardContent className="p-6 flex gap-4">
                   <div className="mt-1">
                     <Bell className="h-6 w-6 text-amber-500" />

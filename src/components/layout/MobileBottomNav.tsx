@@ -10,7 +10,7 @@ import { Home, Menu, ShoppingCart, User } from 'lucide-react';
 // Default Export
 export default function MobileBottomNav() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-white/10 md:hidden z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-border md:hidden z-50">
       <div className="max-w-md mx-auto flex items-center justify-around py-2">
         
         <NavLink 

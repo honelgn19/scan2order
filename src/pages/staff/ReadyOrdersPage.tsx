@@ -110,19 +110,19 @@ export default function ReadyOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         Loading ready orders...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* =============================================
           HEADER
       ============================================= */}
 
-      <div className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-700">
@@ -164,7 +164,7 @@ export default function ReadyOrdersPage() {
                 key={order.id}
                 className={`
                   bg-zinc-900
-                  border-white/10
+                  border-border
                   overflow-hidden
                   rounded-2xl
                   ${urgent ? "border-l-4 border-l-red-500" : ""}
@@ -274,7 +274,7 @@ export default function ReadyOrdersPage() {
           ============================================= */}
 
           {readyOrders.length === 0 && (
-            <Card className="bg-zinc-900 border-white/10 rounded-2xl">
+            <Card className="bg-zinc-900 border-border rounded-2xl">
               <CardContent className="p-16 text-center">
                 <div className="text-6xl mb-5">🎉</div>
 

@@ -98,7 +98,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <PageHeader
         title="Admin Dashboard"
         description="Real-time overview of Lumina Grand Restaurant Operations"
@@ -107,7 +107,7 @@ export default function AdminDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((stat, index) => (
-          <Card key={index} className="bg-zinc-900 border-white/10">
+          <Card key={index} className="bg-zinc-900 border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders - Now Dynamic */}
-        <Card className="bg-zinc-900 border-white/10">
+        <Card className="bg-zinc-900 border-border">
           <CardContent className="p-6">
             <h3 className="text-xl font-semibold mb-6">Recent Orders</h3>
             <div className="space-y-5">
@@ -136,7 +136,7 @@ export default function AdminDashboard() {
                 recentOrders.map((order) => (
                   <div
                     key={order.id}
-                    className="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0"
+                    className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-xl">
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
         </Card>
 
         {/* System Status & Quick Actions */}
-        <Card className="bg-zinc-900 border-white/10">
+        <Card className="bg-zinc-900 border-border">
           <CardContent className="p-6">
             <h3 className="text-xl font-semibold mb-6">System Status</h3>
 
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
                 <span className="text-sm text-zinc-400">4 Terminals</span>
               </div>
 
-              <div className="pt-4 border-t border-white/10">
+              <div className="pt-4 border-t border-border">
                 <h4 className="font-medium mb-4">Quick Actions</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <button className="h-20 bg-zinc-800 hover:bg-zinc-700 rounded-2xl flex flex-col items-center justify-center transition-colors">

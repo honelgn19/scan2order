@@ -66,7 +66,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-6">
+    <div className="min-h-screen bg-background text-foreground p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white">Settings</h1>
@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
         <div className="space-y-8">
           {/* Restaurant Info */}
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardContent className="p-8">
               <h2 className="text-xl font-semibold mb-6 text-white">
                 Restaurant Information
@@ -98,7 +98,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Billing Settings */}
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardContent className="p-8">
               <h2 className="text-xl font-semibold mb-6 text-white">
                 Billing & Tax
@@ -134,7 +134,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* System Preferences */}
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardContent className="p-8">
               <h2 className="text-xl font-semibold mb-6 text-white">
                 System Preferences

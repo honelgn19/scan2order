@@ -136,7 +136,7 @@ export default function WaiterDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         Loading waiter dashboard...
       </div>
     );
@@ -147,12 +147,12 @@ export default function WaiterDashboard() {
   // =============================================
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* =============================================
           HEADER
       ============================================= */}
 
-      <div className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="max-w-screen-2xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -214,7 +214,7 @@ export default function WaiterDashboard() {
                     key={order.id}
                     className={`
                       bg-zinc-900
-                      border-white/10
+                      border-border
                       overflow-hidden
                       rounded-2xl
                       ${urgent ? "border-l-4 border-l-red-500" : ""}
@@ -315,7 +315,7 @@ export default function WaiterDashboard() {
               {/* EMPTY */}
 
               {orders.length === 0 && (
-                <Card className="bg-zinc-900 border-white/10 rounded-2xl">
+                <Card className="bg-zinc-900 border-border rounded-2xl">
                   <CardContent className="p-14 text-center">
                     <div className="text-6xl mb-4">🎉</div>
 
@@ -350,7 +350,7 @@ export default function WaiterDashboard() {
                 return (
                   <Card
                     key={req.id}
-                    className="bg-zinc-900 border-white/10 rounded-2xl"
+                    className="bg-zinc-900 border-border rounded-2xl"
                   >
                     <CardContent className="p-5">
                       <div className="flex justify-between">
@@ -374,7 +374,7 @@ export default function WaiterDashboard() {
 
                       <Button
                         variant="outline"
-                        className="w-full mt-5 h-11 border-white/10 hover:bg-white/5"
+                        className="w-full mt-5 h-11 border-border hover:bg-white/5"
                       >
                         Respond Now
                       </Button>
@@ -386,7 +386,7 @@ export default function WaiterDashboard() {
               {/* EMPTY */}
 
               {assistanceRequests.length === 0 && (
-                <Card className="bg-zinc-900 border-white/10 rounded-2xl">
+                <Card className="bg-zinc-900 border-border rounded-2xl">
                   <CardContent className="p-10 text-center">
                     <Bell className="h-10 w-10 mx-auto mb-4 text-zinc-500" />
 
@@ -410,7 +410,7 @@ export default function WaiterDashboard() {
                 className="
                   w-full
                   h-12
-                  border-white/10
+                  border-border
                   hover:bg-white/5
                 "
               >

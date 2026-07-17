@@ -14,7 +14,7 @@ export default function StaffLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-zinc-950 text-white">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground">
       <StaffSidebar
         isMobileOpen={isMobileMenuOpen}
         onMobileClose={() => setIsMobileMenuOpen(false)}
@@ -28,7 +28,7 @@ export default function StaffLayout() {
           onMobileMenuClick={() => setIsMobileMenuOpen((prev) => !prev)}
         />
 
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-6 bg-background">
           <Outlet />
         </main>
       </div>

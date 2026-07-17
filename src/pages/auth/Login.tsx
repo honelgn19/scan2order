@@ -100,7 +100,7 @@ export default function Login() {
   };
 
   return (
-    <Card className="w-full border-0 shadow-2xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl">
+    <Card className="w-full border-0 shadow-2xl bg-white/95 dark:bg-background/95 backdrop-blur-xl">
       <CardHeader className="space-y-6 text-center pb-8">
         <div className="mx-auto flex items-center justify-center gap-3">
           <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">

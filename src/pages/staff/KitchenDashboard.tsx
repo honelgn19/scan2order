@@ -105,16 +105,16 @@ export default function KitchenDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         Loading kitchen dashboard...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600">
@@ -148,7 +148,7 @@ export default function KitchenDashboard() {
           {columns.map((column) => (
             <div
               key={column.status}
-              className="bg-zinc-900 rounded-2xl border border-white/10 p-3"
+              className="bg-zinc-900 rounded-2xl border border-border p-3"
             >
               {/* Column Header */}
               <div className="sticky top-20 z-30 bg-zinc-900 pb-3 flex items-center justify-between">
@@ -171,7 +171,7 @@ export default function KitchenDashboard() {
                   return (
                     <Card
                       key={order.id}
-                      className="bg-zinc-950 border-white/10 rounded-2xl"
+                      className="bg-zinc-950 border-border rounded-2xl"
                     >
                       <CardContent className="p-4">
                         {/* Top */}

@@ -110,7 +110,7 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-6">
+    <div className="min-h-screen bg-background text-foreground p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -134,16 +134,16 @@ export default function UserManagement() {
               placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-zinc-900 border-white/10"
+              className="pl-10 bg-zinc-900 border-border"
             />
           </div>
         </div>
 
-        <Card className="bg-zinc-900 border-white/10">
+        <Card className="bg-zinc-900 border-border">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="border-b border-white/10 text-white">
+                <thead className="border-b border-border text-white">
                   <tr>
                     <th className="text-left p-6">User</th>
                     <th className="text-left p-6">Role</th>
@@ -156,7 +156,7 @@ export default function UserManagement() {
                   {filteredUsers.map((user) => (
                     <tr
                       key={user.id}
-                      className="border-b border-white/10 hover:bg-white/5"
+                      className="border-b border-border hover:bg-white/5"
                     >
                       <td className="p-6 ">
                         <div>

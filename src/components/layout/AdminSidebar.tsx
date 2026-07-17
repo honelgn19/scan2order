@@ -48,9 +48,9 @@ export default function AdminSidebar({
   return (
     <>
       <aside
-        className={`fixed top-16 left-2 right-2 z-40 mx-auto w-[min(95%,24rem)] max-h-[calc(100vh-6rem)] overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur-sm flex flex-col transition-all duration-300 lg:static lg:h-screen lg:rounded-none lg:border-r lg:border-white/10 lg:w-auto lg:flex lg:shadow-none lg:bg-zinc-900 ${isMobileOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0 pointer-events-none lg:translate-y-0 lg:opacity-100 lg:pointer-events-auto"} ${isCollapsed ? "lg:w-20" : "lg:w-72"}`}
+        className={`fixed top-16 left-2 right-2 z-40 mx-auto w-[min(95%,24rem)] max-h-[calc(100vh-6rem)] overflow-hidden rounded-2xl border border-border bg-background/95 shadow-2xl backdrop-blur-sm flex flex-col transition-all duration-300 lg:static lg:h-screen lg:rounded-none lg:border-r lg:border-border lg:w-auto lg:flex lg:shadow-none lg:bg-zinc-900 ${isMobileOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0 pointer-events-none lg:translate-y-0 lg:opacity-100 lg:pointer-events-auto"} ${isCollapsed ? "lg:w-20" : "lg:w-72"}`}
       >
-        <div className="p-5 border-b border-white/10 flex items-center justify-between">
+        <div className="p-5 border-b border-border flex items-center justify-between">
           <div
             className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}
           >
@@ -108,7 +108,7 @@ export default function AdminSidebar({
           ))}
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-border">
           {!isCollapsed && (
             <p className="text-xs text-zinc-500 text-center">
               © 2026 Bright Day Grand

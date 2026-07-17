@@ -98,9 +98,9 @@ export default function OrdersManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-zinc-900 border-b border-white/10 px-4 md:px-6 py-4">
+      <div className="bg-zinc-900 border-b border-border px-4 md:px-6 py-4">
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -120,7 +120,7 @@ export default function OrdersManagement() {
 
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">
         {/* Filters */}
-        <Card className="bg-zinc-900 border-white/10">
+        <Card className="bg-zinc-900 border-border">
           <CardHeader>
             <CardTitle>Filters</CardTitle>
           </CardHeader>
@@ -168,7 +168,7 @@ export default function OrdersManagement() {
         </Card>
 
         {/* Orders Table */}
-        <Card className="bg-zinc-900 border-white/10">
+        <Card className="bg-zinc-900 border-border">
           <CardHeader>
             <CardTitle>All Orders ({filteredOrders.length})</CardTitle>
           </CardHeader>
@@ -281,7 +281,7 @@ export default function OrdersManagement() {
                   </div>
                 </div>
 
-                <div className="flex justify-between text-lg border-t border-white/10 pt-4">
+                <div className="flex justify-between text-lg border-t border-border pt-4">
                   <span>Total Amount</span>
                   <span className="font-bold">ETB {selectedOrder.total}</span>
                 </div>

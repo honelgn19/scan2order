@@ -88,11 +88,11 @@ export default function DigitalMenuPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-28">
+    <div className="min-h-screen bg-background text-foreground pb-28">
       {" "}
       {/* Increased bottom padding */}
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-lg border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -113,7 +113,7 @@ export default function DigitalMenuPage() {
               placeholder="Search dishes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 bg-zinc-900 border-white/10 h-12"
+              className="pl-12 bg-zinc-900 border-border h-12"
             />
           </div>
         </div>
@@ -163,7 +163,7 @@ export default function DigitalMenuPage() {
             filteredItems.map((item: any) => (
               <Card
                 key={item.id}
-                className="bg-zinc-900 border-white/10 overflow-hidden"
+                className="bg-zinc-900 border-border overflow-hidden"
               >
                 <div className="relative h-52">
                   <img

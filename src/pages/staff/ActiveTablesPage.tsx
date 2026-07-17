@@ -85,16 +85,16 @@ export default function ActiveTablesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         Loading active tables...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-white/10 px-6 py-4">
+      <div className="sticky top-0 z-50 bg-zinc-900 border-b border-border px-6 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <h1 className="text-3xl font-bold">Active Tables</h1>
@@ -107,7 +107,7 @@ export default function ActiveTablesPage() {
 
       <div className="max-w-5xl mx-auto p-6">
         {activeTables.length === 0 ? (
-          <Card className="bg-zinc-900 border-white/10">
+          <Card className="bg-zinc-900 border-border">
             <CardContent className="p-16 text-center">
               <Users className="h-20 w-20 mx-auto text-zinc-500 mb-4" />
               <h3 className="text-2xl font-semibold mb-2">No Active Tables</h3>
@@ -121,7 +121,7 @@ export default function ActiveTablesPage() {
             {activeTables.map((table) => (
               <Card
                 key={table.id || table.number}
-                className="bg-zinc-900 border-white/10 hover:border-amber-500/50 transition-all duration-200"
+                className="bg-zinc-900 border-border hover:border-amber-500/50 transition-all duration-200"
               >
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start">
