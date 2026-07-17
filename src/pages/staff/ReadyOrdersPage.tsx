@@ -11,14 +11,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 
-import {
-  Moon,
-  Sun,
-  CheckCircle,
-  Clock3,
-  BellRing,
-  ChefHat,
-} from "lucide-react";
+import { Moon, Sun, CheckCircle, Clock3, BellRing, ChefHat } from 'lucide-react';
 
 import {
   listenToOrders,
@@ -44,8 +37,7 @@ interface ReadyOrder {
 }
 
 export default function ReadyOrdersPage() {
-  const [isDark, setIsDark] = useState(true);
-
+  
   const [readyOrders, setReadyOrders] = useState<ReadyOrder[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -71,10 +63,7 @@ export default function ReadyOrdersPage() {
   // THEME
   // =============================================
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
-
+  
   // =============================================
   // MARK AS DELIVERED
   // =============================================
@@ -155,14 +144,7 @@ export default function ReadyOrdersPage() {
               {readyOrders.length} Ready
             </Badge>
 
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-          </div>
+                      </div>
         </div>
       </div>
 

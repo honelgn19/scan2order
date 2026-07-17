@@ -3,7 +3,7 @@
    FILE PATH: src/pages/customer/QRLandingPage.tsx
    ============================================= */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
@@ -18,22 +18,11 @@ import {
 } from "lucide-react";
 
 export default function QRLandingPage() {
-  const [isDark, setIsDark] = useState(true);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const tableNumber = searchParams.get("table") || "01";
   const [hasActiveSession] = useState(false);
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
 
   const handleViewMenu = () => {
     navigate(`/customer/menu?table=${tableNumber}`);

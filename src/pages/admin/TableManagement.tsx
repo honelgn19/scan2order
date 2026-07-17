@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { Moon, Sun, Plus, QrCode, Users, Clock, Trash2 } from "lucide-react";
+import { Moon, Sun, Plus, QrCode, Users, Clock, Trash2 } from 'lucide-react';
 import {
   useFirestore,
   addDocument,
@@ -51,8 +51,7 @@ export default function TableManagement() {
   const { user } = useAuth();
   const { data: tables, loading } = useFirestore<RestaurantTable>("tables");
 
-  const [isDark, setIsDark] = useState(true);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState<RestaurantTable | null>(
     null,
@@ -60,13 +59,8 @@ export default function TableManagement() {
   const [newTable, setNewTable] = useState({ number: "", capacity: 4 });
 
   // Theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Available":
@@ -174,14 +168,7 @@ export default function TableManagement() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Button onClick={toggleTheme} variant="ghost" size="icon">
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-            <Button
+                        <Button
               onClick={() => setIsAddModalOpen(true)}
               className="bg-amber-600 hover:bg-amber-700"
             >

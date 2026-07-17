@@ -61,8 +61,6 @@ interface AssistanceRequest {
 // =============================================
 
 export default function WaiterDashboard() {
-  const [isDark, setIsDark] = useState(true);
-
   const [orders, setOrders] = useState<WaiterOrder[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -73,20 +71,6 @@ export default function WaiterDashboard() {
 
   const { data: assistanceRequests = [] } =
     useFirestore<AssistanceRequest>("notifications");
-
-  // =============================================
-  // THEME
-  // =============================================
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
 
   // =============================================
   // LISTEN TO READY ORDERS
@@ -194,14 +178,6 @@ export default function WaiterDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               {assistanceRequests.length} Requests
             </Badge>
-
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
           </div>
         </div>
       </div>

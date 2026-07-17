@@ -24,7 +24,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../../components/ui/dialog";
-import { Moon, Sun, Plus, Search, Edit, Trash2 } from "lucide-react";
+import { Moon, Sun, Plus, Search, Edit, Trash2 } from 'lucide-react';
 import {
   useFirestore,
   addDocument,
@@ -37,8 +37,7 @@ import type { User } from "../../types";
 export default function UserManagement() {
   const { data: users = [], loading } = useFirestore<User>("users");
 
-  const [isDark, setIsDark] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -52,8 +51,7 @@ export default function UserManagement() {
     joinDate: new Date().toLocaleDateString("en-GB"),
   });
 
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
   const filteredUsers = users.filter(
     (user) =>
       user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -120,14 +118,7 @@ export default function UserManagement() {
             <p className="text-zinc-400">Manage staff and customer accounts</p>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-            <Button
+                        <Button
               className="bg-amber-600 hover:bg-amber-700"
               onClick={openAddModal}
             >

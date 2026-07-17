@@ -5,8 +5,9 @@
 
 import React from "react";
 import { ThemeToggle } from "../common/ThemeToggle";
-import { Bell, Menu } from "lucide-react";
+import { Bell, LogOut, Menu } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import { signOutUser } from "../../services/firebase/auth";
 
 interface TopNavbarProps {
   title: string;
@@ -41,6 +42,14 @@ export default function TopNavbar({
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
           <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => signOutUser()}
+          title="Log out"
+        >
+          <LogOut className="h-5 w-5" />
         </Button>
         <ThemeToggle isDark={isDark} toggle={toggleTheme} />
       </div>

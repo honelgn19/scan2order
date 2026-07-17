@@ -31,17 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import {
-  Moon,
-  Sun,
-  Plus,
-  Edit2,
-  Trash2,
-  Search,
-  Upload,
-  ArrowUp,
-  ArrowDown,
-} from "lucide-react";
+import { Moon, Sun, Plus, Edit2, Trash2, Search, Upload, ArrowUp, ArrowDown } from 'lucide-react';
 import {
   useFirestore,
   addDocument,
@@ -63,8 +53,7 @@ export default function CategoryManagement() {
   const { data: categories = [], loading } =
     useFirestore<Category>("categories");
 
-  const [isDark, setIsDark] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -82,13 +71,8 @@ export default function CategoryManagement() {
   const [imagePreview, setImagePreview] = useState<string>("");
 
   // Theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -186,14 +170,7 @@ export default function CategoryManagement() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Button onClick={toggleTheme} variant="ghost" size="icon">
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-            <Button
+                        <Button
               onClick={openAddModal}
               className="bg-amber-600 hover:bg-amber-700"
             >

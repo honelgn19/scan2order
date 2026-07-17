@@ -10,7 +10,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from 'lucide-react';
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
 
@@ -28,8 +28,7 @@ export default function SettingsPage() {
   const { data: settingsData = [] } = useFirestore<SystemSettings>("settings");
   const settingsDoc = settingsData[0] || { id: "main" };
 
-  const [isDark, setIsDark] = useState(true);
-  const [settings, setSettings] = useState({
+    const [settings, setSettings] = useState({
     restaurantName: "Lumina Grand Hotel & Restaurant",
     vatRate: "15",
     serviceCharge: "10",
@@ -55,8 +54,7 @@ export default function SettingsPage() {
     }
   }, [settingsData]);
 
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
   const saveSettings = async () => {
     try {
       await updateDocument("settings", settingsDoc.id || "main", settings);
@@ -72,14 +70,7 @@ export default function SettingsPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white">Settings</h1>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+                  </div>
 
         <div className="space-y-8">
           {/* Restaurant Info */}

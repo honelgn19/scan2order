@@ -23,11 +23,9 @@ interface Notification {
 export default function NotificationsPage() {
   const { data: notifications = [], loading } = useFirestore<Notification>("notifications");
 
-  const [isDark, setIsDark] = useState(true);
-  const [filter, setFilter] = useState<"All" | "Kitchen" | "Waiter" | "System">("All");
+    const [filter, setFilter] = useState<"All" | "Kitchen" | "Waiter" | "System">("All");
 
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
   const filteredNotifications = notifications.filter((notif) => 
     filter === "All" || notif.type === filter
   );
@@ -40,10 +38,7 @@ export default function NotificationsPage() {
             <Bell className="h-8 w-8 text-amber-500" />
             <h1 className="text-3xl font-bold text-white">Notifications</h1>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
-        </div>
+                  </div>
 
         {/* Improved Filter Buttons */}
         <div className="flex gap-3 mb-6">

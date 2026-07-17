@@ -8,11 +8,10 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Clock, Phone, ArrowLeft } from "lucide-react";
+import { Moon, Sun, Clock, Phone, ArrowLeft } from 'lucide-react';
 
 export default function LiveOrderTrackingPage() {
-  const [isDark, setIsDark] = useState(true);
-  const [searchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const tableNumber = searchParams.get("table") || "01";
@@ -23,13 +22,8 @@ export default function LiveOrderTrackingPage() {
   >("Preparing");
   const [estimatedTime, setEstimatedTime] = useState(28);
 
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   // Simulate live status update
   useEffect(() => {
     const timer = setInterval(() => {
@@ -60,10 +54,7 @@ export default function LiveOrderTrackingPage() {
             <p className="text-xs text-amber-500">Table #{tableNumber}</p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={toggleTheme}>
-          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </Button>
-      </div>
+              </div>
 
       <div className="max-w-2xl mx-auto px-4 pt-8">
         <div className="text-center mb-10">

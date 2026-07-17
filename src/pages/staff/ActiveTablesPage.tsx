@@ -8,7 +8,7 @@ import React, { useState, useMemo } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Users, Bell } from "lucide-react";
+import { Moon, Sun, Users, Bell } from 'lucide-react';
 import { useFirestore } from "../../hooks/useFirestore";
 
 const formatTime = (timestamp: unknown): string => {
@@ -51,12 +51,10 @@ interface Table {
 }
 
 export default function ActiveTablesPage() {
-  const [isDark, setIsDark] = useState(true);
-
+  
   const { data: tables = [], loading } = useFirestore<Table>("tables");
 
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
   // Filter only active tables
   const activeTables = useMemo(() => {
     return tables.filter((table) =>
@@ -104,14 +102,7 @@ export default function ActiveTablesPage() {
               {activeTables.length}
             </Badge>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+                  </div>
       </div>
 
       <div className="max-w-5xl mx-auto p-6">

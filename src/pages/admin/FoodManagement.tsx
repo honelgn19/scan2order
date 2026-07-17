@@ -40,7 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Plus, Edit2, Trash2, Search, Upload } from "lucide-react";
+import { Moon, Sun, Plus, Edit2, Trash2, Search, Upload } from 'lucide-react';
 import {
   useFirestore,
   addDocument,
@@ -63,8 +63,7 @@ const categories = [
 export default function FoodManagement() {
   const { data: foods = [], loading } = useFirestore<MenuItem>("foods");
 
-  const [isDark, setIsDark] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterFasting, setFilterFasting] = useState("All");
 
@@ -85,13 +84,8 @@ export default function FoodManagement() {
   const [imagePreview, setImagePreview] = useState<string>("");
 
   // Theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   const filteredFoods = foods.filter((food) => {
     const matchesSearch = food?.name
       ? food.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -217,14 +211,7 @@ export default function FoodManagement() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Button onClick={toggleTheme} variant="ghost" size="icon">
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-            <Button
+                        <Button
               onClick={openAddModal}
               className="bg-amber-600 hover:bg-amber-700"
             >

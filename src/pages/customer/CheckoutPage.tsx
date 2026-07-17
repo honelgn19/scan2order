@@ -10,7 +10,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 import { Label } from "../../components/ui/label";
-import { Moon, Sun, ArrowLeft } from "lucide-react";
+import { Moon, Sun, ArrowLeft } from 'lucide-react';
 import { useCartStore } from "../../store/cartStore";
 import { addDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
@@ -19,8 +19,7 @@ const generateOrderId = () => `LUM-ORD-${Date.now().toString().slice(-6)}`;
 const generateTransactionId = () => `TX-${Date.now().toString().slice(-8)}`;
 
 export default function CheckoutPage() {
-  const [isDark, setIsDark] = useState(true);
-  const [searchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [selectedPayment, setSelectedPayment] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -33,13 +32,8 @@ export default function CheckoutPage() {
   const serviceCharge = subtotal * 0.1;
   const total = subtotal + vat + serviceCharge;
 
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   const handlePlaceOrder = async () => {
     if (!selectedPayment || items.length === 0) return;
 
@@ -109,14 +103,7 @@ export default function CheckoutPage() {
             <h1 className="text-2xl font-bold">Checkout</h1>
             <p className="text-amber-500 text-sm">Table #{tableNumber}</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+                  </div>
       </div>
       <div className="max-w-2xl mx-auto px-4 pt-6 pb-8">
         {/* Order Summary */}

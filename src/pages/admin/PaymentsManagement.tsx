@@ -29,15 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import {
-  Moon,
-  Sun,
-  Search,
-  DollarSign,
-  CreditCard,
-  TrendingUp,
-  CheckCircle,
-} from "lucide-react";
+import { Moon, Sun, Search, DollarSign, CreditCard, TrendingUp, CheckCircle } from 'lucide-react';
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
 
@@ -56,20 +48,14 @@ interface Payment {
 export default function PaymentsManagement() {
   const { data: payments = [], loading } = useFirestore<Payment>("payments");
 
-  const [isDark, setIsDark] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterMethod, setFilterMethod] = useState("All");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   // Theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   // Calculations
   const totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
   const paidRevenue = payments
@@ -176,14 +162,7 @@ export default function PaymentsManagement() {
               </p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+                  </div>
       </div>
 
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">

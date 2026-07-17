@@ -8,20 +8,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
-import {
-  Moon,
-  Sun,
-  Plus,
-  Minus,
-  Trash2,
-  ArrowLeft,
-  ShoppingCart,
-} from "lucide-react";
+import { Moon, Sun, Plus, Minus, Trash2, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { useCartStore } from "../../store/cartStore";
 
 export default function CartPage() {
-  const [isDark, setIsDark] = useState(true);
-  const [searchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const tableNumber = searchParams.get("table") || "01";
 
@@ -32,13 +23,8 @@ export default function CartPage() {
   const serviceCharge = subtotal * 0.1;
   const grandTotal = subtotal + vat + serviceCharge;
 
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   const handleCheckout = () => {
     if (items.length === 0) return;
     navigate(`/customer/checkout?table=${tableNumber}`);
@@ -60,14 +46,7 @@ export default function CartPage() {
               <p className="text-amber-500">Table #{tableNumber}</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+                  </div>
       </div>
       <div className="max-w-2xl mx-auto px-4 pt-6 pb-8">
         {items.length === 0 ? (

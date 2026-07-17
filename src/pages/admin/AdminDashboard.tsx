@@ -4,12 +4,19 @@
    CONNECTED WITH FIREBASE
    ============================================= */
 
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import PageHeader from '../../components/common/PageHeader';
-import { Moon, Sun, Users, UtensilsCrossed, TrendingUp, Clock } from 'lucide-react';
-import { useFirestore } from '../../hooks/useFirestore';
+import React, { useState, useMemo } from "react";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import PageHeader from "../../components/common/PageHeader";
+import {
+  Moon,
+  Sun,
+  Users,
+  UtensilsCrossed,
+  TrendingUp,
+  Clock,
+} from "lucide-react";
+import { useFirestore } from "../../hooks/useFirestore";
 
 interface Order {
   id?: string;
@@ -27,33 +34,32 @@ interface Table {
 }
 
 export default function AdminDashboard() {
-  const [isDark, setIsDark] = useState(true);
-
   // Fetch real data
   const { data: orders = [] } = useFirestore<Order>("orders");
   const { data: tables = [] } = useFirestore<Table>("tables");
-
-  const toggleTheme = () => setIsDark(!isDark);
 
   // Dynamic Calculations
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const todayOrders = useMemo(() => {
-    return orders.filter(order => {
+    return orders.filter((order) => {
       if (!order.createdAt) return false;
-      const orderDate = order.createdAt.seconds 
-        ? new Date(order.createdAt.seconds * 1000) 
+      const orderDate = order.createdAt.seconds
+        ? new Date(order.createdAt.seconds * 1000)
         : new Date(order.createdAt);
       return orderDate >= today;
     });
   }, [orders]);
 
   const totalOrdersToday = todayOrders.length;
-  const revenueToday = todayOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+  const revenueToday = todayOrders.reduce(
+    (sum, order) => sum + (order.total || 0),
+    0,
+  );
 
-  const activeTables = tables.filter(t => 
-    t.status === "Occupied" || t.status === "Reserved"
+  const activeTables = tables.filter(
+    (t) => t.status === "Occupied" || t.status === "Reserved",
   ).length;
 
   const avgPrepTime = "24 min"; // You can make this dynamic later
@@ -61,49 +67,42 @@ export default function AdminDashboard() {
   const recentOrders = todayOrders.slice(0, 5);
 
   const stats = [
-    { 
-      title: "Total Orders Today", 
-      value: totalOrdersToday.toString(), 
-      change: "+18%", 
-      icon: UtensilsCrossed, 
-      color: "text-amber-500" 
+    {
+      title: "Total Orders Today",
+      value: totalOrdersToday.toString(),
+      change: "+18%",
+      icon: UtensilsCrossed,
+      color: "text-amber-500",
     },
-    { 
-      title: "Active Tables", 
-      value: activeTables.toString(), 
-      change: `${activeTables} occupied`, 
-      icon: Users, 
-      color: "text-blue-500" 
+    {
+      title: "Active Tables",
+      value: activeTables.toString(),
+      change: `${activeTables} occupied`,
+      icon: Users,
+      color: "text-blue-500",
     },
-    { 
-      title: "Revenue Today", 
-      value: `ETB ${revenueToday.toLocaleString()}`, 
-      change: "+12%", 
-      icon: TrendingUp, 
-      color: "text-green-500" 
+    {
+      title: "Revenue Today",
+      value: `ETB ${revenueToday.toLocaleString()}`,
+      change: "+12%",
+      icon: TrendingUp,
+      color: "text-green-500",
     },
-    { 
-      title: "Avg. Prep Time", 
-      value: avgPrepTime, 
-      change: "-4 min", 
-      icon: Clock, 
-      color: "text-purple-500" 
+    {
+      title: "Avg. Prep Time",
+      value: avgPrepTime,
+      change: "-4 min",
+      icon: Clock,
+      color: "text-purple-500",
     },
   ];
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      <PageHeader 
-        title="Admin Dashboard" 
+      <PageHeader
+        title="Admin Dashboard"
         description="Real-time overview of Lumina Grand Restaurant Operations"
-      >
-        <button 
-          onClick={toggleTheme}
-          className="p-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-colors"
-        >
-          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </button>
-      </PageHeader>
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -119,7 +118,9 @@ export default function AdminDashboard() {
                   <stat.icon className="h-10 w-10" />
                 </div>
               </div>
-              <p className="text-sm mt-4 text-green-400">{stat.change} from yesterday</p>
+              <p className="text-sm mt-4 text-green-400">
+                {stat.change} from yesterday
+              </p>
             </CardContent>
           </Card>
         ))}
@@ -133,14 +134,21 @@ export default function AdminDashboard() {
             <div className="space-y-5">
               {recentOrders.length > 0 ? (
                 recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0">
+                  <div
+                    key={order.id}
+                    className="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0"
+                  >
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-xl">
                         🍽️
                       </div>
                       <div>
-                        <p className="font-medium">Table #{order.tableNumber || "—"}</p>
-                        <p className="text-sm text-zinc-400">{order.id?.slice(0, 12) || "—"}</p>
+                        <p className="font-medium">
+                          Table #{order.tableNumber || "—"}
+                        </p>
+                        <p className="text-sm text-zinc-400">
+                          {order.id?.slice(0, 12) || "—"}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -152,7 +160,9 @@ export default function AdminDashboard() {
                   </div>
                 ))
               ) : (
-                <p className="text-zinc-400 text-center py-8">No orders yet today</p>
+                <p className="text-zinc-400 text-center py-8">
+                  No orders yet today
+                </p>
               )}
             </div>
           </CardContent>
@@ -162,7 +172,7 @@ export default function AdminDashboard() {
         <Card className="bg-zinc-900 border-white/10">
           <CardContent className="p-6">
             <h3 className="text-xl font-semibold mb-6">System Status</h3>
-            
+
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">

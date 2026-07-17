@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Download, TrendingUp, Users } from "lucide-react";
+import { Moon, Sun, Download, TrendingUp, Users } from 'lucide-react';
 import { useFirestore } from "../../hooks/useFirestore";
 
 // Charts
@@ -52,19 +52,13 @@ export default function ReportsAnalytics() {
   const { data: orders = [] } = useFirestore<Order>("orders");
   const { data: payments = [] } = useFirestore<any>("payments");
 
-  const [isDark, setIsDark] = useState(true);
-  const [period, setPeriod] = useState<"daily" | "weekly" | "monthly">(
+    const [period, setPeriod] = useState<"daily" | "weekly" | "monthly">(
     "weekly",
   );
 
   // Theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
+  
   const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
   const avgOrderValue = orders.length
     ? Math.round(totalRevenue / orders.length)
@@ -174,14 +168,7 @@ export default function ReportsAnalytics() {
               <Download className="mr-2 h-4 w-4" /> Excel
             </Button>
 
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-          </div>
+                      </div>
         </div>
       </div>
 

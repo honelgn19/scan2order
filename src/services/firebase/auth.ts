@@ -1,5 +1,5 @@
-import { signInAnonymously } from "firebase/auth";
-import { auth } from "../../lib/firebase"; // adjust the path if needed
+import { signInAnonymously, signOut } from "firebase/auth";
+import { auth } from "../../lib/firebase";
 
 export async function signInCustomer() {
   if (auth.currentUser) {
@@ -8,4 +8,9 @@ export async function signInCustomer() {
 
   const result = await signInAnonymously(auth);
   return result.user;
+}
+
+export async function signOutUser() {
+  if (!auth.currentUser) return;
+  return signOut(auth);
 }

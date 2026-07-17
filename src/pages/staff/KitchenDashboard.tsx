@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2 } from "lucide-react";
+import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2 } from 'lucide-react';
 
 import {
   listenToOrders,
@@ -20,8 +20,7 @@ import { error as loggerError } from "../../lib/logger";
 type KitchenOrder = Partial<Order> & { id: string; timestamp?: string };
 
 export default function KitchenDashboard() {
-  const [isDark, setIsDark] = useState(true);
-  const [orders, setOrders] = useState<KitchenOrder[]>([]);
+    const [orders, setOrders] = useState<KitchenOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,10 +48,7 @@ export default function KitchenDashboard() {
     return () => unsubscribe();
   }, []);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
-
+  
   const handleStatusUpdate = async (
     orderId: string,
     newStatus: "Pending" | "Preparing" | "Ready" | "Delivered",
@@ -142,14 +138,7 @@ export default function KitchenDashboard() {
               Live
             </Badge>
 
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-          </div>
+                      </div>
         </div>
       </div>
 

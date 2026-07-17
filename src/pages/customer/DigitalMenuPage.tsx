@@ -10,13 +10,12 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Search, ShoppingCart } from "lucide-react";
+import { Moon, Sun, Search, ShoppingCart } from 'lucide-react';
 import { useFirestore } from "../../hooks/useFirestore";
 import { useCartStore } from "../../store/cartStore";
 
 export default function DigitalMenuPage() {
-  const [isDark, setIsDark] = useState(true);
-  const [searchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const tableNumber = searchParams.get("table") || "01";
 
@@ -29,8 +28,7 @@ export default function DigitalMenuPage() {
   const { data: foods = [], loading } = useFirestore("foods");
   const { addItem, totalItems, totalPrice } = useCartStore();
 
-  const toggleTheme = () => setIsDark(!isDark);
-
+  
   const fixedCategories = [
     "All",
     "Breakfast",
@@ -105,14 +103,7 @@ export default function DigitalMenuPage() {
               <p className="text-xs text-amber-500">Table #{tableNumber}</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+                  </div>
 
         {/* Search */}
         <div className="max-w-2xl mx-auto px-4 pb-4">

@@ -4,7 +4,7 @@
    FULLY CONNECTED WITH FIRESTORE
    ============================================= */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -35,7 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Eye, Plus } from "lucide-react";
+import { Sun, Eye, Plus } from "lucide-react";
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
 import type { Order } from "../../types";
@@ -50,15 +50,6 @@ export default function OrdersManagement() {
   const [filterPayment, setFilterPayment] = useState("All");
   const [filterTable, setFilterTable] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isDark, setIsDark] = useState(true);
-
-  // Theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
 
   const filteredOrders = orders.filter((order) => {
     const matchesStatus =
@@ -124,13 +115,6 @@ export default function OrdersManagement() {
               </p>
             </div>
           </div>
-          <Button onClick={toggleTheme} variant="ghost" size="icon">
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
         </div>
       </div>
 
