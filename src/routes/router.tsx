@@ -12,7 +12,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 const AuthLayout = lazy(() => import("../layouts/AuthLayout"));
 const CustomerLayout = lazy(() => import("../layouts/CustomerLayout"));
 const StaffLayout = lazy(() => import("../layouts/StaffLayout"));
-const AdminLayout = lazy(() => import("../layouts/AdminLayout"));
+import AdminLayout from "../layouts/AdminLayout";
 
 // Auth Pages
 const Login = lazy(() => import("../pages/auth/Login"));
@@ -36,7 +36,7 @@ const ReadyOrdersPage = lazy(() => import("../pages/staff/ReadyOrdersPage"));
 const ActiveTablesPage = lazy(() => import("../pages/staff/ActiveTablesPage"));
 
 // Admin Pages
-const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
+import AdminDashboard from "../pages/admin/AdminDashboard";
 const FoodManagement = lazy(() => import("../pages/admin/FoodManagement"));
 const CategoryManagement = lazy(
   () => import("../pages/admin/CategoryManagement"),
