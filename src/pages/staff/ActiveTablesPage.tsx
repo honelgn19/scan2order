@@ -8,7 +8,7 @@ import React, { useState, useMemo } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Users, Bell } from 'lucide-react';
+import { Users, Bell } from 'lucide-react';
 import { useFirestore } from "../../hooks/useFirestore";
 
 const formatTime = (timestamp: unknown): string => {
@@ -109,9 +109,9 @@ export default function ActiveTablesPage() {
         {activeTables.length === 0 ? (
           <Card className="bg-card border-border">
             <CardContent className="p-16 text-center">
-              <Users className="h-20 w-20 mx-auto text-zinc-500 mb-4" />
+              <Users className="h-20 w-20 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-2xl font-semibold mb-2">No Active Tables</h3>
-              <p className="text-zinc-400">
+              <p className="text-muted-foreground">
                 All tables are currently available
               </p>
             </CardContent>
@@ -130,8 +130,8 @@ export default function ActiveTablesPage() {
                         #{table.number}
                       </p>
                       <div className="flex items-center gap-2 mt-2">
-                        <Users className="h-5 w-5 text-zinc-400" />
-                        <span className="text-zinc-300">
+                        <Users className="h-5 w-5 text-muted-foreground" />
+                        <span className="text-muted-foreground">
                           {table.currentSession?.guests || table.guests || 0}{" "}
                           Guests
                         </span>
@@ -146,13 +146,13 @@ export default function ActiveTablesPage() {
 
                   <div className="mt-8 space-y-4 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-zinc-400">Last Order</span>
+                      <span className="text-muted-foreground">Last Order</span>
                       <span className="font-medium">
                         {formatTime(table.lastOrder)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-400">Total Spent</span>
+                      <span className="text-muted-foreground">Total Spent</span>
                       <span className="font-semibold">
                         ETB {(table.totalSpent || 0).toLocaleString()}
                       </span>

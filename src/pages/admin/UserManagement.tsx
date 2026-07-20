@@ -115,7 +115,7 @@ export default function UserManagement() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold">User Management</h1>
-            <p className="text-zinc-400">Manage staff and customer accounts</p>
+            <p className="text-muted-foreground">Manage staff and customer accounts</p>
           </div>
           <div className="flex items-center gap-4">
                         <Button
@@ -129,7 +129,7 @@ export default function UserManagement() {
 
         <div className="mb-6">
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-3 h-5 w-5 text-zinc-500" />
+            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder="Search users..."
               value={searchTerm}
@@ -143,7 +143,7 @@ export default function UserManagement() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="border-b border-border text-white">
+                <thead className="border-b border-border">
                   <tr>
                     <th className="text-left p-6">User</th>
                     <th className="text-left p-6">Role</th>
@@ -156,12 +156,12 @@ export default function UserManagement() {
                   {filteredUsers.map((user) => (
                     <tr
                       key={user.id}
-                      className="border-b border-border hover:bg-white/5"
+                      className="border-b border-border hover:bg-accent"
                     >
                       <td className="p-6 ">
                         <div>
-                          <p className="font-medium text-white">{user.name}</p>
-                          <p className="text-sm text-zinc-400">{user.email}</p>
+                          <p className="font-medium">{user.name}</p>
+                          <p className="text-sm text-muted-foreground">{user.email}</p>
                         </div>
                       </td>
                       <td className="p-6">
@@ -178,7 +178,7 @@ export default function UserManagement() {
                           {user.status}
                         </Badge>
                       </td>
-                      <td className="p-6 text-zinc-400">{user.joinDate}</td>
+                      <td className="p-6 text-muted-foreground">{user.joinDate}</td>
                       <td className="p-6 text-right">
                         <div className="flex justify-end gap-3">
                           <Button

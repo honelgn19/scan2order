@@ -1,16 +1,9 @@
-/* =============================================
-   LAYOUT: AdminLayout
-   PATH: src/layouts/AdminLayout.tsx
-   ============================================= */
-
 import React, { Suspense, useState } from "react";
 import { Outlet } from "react-router-dom";
 import AdminSidebar from "../components/layout/AdminSidebar";
 import TopNavbar from "../components/layout/TopNavbar";
-import { useDarkMode } from "../hooks/useDarkMode";
 
 export default function AdminLayout() {
-  const { isDark, toggleTheme } = useDarkMode(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -23,8 +16,6 @@ export default function AdminLayout() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <TopNavbar
           title="Admin Dashboard"
-          isDark={isDark}
-          toggleTheme={toggleTheme}
           onMobileMenuClick={() => setIsMobileMenuOpen((prev) => !prev)}
         />
 
@@ -32,7 +23,7 @@ export default function AdminLayout() {
           <Suspense
             fallback={
               <div className="space-y-6">
-                <div className="h-8 w-1/3 rounded-xl bg-zinc-800 animate-pulse"></div>
+                <div className="h-8 w-1/3 rounded-xl bg-muted animate-pulse"></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div

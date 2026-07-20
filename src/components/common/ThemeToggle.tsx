@@ -1,25 +1,16 @@
-/* =============================================
-   COMPONENT: ThemeToggle
-   PATH: src/components/common/ThemeToggle.tsx
-   ============================================= */
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Moon, Sun } from 'lucide-react';
+export function ThemeToggle() {
+  const { isDark, toggleTheme } = useTheme();
 
-interface ThemeToggleProps {
-  isDark: boolean;
-  toggle: () => void;
-}
-
-// Named Export (Recommended)
-export function ThemeToggle({ isDark, toggle }: ThemeToggleProps) {
   return (
-    <Button variant="ghost" size="icon" onClick={toggle}>
+    <Button variant="ghost" size="icon" onClick={toggleTheme}>
       {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
   );
 }
 
-// Also keep default export for flexibility
 export default ThemeToggle;

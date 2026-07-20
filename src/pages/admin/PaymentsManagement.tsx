@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Search, DollarSign, CreditCard, TrendingUp, CheckCircle } from 'lucide-react';
+import { Search, DollarSign, CreditCard, TrendingUp, CheckCircle } from 'lucide-react';
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
 
@@ -170,7 +170,7 @@ export default function PaymentsManagement() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
+              <CardTitle className="text-sm text-muted-foreground">
                 Total Revenue
               </CardTitle>
               <DollarSign className="h-5 w-5 text-emerald-500" />
@@ -187,7 +187,7 @@ export default function PaymentsManagement() {
 
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
+              <CardTitle className="text-sm text-muted-foreground">
                 Pending Amount
               </CardTitle>
               <TrendingUp className="h-5 w-5 text-amber-500" />
@@ -201,7 +201,7 @@ export default function PaymentsManagement() {
 
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
+              <CardTitle className="text-sm text-muted-foreground">
                 Total Transactions
               </CardTitle>
               <CreditCard className="h-5 w-5 text-blue-500" />
@@ -215,7 +215,7 @@ export default function PaymentsManagement() {
 
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm text-zinc-400">
+              <CardTitle className="text-sm text-muted-foreground">
                 Failed Transactions
               </CardTitle>
               <div className="text-red-500 text-xl">⚠️</div>
@@ -240,7 +240,7 @@ export default function PaymentsManagement() {
                   key={method}
                   className="bg-card rounded-xl p-4 border border-border"
                 >
-                  <p className="text-sm text-zinc-400">{method}</p>
+                  <p className="text-sm text-muted-foreground">{method}</p>
                   <p className="text-2xl font-bold mt-1">{count}</p>
                 </div>
               ))}
@@ -257,7 +257,7 @@ export default function PaymentsManagement() {
               </CardTitle>
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <div className="relative flex-1 md:w-80">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search Transaction ID, Customer..."
                     value={searchTerm}
@@ -337,7 +337,7 @@ export default function PaymentsManagement() {
                         {getStatusText(payment.status)}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-zinc-400 text-sm">
+                    <TableCell className="text-muted-foreground text-sm">
                       {formatTimestamp(payment.timestamp)}
                     </TableCell>
                     <TableCell>
@@ -362,7 +362,7 @@ export default function PaymentsManagement() {
             </Table>
 
             {filteredPayments.length === 0 && (
-              <div className="text-center py-16 text-zinc-400">
+              <div className="text-center py-16 text-muted-foreground">
                 No payments found matching your filters
               </div>
             )}

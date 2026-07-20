@@ -1,8 +1,3 @@
-/* =============================================
-   COMPONENT: TopNavbar (Mobile Optimized)
-   PATH: src/components/layout/TopNavbar.tsx
-   ============================================= */
-
 import React from "react";
 import { ThemeToggle } from "../common/ThemeToggle";
 import { Bell, LogOut, Menu } from "lucide-react";
@@ -11,15 +6,11 @@ import { signOutUser } from "../../services/firebase/auth";
 
 interface TopNavbarProps {
   title: string;
-  isDark: boolean;
-  toggleTheme: () => void;
   onMobileMenuClick?: () => void;
 }
 
 export default function TopNavbar({
   title,
-  isDark,
-  toggleTheme,
   onMobileMenuClick,
 }: TopNavbarProps) {
   return (
@@ -51,7 +42,7 @@ export default function TopNavbar({
         >
           <LogOut className="h-5 w-5" />
         </Button>
-        <ThemeToggle isDark={isDark} toggle={toggleTheme} />
+        <ThemeToggle />
       </div>
     </div>
   );

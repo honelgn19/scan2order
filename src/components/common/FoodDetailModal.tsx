@@ -40,7 +40,7 @@ export default function FoodDetailModal({ item, open, onOpenChange, onAddToCart 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-0 bg-card border-border text-white overflow-hidden">
+      <DialogContent className="max-w-lg p-0 bg-card border-border overflow-hidden">
         <div className="relative h-72">
           <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
           {!item.available && (
@@ -54,7 +54,7 @@ export default function FoodDetailModal({ item, open, onOpenChange, onAddToCart 
             <div className="flex items-center gap-4 mt-2">
               <p className="text-3xl font-bold text-amber-500">ETB {item.price}</p>
               {item.prepTime && (
-                <div className="flex items-center gap-1 text-zinc-400">
+                <div className="flex items-center gap-1 text-muted-foreground">
                   <Clock className="h-4 w-4" /> {item.prepTime} min
                 </div>
               )}
@@ -70,10 +70,10 @@ export default function FoodDetailModal({ item, open, onOpenChange, onAddToCart 
             )}
           </div>
 
-          <p className="text-zinc-300 leading-relaxed">{item.description}</p>
+          <p className="text-muted-foreground leading-relaxed">{item.description}</p>
 
           <div>
-            <p className="text-sm text-zinc-500 mb-3">Quantity</p>
+            <p className="text-sm text-muted-foreground mb-3">Quantity</p>
             <div className="flex items-center gap-6">
               <Button variant="outline" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
                 <Minus className="h-5 w-5" />

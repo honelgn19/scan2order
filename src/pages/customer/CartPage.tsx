@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
-import { Moon, Sun, Plus, Minus, Trash2, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { Plus, Minus, Trash2, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { useCartStore } from "../../store/cartStore";
 
 export default function CartPage() {
@@ -51,9 +51,9 @@ export default function CartPage() {
       <div className="max-w-2xl mx-auto px-4 pt-6 pb-8">
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <ShoppingCart className="h-20 w-20 text-zinc-500 mb-6" />
+            <ShoppingCart className="h-20 w-20 text-muted-foreground mb-6" />
             <h2 className="text-2xl font-bold">Your cart is empty</h2>
-            <p className="text-zinc-400 mt-2">
+            <p className="text-muted-foreground mt-2">
               Add some delicious food from the menu
             </p>
             <Button
@@ -77,7 +77,7 @@ export default function CartPage() {
                       />
                       <div className="flex-1">
                         <h3 className="font-bold">{item.name}</h3>
-                        <p className="text-sm text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                           ETB {item.price}
                         </p>
 

@@ -10,7 +10,6 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
-import { Moon, Sun } from 'lucide-react';
 import { useFirestore, updateDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
 
@@ -28,7 +27,7 @@ export default function SettingsPage() {
   const { data: settingsData = [] } = useFirestore<SystemSettings>("settings");
   const settingsDoc = settingsData[0] || { id: "main" };
 
-    const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState({
     restaurantName: "Lumina Grand Hotel & Restaurant",
     vatRate: "15",
     serviceCharge: "10",
@@ -37,11 +36,9 @@ export default function SettingsPage() {
     autoPrintOrders: false,
   });
 
-  // Load from Firestore
   useEffect(() => {
     if (settingsData.length > 0) {
       const doc = settingsData[0];
-      // Sync Firestore settings into local component state.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSettings({
         restaurantName: doc.restaurantName || "Lumina Grand Hotel & Restaurant",
@@ -54,7 +51,6 @@ export default function SettingsPage() {
     }
   }, [settingsData]);
 
-  
   const saveSettings = async () => {
     try {
       await updateDocument("settings", settingsDoc.id || "main", settings);
@@ -69,19 +65,18 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-background text-foreground p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Settings</h1>
-                  </div>
+          <h1 className="text-3xl font-bold">Settings</h1>
+        </div>
 
         <div className="space-y-8">
-          {/* Restaurant Info */}
           <Card className="bg-card border-border">
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold mb-6 text-white">
+              <h2 className="text-xl font-semibold mb-6">
                 Restaurant Information
               </h2>
               <div className="space-y-6">
                 <div>
-                  <Label className="text-white">Restaurant Name</Label>
+                  <Label>Restaurant Name</Label>
                   <Input
                     value={settings.restaurantName}
                     onChange={(e) =>
@@ -90,33 +85,30 @@ export default function SettingsPage() {
                         restaurantName: e.target.value,
                       })
                     }
-                    className="mt-2 bg-zinc-800 border-white/20 text-white"
+                    className="mt-2"
                   />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Billing Settings */}
           <Card className="bg-card border-border">
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold mb-6 text-white">
-                Billing & Tax
-              </h2>
+              <h2 className="text-xl font-semibold mb-6">Billing & Tax</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label className="text-white">VAT Rate (%)</Label>
+                  <Label>VAT Rate (%)</Label>
                   <Input
                     type="number"
                     value={settings.vatRate}
                     onChange={(e) =>
                       setSettings({ ...settings, vatRate: e.target.value })
                     }
-                    className="mt-2 bg-zinc-800 border-white/20 text-white"
+                    className="mt-2"
                   />
                 </div>
                 <div>
-                  <Label className="text-white">Service Charge (%)</Label>
+                  <Label>Service Charge (%)</Label>
                   <Input
                     type="number"
                     value={settings.serviceCharge}
@@ -126,24 +118,21 @@ export default function SettingsPage() {
                         serviceCharge: e.target.value,
                       })
                     }
-                    className="mt-2 bg-zinc-800 border-white/20 text-white"
+                    className="mt-2"
                   />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* System Preferences */}
           <Card className="bg-card border-border">
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold mb-6 text-white">
-                System Preferences
-              </h2>
+              <h2 className="text-xl font-semibold mb-6">System Preferences</h2>
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white">Fasting / Non-Fasting Filter</p>
-                    <p className="text-sm text-zinc-400">
+                    <p className="font-medium">Fasting / Non-Fasting Filter</p>
+                    <p className="text-sm text-muted-foreground">
                       Enable category filter on customer menu
                     </p>
                   </div>
@@ -157,8 +146,8 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white">Real-time Notifications</p>
-                    <p className="text-sm text-zinc-400">
+                    <p className="font-medium">Real-time Notifications</p>
+                    <p className="text-sm text-muted-foreground">
                       Kitchen & waiter alerts
                     </p>
                   </div>
@@ -172,8 +161,8 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white">Auto Print Kitchen Orders</p>
-                    <p className="text-sm text-zinc-400">
+                    <p className="font-medium">Auto Print Kitchen Orders</p>
+                    <p className="text-sm text-muted-foreground">
                       Print order automatically when received
                     </p>
                   </div>

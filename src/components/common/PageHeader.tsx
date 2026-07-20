@@ -16,7 +16,7 @@ export default function PageHeader({ title, description, children }: PageHeaderP
     <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
       <div>
         <h1 className="text-3xl font-bold">{title}</h1>
-        {description && <p className="text-zinc-400 mt-1">{description}</p>}
+        {description && <p className="text-muted-foreground mt-1">{description}</p>}
       </div>
       {children && <div className="mt-4 md:mt-0">{children}</div>}
     </div>

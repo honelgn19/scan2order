@@ -15,7 +15,7 @@ export default function MobileBottomNav() {
         <NavLink
           to="/customer"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-zinc-400"}`
+            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-muted-foreground"}`
           }
         >
           <Home className="h-6 w-6" />
@@ -25,7 +25,7 @@ export default function MobileBottomNav() {
         <NavLink
           to="/customer/menu"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-zinc-400"}`
+            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-muted-foreground"}`
           }
         >
           <Menu className="h-6 w-6" />
@@ -35,7 +35,7 @@ export default function MobileBottomNav() {
         <NavLink
           to="/customer/cart"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-zinc-400"}`
+            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-muted-foreground"}`
           }
         >
           <ShoppingCart className="h-6 w-6" />
@@ -45,7 +45,7 @@ export default function MobileBottomNav() {
         <NavLink
           to="/customer/live-tracking"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-zinc-400"}`
+            `flex flex-col items-center py-1 px-4 ${isActive ? "text-amber-500" : "text-muted-foreground"}`
           }
         >
           <User className="h-6 w-6" />

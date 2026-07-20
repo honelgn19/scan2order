@@ -10,7 +10,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 import { Label } from "../../components/ui/label";
-import { Moon, Sun, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useCartStore } from "../../store/cartStore";
 import { addDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
               >
                 <div>
                   <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-zinc-400">× {item.quantity}</p>
+                  <p className="text-sm text-muted-foreground">× {item.quantity}</p>
                 </div>
                 <p>ETB {(item.price * item.quantity).toFixed(0)}</p>
               </div>

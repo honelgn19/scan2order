@@ -8,7 +8,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Clock, Phone, ArrowLeft } from 'lucide-react';
+import { Clock, Phone, ArrowLeft } from 'lucide-react';
 
 export default function LiveOrderTrackingPage() {
     const [searchParams] = useSearchParams();
@@ -81,13 +81,13 @@ export default function LiveOrderTrackingPage() {
                         ? "bg-amber-500 border-amber-500 text-black scale-110"
                         : currentStep > index
                           ? "bg-green-500 border-green-500 text-white"
-                          : "bg-zinc-800 border-white/20"
+                          : "bg-muted border-border"
                     }`}
                   >
                     {currentStep > index ? "✓" : index + 1}
                   </div>
                   <p
-                    className={`text-xs mt-3 ${currentStep === index ? "text-amber-500 font-medium" : currentStep > index ? "text-green-400" : "text-zinc-500"}`}
+                    className={`text-xs mt-3 ${currentStep === index ? "text-amber-500 font-medium" : currentStep > index ? "text-green-400" : "text-muted-foreground"}`}
                   >
                     {status.label}
                   </p>
@@ -107,10 +107,10 @@ export default function LiveOrderTrackingPage() {
 
         <Card className="bg-card border-border">
           <CardContent className="p-6 text-center">
-            <p className="text-zinc-400">
+            <p className="text-muted-foreground">
               Your order is being prepared in the kitchen.
             </p>
-            <p className="text-sm text-zinc-500 mt-4">
+            <p className="text-sm text-muted-foreground mt-4">
               You can place additional orders while waiting.
             </p>
           </CardContent>
@@ -120,7 +120,7 @@ export default function LiveOrderTrackingPage() {
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-md px-4">
         <Button
           onClick={() => navigate(`/customer/menu?table=${tableNumber}`)}
-          className="w-full h-14 text-base border-white/30 hover:bg-white/5"
+          className="w-full h-14 text-base border-border hover:bg-accent"
           variant="outline"
         >
           Order More Items

@@ -10,7 +10,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useCartStore } from "../../store/cartStore";
 
@@ -107,7 +107,7 @@ export default function DigitalMenuPage() {
         {/* Search */}
         <div className="max-w-2xl mx-auto px-4 pb-4">
           <div className="relative">
-            <Search className="absolute left-4 top-3.5 h-5 w-5 text-zinc-500" />
+            <Search className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder="Search dishes..."
               value={searchQuery}
@@ -128,7 +128,7 @@ export default function DigitalMenuPage() {
               className={`rounded-full whitespace-nowrap px-5 h-10 text-sm ${
                 activeCategory === cat
                   ? "bg-amber-500 text-black"
-                  : "bg-card text-white"
+                  : "bg-card text-foreground"
               }`}
             >
               {cat}
@@ -155,7 +155,7 @@ export default function DigitalMenuPage() {
         {/* Menu Items */}
         <div className="space-y-6 pb-8">
           {filteredItems.length === 0 ? (
-            <div className="text-center py-16 text-zinc-400">
+            <div className="text-center py-16 text-muted-foreground">
               No items found matching your criteria
             </div>
           ) : (
@@ -168,17 +168,17 @@ export default function DigitalMenuPage() {
                   <img
                     src={getFoodImage(item)}
                     alt={item.name}
-                    className="w-full h-full object-cover bg-zinc-800"
+                    className="w-full h-full object-cover bg-muted"
                   />
                 </div>
 
                 <CardContent className="p-5">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-white text-xl">
+                      <h3 className="font-semibold text-xl">
                         {item.name}
                       </h3>
-                      <p className="text-sm text-zinc-200 mt-1 line-clamp-2">
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                         {item.description}
                       </p>
                     </div>

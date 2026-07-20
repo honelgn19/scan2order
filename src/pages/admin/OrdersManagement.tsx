@@ -176,7 +176,7 @@ export default function OrdersManagement() {
             {loading ? (
               <p className="text-center py-12">Loading orders...</p>
             ) : filteredOrders.length === 0 ? (
-              <p className="text-center py-12 text-zinc-400">No orders found</p>
+              <p className="text-center py-12 text-muted-foreground">No orders found</p>
             ) : (
               <Table>
                 <TableHeader>
@@ -192,7 +192,7 @@ export default function OrdersManagement() {
                 </TableHeader>
                 <TableBody>
                   {filteredOrders.map((order) => (
-                    <TableRow key={order.id} className="hover:bg-zinc-800/50">
+                    <TableRow key={order.id} className="hover:bg-accent/50">
                       <TableCell className="font-mono font-medium">
                         {order.orderId}
                       </TableCell>
@@ -210,7 +210,7 @@ export default function OrdersManagement() {
                           {order.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-zinc-400">
+                      <TableCell className="text-muted-foreground">
                         {order.timestamp || "N/A"}
                       </TableCell>
                       <TableCell className="text-right">
@@ -248,13 +248,13 @@ export default function OrdersManagement() {
               <div className="space-y-6 py-4">
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <p className="text-sm text-zinc-400">Table</p>
+                    <p className="text-sm text-muted-foreground">Table</p>
                     <p className="text-3xl font-bold">
                       #{selectedOrder.tableNumber}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-zinc-400">Payment</p>
+                    <p className="text-sm text-muted-foreground">Payment</p>
                     <p className="text-xl">{selectedOrder.paymentStatus}</p>
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default function OrdersManagement() {
                       >
                         <div>
                           <p>{item.name}</p>
-                          <p className="text-sm text-zinc-500">
+                          <p className="text-sm text-muted-foreground">
                             ×{item.quantity}
                           </p>
                         </div>

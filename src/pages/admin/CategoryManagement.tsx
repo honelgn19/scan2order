@@ -31,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { Moon, Sun, Plus, Edit2, Trash2, Search, Upload, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Upload, ArrowUp, ArrowDown } from 'lucide-react';
 import {
   useFirestore,
   addDocument,
@@ -186,7 +186,7 @@ export default function CategoryManagement() {
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
               <CardTitle>Menu Categories ({categories.length})</CardTitle>
               <div className="relative w-full sm:w-80">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search categories..."
                   value={searchTerm}
@@ -223,7 +223,7 @@ export default function CategoryManagement() {
                     <TableCell className="font-semibold">
                       {category.name}
                     </TableCell>
-                    <TableCell className="text-zinc-400 max-w-xs truncate">
+                    <TableCell className="text-muted-foreground max-w-xs truncate">
                       {category.description}
                     </TableCell>
                     <TableCell>
@@ -310,7 +310,7 @@ export default function CategoryManagement() {
                     className="w-32 h-32 object-cover rounded-lg mb-4"
                   />
                 ) : (
-                  <Upload className="h-12 w-12 text-zinc-500 mb-3" />
+                  <Upload className="h-12 w-12 text-muted-foreground mb-3" />
                 )}
                 <label className="cursor-pointer text-amber-500 hover:underline">
                   <Input

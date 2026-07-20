@@ -56,7 +56,7 @@ export default function StaffSidebar({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden lg:flex p-2 hover:bg-white/10 rounded-lg transition-colors text-zinc-400 hover:text-white"
+              className="hidden lg:flex p-2 hover:bg-accent rounded-lg transition-colors text-muted-foreground hover:text-foreground"
               title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               {isCollapsed ? (
@@ -67,7 +67,7 @@ export default function StaffSidebar({
             </button>
             <button
               onClick={onMobileClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-zinc-400 hover:text-white lg:hidden"
+              className="p-2 hover:bg-accent rounded-lg transition-colors text-muted-foreground hover:text-foreground lg:hidden"
               aria-label="Close menu"
             >
               <X className="h-5 w-5" />
@@ -85,7 +85,7 @@ export default function StaffSidebar({
                 `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${
                   isActive
                     ? "bg-amber-600 text-white"
-                    : "hover:bg-white/10 text-zinc-300"
+                    : "hover:bg-accent text-muted-foreground hover:text-foreground"
                 } ${isCollapsed ? "justify-center" : ""}`
               }
               title={isCollapsed ? item.label : undefined}
@@ -98,7 +98,7 @@ export default function StaffSidebar({
 
         <div className="p-4 border-t border-border">
           {!isCollapsed && (
-            <p className="text-xs text-zinc-500 text-center">
+            <p className="text-xs text-muted-foreground text-center">
               © 2026 Bright Day Grand
             </p>
           )}

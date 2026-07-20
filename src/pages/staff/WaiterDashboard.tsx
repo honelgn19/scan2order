@@ -173,7 +173,7 @@ export default function WaiterDashboard() {
           <div className="flex items-center gap-3">
             <Badge
               variant="outline"
-              className="hidden sm:flex px-4 py-2 border-white/20"
+              className="hidden sm:flex px-4 py-2 border-border"
             >
               <Bell className="h-4 w-4 mr-2" />
               {assistanceRequests.length} Requests
@@ -229,7 +229,7 @@ export default function WaiterDashboard() {
                             Table #{order.tableNumber}
                           </p>
 
-                          <p className="font-mono text-xs text-zinc-500 mt-1">
+                          <p className="font-mono text-xs text-muted-foreground mt-1">
                             {order.orderId}
                           </p>
                         </div>
@@ -255,7 +255,7 @@ export default function WaiterDashboard() {
 
                       {/* TIMER */}
 
-                      <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm mt-4">
                         <Clock3 className="h-4 w-4" />
 
                         <span>Ready {elapsedMinutes} min ago</span>
@@ -321,7 +321,7 @@ export default function WaiterDashboard() {
 
                     <h3 className="text-2xl font-bold">No Ready Orders</h3>
 
-                    <p className="text-zinc-500 mt-2">
+                    <p className="text-muted-foreground mt-2">
                       Orders from kitchen will appear here
                     </p>
                   </CardContent>
@@ -367,14 +367,14 @@ export default function WaiterDashboard() {
                         <Badge className="bg-red-600 h-fit">NEW</Badge>
                       </div>
 
-                      <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm mt-4">
                         <Clock3 className="h-4 w-4" />
                         {elapsedMinutes} min ago
                       </div>
 
                       <Button
                         variant="outline"
-                        className="w-full mt-5 h-11 border-border hover:bg-white/5"
+                        className="w-full mt-5 h-11 border-border hover:bg-accent"
                       >
                         Respond Now
                       </Button>
@@ -388,13 +388,13 @@ export default function WaiterDashboard() {
               {assistanceRequests.length === 0 && (
                 <Card className="bg-card border-border rounded-2xl">
                   <CardContent className="p-10 text-center">
-                    <Bell className="h-10 w-10 mx-auto mb-4 text-zinc-500" />
+                    <Bell className="h-10 w-10 mx-auto mb-4 text-muted-foreground" />
 
                     <h3 className="text-lg font-semibold">
                       No Customer Requests
                     </h3>
 
-                    <p className="text-zinc-500 text-sm mt-2">
+                    <p className="text-muted-foreground text-sm mt-2">
                       New assistance calls will appear here
                     </p>
                   </CardContent>
@@ -411,7 +411,7 @@ export default function WaiterDashboard() {
                   w-full
                   h-12
                   border-border
-                  hover:bg-white/5
+                  hover:bg-accent
                 "
               >
                 View Active Tables

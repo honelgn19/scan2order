@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Download, TrendingUp, Users } from "lucide-react";
+import { Download, TrendingUp, Users } from "lucide-react";
 import { useFirestore } from "../../hooks/useFirestore";
 
 // Charts
@@ -292,7 +292,7 @@ export default function ReportsAnalytics() {
                       </div>
                       <div>
                         <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-zinc-500">
+                        <p className="text-sm text-muted-foreground">
                           {item.count} orders
                         </p>
                       </div>
@@ -336,7 +336,7 @@ export default function ReportsAnalytics() {
                     >
                       <div>
                         <p className="font-bold">Table #{table.table}</p>
-                        <p className="text-sm text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                           {table.orders} orders
                         </p>
                       </div>

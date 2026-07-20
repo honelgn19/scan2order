@@ -1,17 +1,11 @@
-/* =============================================
-   FILE: src/layouts/CustomerLayout.tsx
-   ============================================= */
-
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import { ThemeToggle } from "../components/common/ThemeToggle";
 import { signInCustomer } from "../services/firebase/auth";
 import { error as loggerError } from "../lib/logger";
-import { useDarkMode } from "../hooks/useDarkMode";
 
 export default function CustomerLayout() {
-  const { isDark, toggleTheme } = useDarkMode(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,7 +35,6 @@ export default function CustomerLayout() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -55,16 +48,14 @@ export default function CustomerLayout() {
             </div>
           </div>
 
-          <ThemeToggle isDark={isDark} toggle={toggleTheme} />
+          <ThemeToggle />
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 pb-20">
         <Outlet />
       </main>
 
-      {/* Bottom Navigation */}
       <MobileBottomNav />
     </div>
   );

@@ -185,7 +185,7 @@ export default function ReadyOrdersPage() {
                         Table #{order.tableNumber}
                       </p>
 
-                      <p className="font-mono text-xs text-zinc-500 mt-1">
+                      <p className="font-mono text-xs text-muted-foreground mt-1">
                         {order.orderId}
                       </p>
                     </div>
@@ -211,7 +211,7 @@ export default function ReadyOrdersPage() {
                       TIMER
                   ============================================= */}
 
-                  <div className="flex items-center gap-2 text-zinc-400 text-sm mt-4">
+                  <div className="flex items-center gap-2 text-muted-foreground text-sm mt-4">
                     <Clock3 className="h-4 w-4" />
 
                     <span>Ready {elapsedMinutes} min ago</span>
@@ -284,7 +284,7 @@ export default function ReadyOrdersPage() {
 
                 <h3 className="text-2xl font-bold">All Orders Delivered</h3>
 
-                <p className="text-zinc-400 mt-2">No ready orders waiting</p>
+                <p className="text-muted-foreground mt-2">No ready orders waiting</p>
               </CardContent>
             </Card>
           )}

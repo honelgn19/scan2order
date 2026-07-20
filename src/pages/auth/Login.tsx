@@ -121,7 +121,7 @@ export default function Login() {
 
         <CardTitle className="text-2xl">Welcome Back</CardTitle>
 
-        <p className="text-zinc-500">Sign in to access your dashboard</p>
+        <p className="text-muted-foreground">Sign in to access your dashboard</p>
       </CardHeader>
 
       <CardContent>

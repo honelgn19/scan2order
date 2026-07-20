@@ -40,7 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Moon, Sun, Plus, Edit2, Trash2, Search, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Upload } from 'lucide-react';
 import {
   useFirestore,
   addDocument,
@@ -229,7 +229,7 @@ export default function FoodManagement() {
               {/* Filters remain same */}
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search foods..."
                     value={searchTerm}
@@ -287,7 +287,7 @@ export default function FoodManagement() {
                 {filteredFoods.map((food) => (
                   <TableRow key={food.id}>
                     <TableCell>
-                      <div className="w-14 h-14 rounded-lg overflow-hidden bg-zinc-800">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden bg-muted">
                         <img
                           src={getFoodImage(food)}
                           alt={food.name}
@@ -365,7 +365,7 @@ export default function FoodManagement() {
                     className="mx-auto w-32 h-32 object-cover rounded-lg mb-4"
                   />
                 ) : (
-                  <Upload className="h-12 w-12 text-zinc-500 mx-auto mb-3" />
+                  <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                 )}
                 <label className="cursor-pointer text-amber-500 hover:underline">
                   <Input

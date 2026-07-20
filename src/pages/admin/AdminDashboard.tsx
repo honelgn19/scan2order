@@ -111,7 +111,7 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-zinc-400">{stat.title}</p>
+                  <p className="text-sm text-muted-foreground">{stat.title}</p>
                   <p className="text-3xl font-bold mt-2">{stat.value}</p>
                 </div>
                 <div className={`${stat.color}`}>
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
                         <p className="font-medium">
                           Table #{order.tableNumber || "—"}
                         </p>
-                        <p className="text-sm text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                           {order.id?.slice(0, 12) || "—"}
                         </p>
                       </div>
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
                   </div>
                 ))
               ) : (
-                <p className="text-zinc-400 text-center py-8">
+                <p className="text-muted-foreground text-center py-8">
                   No orders yet today
                 </p>
               )}
@@ -187,17 +187,17 @@ export default function AdminDashboard() {
                   <div className="w-3 h-3 bg-green-500 rounded-full" />
                   <span>All POS Terminals Online</span>
                 </div>
-                <span className="text-sm text-zinc-400">4 Terminals</span>
+                <span className="text-sm text-muted-foreground">4 Terminals</span>
               </div>
 
               <div className="pt-4 border-t border-border">
                 <h4 className="font-medium mb-4">Quick Actions</h4>
                 <div className="grid grid-cols-2 gap-3">
-                  <button className="h-20 bg-zinc-800 hover:bg-zinc-700 rounded-2xl flex flex-col items-center justify-center transition-colors">
+                  <button className="h-20 bg-muted hover:bg-accent/80 rounded-2xl flex flex-col items-center justify-center transition-colors">
                     <span className="text-2xl mb-1">📋</span>
                     <span className="text-sm">New Order</span>
                   </button>
-                  <button className="h-20 bg-zinc-800 hover:bg-zinc-700 rounded-2xl flex flex-col items-center justify-center transition-colors">
+                  <button className="h-20 bg-muted hover:bg-accent/80 rounded-2xl flex flex-col items-center justify-center transition-colors">
                     <span className="text-2xl mb-1">📊</span>
                     <span className="text-sm">View Reports</span>
                   </button>

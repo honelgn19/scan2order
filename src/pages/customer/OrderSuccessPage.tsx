@@ -36,11 +36,11 @@ export default function OrderSuccessPage() {
           <CardContent className="p-8">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <p className="text-sm text-zinc-400">Order ID</p>
+                <p className="text-sm text-muted-foreground">Order ID</p>
                 <p className="font-mono text-xl font-medium">{orderId}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-zinc-400">Table</p>
+                <p className="text-sm text-muted-foreground">Table</p>
                 <p className="text-3xl font-bold text-amber-500">
                   #{tableNumber}
                 </p>
@@ -77,7 +77,7 @@ export default function OrderSuccessPage() {
           <Button
             variant="outline"
             onClick={() => navigate(`/customer/menu?table=${tableNumber}`)}
-            className="w-full h-14 text-lg border-white/30"
+            className="w-full h-14 text-lg border-border"
           >
             Order More Items
           </Button>

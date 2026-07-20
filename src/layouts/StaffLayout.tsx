@@ -1,16 +1,9 @@
-/* =============================================
-   LAYOUT: StaffLayout
-   PATH: src/layouts/StaffLayout.tsx
-   ============================================= */
-
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import StaffSidebar from "../components/layout/StaffSidebar";
 import TopNavbar from "../components/layout/TopNavbar";
-import { useDarkMode } from "../hooks/useDarkMode";
 
 export default function StaffLayout() {
-  const { isDark, toggleTheme } = useDarkMode(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -23,8 +16,6 @@ export default function StaffLayout() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <TopNavbar
           title="Staff Portal"
-          isDark={isDark}
-          toggleTheme={toggleTheme}
           onMobileMenuClick={() => setIsMobileMenuOpen((prev) => !prev)}
         />
 

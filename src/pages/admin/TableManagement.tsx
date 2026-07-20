@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { Moon, Sun, Plus, QrCode, Users, Clock, Trash2 } from 'lucide-react';
+import { Plus, QrCode, Users, Clock, Trash2 } from 'lucide-react';
 import {
   useFirestore,
   addDocument,
@@ -191,7 +191,7 @@ export default function TableManagement() {
                     <CardTitle className="text-4xl font-bold text-amber-500">
                       #{table.number}
                     </CardTitle>
-                    <p className="text-zinc-400">
+                    <p className="text-muted-foreground">
                       Capacity: {table.capacity} seats
                     </p>
                   </div>
@@ -213,7 +213,7 @@ export default function TableManagement() {
                         <p className="font-medium">
                           {table.currentSession.customerName}
                         </p>
-                        <p className="text-sm text-zinc-400 flex items-center gap-1">
+                        <p className="text-sm text-muted-foreground flex items-center gap-1">
                           <Clock className="h-3 w-3" />{" "}
                           {formatTimestamp(table.currentSession.startedAt)} •{" "}
                           {table.currentSession.guests} guests
@@ -222,7 +222,7 @@ export default function TableManagement() {
                     </div>
                   </div>
                 ) : (
-                  <div className="h-20 flex items-center justify-center text-zinc-500 text-sm border border-dashed border-zinc-700 rounded-xl">
+                  <div className="h-20 flex items-center justify-center text-muted-foreground text-sm border border-dashed border-zinc-700 rounded-xl">
                     No active session
                   </div>
                 )}
@@ -232,7 +232,7 @@ export default function TableManagement() {
                   <Button
                     variant="outline"
                     onClick={() => openQR(table)}
-                    className="border-white/20 hover:bg-white/5"
+                    className="border-border hover:bg-accent"
                   >
                     <QrCode className="mr-2 h-4 w-4" />
                     QR Code
@@ -355,7 +355,7 @@ export default function TableManagement() {
               />
             </div>
           )}
-          <p className="text-sm text-zinc-400 mt-4">
+          <p className="text-sm text-muted-foreground mt-4">
             Table {selectedTable?.number} • Lumina Grand Restaurant
           </p>
           <DialogFooter>

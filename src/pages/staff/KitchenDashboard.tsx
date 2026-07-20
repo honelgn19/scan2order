@@ -179,7 +179,7 @@ export default function KitchenDashboard() {
                               #{order.tableNumber}
                             </p>
 
-                            <p className="text-xs text-zinc-500 font-mono">
+                            <p className="text-xs text-muted-foreground font-mono">
                               {order.orderId}
                             </p>
                           </div>
@@ -196,7 +196,7 @@ export default function KitchenDashboard() {
                         </div>
 
                         {/* Time */}
-                        <div className="flex items-center gap-2 text-zinc-400 text-sm mt-3">
+                        <div className="flex items-center gap-2 text-muted-foreground text-sm mt-3">
                           <Clock3 className="h-4 w-4" />
 
                           <span>{elapsedMinutes} min ago</span>
@@ -246,7 +246,7 @@ export default function KitchenDashboard() {
 
                           {column.status === "Ready" && (
                             <Button
-                              className="w-full bg-zinc-700 hover:bg-zinc-600"
+                              className="w-full bg-muted hover:bg-accent"
                               onClick={() =>
                                 handleStatusUpdate(order.id, "Delivered")
                               }
@@ -262,7 +262,7 @@ export default function KitchenDashboard() {
                 })}
 
                 {getOrdersByStatus(column.status).length === 0 && (
-                  <div className="text-center text-zinc-500 py-10">
+                  <div className="text-center text-muted-foreground py-10">
                     No orders
                   </div>
                 )}
