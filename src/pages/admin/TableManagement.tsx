@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { Plus, QrCode, Users, Clock, Trash2, Download, Printer } from "lucide-react";
+import { Plus, QrCode, Users, Clock, Trash2, Download, Printer, ExternalLink, Copy, Check } from "lucide-react";
 import {
   useFirestore,
   addDocument,
@@ -58,6 +58,7 @@ export default function TableManagement() {
     null,
   );
   const [newTable, setNewTable] = useState({ number: "", capacity: 4 });
+  const [copied, setCopied] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -74,14 +75,19 @@ export default function TableManagement() {
     }
   };
 
-  const getQRCodeUrl = (table: RestaurantTable | null) => {
+  const getDestinationUrl = (table: RestaurantTable | null) => {
     if (!table) return "";
-    if (table.qrCode) return table.qrCode;
     const origin =
       typeof window !== "undefined"
         ? window.location.origin
         : "https://scan2order.vercel.app";
-    const qrDestination = `${origin}/customer?table=${table.number}`;
+    return `${origin}/customer?table=${table.number}`;
+  };
+
+  const getQRCodeUrl = (table: RestaurantTable | null) => {
+    if (!table) return "";
+    if (table.qrCode) return table.qrCode;
+    const qrDestination = getDestinationUrl(table);
     return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrDestination)}`;
   };
 
@@ -473,27 +479,65 @@ export default function TableManagement() {
               Scan to view digital menu and place order
             </DialogDescription>
           </DialogHeader>
+
           {selectedTable && (
-            <div className="flex justify-center py-6 bg-white rounded-2xl border border-border shadow-inner">
-              <img
-                src={getQRCodeUrl(selectedTable)}
-                alt={`QR Code for Table ${selectedTable.number}`}
-                className="w-56 h-56 rounded-xl shadow-md"
-              />
+            <div className="space-y-4">
+              <div className="flex justify-center py-6 bg-white rounded-2xl border border-border shadow-inner">
+                <img
+                  src={getQRCodeUrl(selectedTable)}
+                  alt={`QR Code for Table ${selectedTable.number}`}
+                  className="w-56 h-56 rounded-xl shadow-md"
+                />
+              </div>
+
+              <div className="bg-muted/50 p-3 rounded-xl text-xs space-y-2 border border-border text-left">
+                <p className="font-semibold text-foreground flex items-center justify-between">
+                  <span>Encoded Destination URL:</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(getDestinationUrl(selectedTable));
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    className="text-amber-500 hover:underline flex items-center gap-1 font-normal"
+                  >
+                    {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                    {copied ? "Copied!" : "Copy"}
+                  </button>
+                </p>
+                <p className="text-muted-foreground font-mono truncate text-[11px] bg-background p-1.5 rounded border border-border">
+                  {getDestinationUrl(selectedTable)}
+                </p>
+
+                <div className="pt-1 text-[11px] text-muted-foreground leading-relaxed">
+                  💡 <strong>Mobile Phone Scanning Tip</strong>: Scanning <code className="text-amber-500">localhost</code> from your phone camera won't connect because <code className="text-amber-500">localhost</code> targets your phone. To scan from a phone in dev, use your computer's local Wi-Fi IP (<code className="text-amber-500">192.168.x.x:5173</code>) or test your live production URL when deployed.
+                </div>
+              </div>
             </div>
           )}
-          <p className="text-sm text-muted-foreground mt-2">
-            Table #{selectedTable?.number} • Bright Day Grand Hotel & Restaurant
-          </p>
-          <div className="grid grid-cols-2 gap-3 mt-4">
+
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (selectedTable) {
+                  window.open(getDestinationUrl(selectedTable), "_blank");
+                }
+              }}
+            >
+              <ExternalLink className="mr-2 h-4 w-4" /> Test Customer Link
+            </Button>
+
             <Button variant="outline" onClick={handleDownloadQR}>
               <Download className="mr-2 h-4 w-4" /> Download PNG
             </Button>
-            <Button className="bg-amber-600 hover:bg-amber-700" onClick={handlePrintQR}>
-              <Printer className="mr-2 h-4 w-4" /> Print Card
-            </Button>
           </div>
-          <DialogFooter className="mt-4">
+
+          <Button className="w-full bg-amber-600 hover:bg-amber-700" onClick={handlePrintQR}>
+            <Printer className="mr-2 h-4 w-4" /> Print Table QR Card
+          </Button>
+
+          <DialogFooter className="mt-2">
             <Button variant="ghost" className="w-full" onClick={() => setIsQRModalOpen(false)}>
               Close
             </Button>
