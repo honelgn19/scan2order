@@ -80,7 +80,7 @@ export default function TableManagement() {
     const origin =
       typeof window !== "undefined"
         ? window.location.origin
-        : "https://scan2order.vercel.app";
+        : "https://scan2order-pink.vercel.app";
     return `${origin}/customer?table=${table.number}`;
   };
 
@@ -265,7 +265,7 @@ export default function TableManagement() {
     const origin =
       typeof window !== "undefined"
         ? window.location.origin
-        : "https://scan2order.vercel.app";
+        : "https://scan2order-pink.vercel.app";
     const qrDestination = `${origin}/customer?table=${tableNumber}`;
     const tableData: Omit<RestaurantTable, "id"> = {
       number: tableNumber,
