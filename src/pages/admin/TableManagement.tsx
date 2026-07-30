@@ -1,8 +1,8 @@
 /* =============================================
    PAGE NAME: TableManagement
-   FILE PATH: src/pages/TableManagement.tsx
+   FILE PATH: src/pages/admin/TableManagement.tsx
    ============================================= */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { Plus, QrCode, Users, Clock, Trash2 } from 'lucide-react';
+import { Plus, QrCode, Users, Clock, Trash2, Download, Printer } from "lucide-react";
 import {
   useFirestore,
   addDocument,
@@ -33,6 +33,7 @@ import { serverTimestamp } from "firebase/firestore";
 import { parseTable, parseTablePartial } from "../../lib/schemas";
 import { formatTimestamp } from "../../lib/utils";
 import { useAuth } from "../../hooks/useAuth";
+import Logo from "../../components/common/Logo";
 
 interface RestaurantTable {
   id: string;
@@ -51,16 +52,13 @@ export default function TableManagement() {
   const { user } = useAuth();
   const { data: tables, loading } = useFirestore<RestaurantTable>("tables");
 
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState<RestaurantTable | null>(
     null,
   );
   const [newTable, setNewTable] = useState({ number: "", capacity: 4 });
 
-  // Theme
-  
-  
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Available":
@@ -76,9 +74,149 @@ export default function TableManagement() {
     }
   };
 
+  const getQRCodeUrl = (table: RestaurantTable | null) => {
+    if (!table) return "";
+    if (table.qrCode) return table.qrCode;
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://scan2order.vercel.app";
+    const qrDestination = `${origin}/customer?table=${table.number}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrDestination)}`;
+  };
+
   const openQR = (table: RestaurantTable) => {
     setSelectedTable(table);
     setIsQRModalOpen(true);
+  };
+
+  const handleDownloadQR = async () => {
+    if (!selectedTable) return;
+    const qrUrl = getQRCodeUrl(selectedTable);
+    try {
+      const response = await fetch(qrUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `table-${selectedTable.number}-qr.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      loggerError("Failed to download QR code:", err);
+      window.open(qrUrl, "_blank");
+    }
+  };
+
+  const handlePrintQR = () => {
+    if (!selectedTable) return;
+    const qrUrl = getQRCodeUrl(selectedTable);
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print QR Code - Table ${selectedTable.number}</title>
+          <style>
+            body {
+              font-family: system-ui, -apple-system, sans-serif;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              min-height: 100vh;
+              margin: 0;
+              padding: 2rem;
+              background-color: #f9fafb;
+              text-align: center;
+            }
+            .card {
+              background: white;
+              border: 2px solid #e5e7eb;
+              border-radius: 1.5rem;
+              padding: 2.5rem;
+              max-width: 340px;
+              box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            }
+            .logo-text {
+              font-size: 1.75rem;
+              font-weight: 800;
+              color: #d97706;
+              margin-bottom: 0.25rem;
+            }
+            .sub-text {
+              font-size: 0.75rem;
+              letter-spacing: 0.15em;
+              color: #6b7280;
+              text-transform: uppercase;
+              font-weight: 600;
+              margin-bottom: 1.5rem;
+            }
+            .qr-container {
+              background: #ffffff;
+              padding: 1rem;
+              border-radius: 1rem;
+              display: inline-block;
+              border: 1px solid #f3f4f6;
+            }
+            .qr-image {
+              width: 220px;
+              height: 220px;
+              display: block;
+            }
+            .table-badge {
+              margin-top: 1.5rem;
+              display: inline-block;
+              background-color: #d97706;
+              color: #ffffff;
+              font-size: 1.25rem;
+              font-weight: 700;
+              padding: 0.5rem 1.75rem;
+              border-radius: 9999px;
+            }
+            .instruction {
+              margin-top: 1rem;
+              font-size: 0.875rem;
+              color: #4b5563;
+              font-weight: 500;
+            }
+            @media print {
+              body {
+                background: white;
+              }
+              .card {
+                box-shadow: none;
+                border: 2px solid #000;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="logo-text">Bright Day</div>
+            <div class="sub-text">Grand Hotel & Restaurant</div>
+            <div class="qr-container">
+              <img src="${qrUrl}" class="qr-image" alt="Table QR Code" />
+            </div>
+            <div>
+              <div class="table-badge">TABLE #${selectedTable.number}</div>
+            </div>
+            <p class="instruction">Scan QR code to view menu & place order</p>
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(function() { window.close(); }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const changeTableStatus = async (
@@ -92,12 +230,10 @@ export default function TableManagement() {
         ...(newStatus === "Available" && { currentSession: null }),
       } as const;
 
-      // validate partial update
       try {
         parseTablePartial(payload);
       } catch (ve) {
         loggerError("Table update validation failed:", ve);
-        // still attempt update, but log the validation error
       }
 
       await updateDocument("tables", id, payload as any);
@@ -135,7 +271,6 @@ export default function TableManagement() {
     try {
       const toInsert = { ...tableData, createdAt: serverTimestamp() };
 
-      // validate table data before inserting
       parseTable(toInsert);
 
       await addDocument("tables", toInsert as any);
@@ -157,18 +292,10 @@ export default function TableManagement() {
       <div className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
-              <span className="text-3xl">🪑</span>
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Table Management</h1>
-              <p className="text-sm text-amber-500">
-                Lumina Grand Restaurant • Real-time Status
-              </p>
-            </div>
+            <Logo size="md" showText textSub="TABLE MANAGEMENT" />
           </div>
           <div className="flex items-center gap-4">
-                        <Button
+            <Button
               onClick={() => setIsAddModalOpen(true)}
               className="bg-amber-600 hover:bg-amber-700"
             >
@@ -343,23 +470,31 @@ export default function TableManagement() {
           <DialogHeader>
             <DialogTitle>Table #{selectedTable?.number} QR Code</DialogTitle>
             <DialogDescription>
-              Scan to view menu and place order
+              Scan to view digital menu and place order
             </DialogDescription>
           </DialogHeader>
-          {selectedTable?.qrCode && (
-            <div className="flex justify-center py-8 bg-white rounded-2xl">
+          {selectedTable && (
+            <div className="flex justify-center py-6 bg-white rounded-2xl border border-border shadow-inner">
               <img
-                src={selectedTable.qrCode}
+                src={getQRCodeUrl(selectedTable)}
                 alt={`QR Code for Table ${selectedTable.number}`}
-                className="rounded-xl shadow-xl"
+                className="w-56 h-56 rounded-xl shadow-md"
               />
             </div>
           )}
-          <p className="text-sm text-muted-foreground mt-4">
-            Table {selectedTable?.number} • Lumina Grand Restaurant
+          <p className="text-sm text-muted-foreground mt-2">
+            Table #{selectedTable?.number} • Bright Day Grand Hotel & Restaurant
           </p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsQRModalOpen(false)}>
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            <Button variant="outline" onClick={handleDownloadQR}>
+              <Download className="mr-2 h-4 w-4" /> Download PNG
+            </Button>
+            <Button className="bg-amber-600 hover:bg-amber-700" onClick={handlePrintQR}>
+              <Printer className="mr-2 h-4 w-4" /> Print Card
+            </Button>
+          </div>
+          <DialogFooter className="mt-4">
+            <Button variant="ghost" className="w-full" onClick={() => setIsQRModalOpen(false)}>
               Close
             </Button>
           </DialogFooter>
