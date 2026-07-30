@@ -2,7 +2,7 @@
    PAGE NAME: TableManagement
    FILE PATH: src/pages/admin/TableManagement.tsx
    ============================================= */
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -59,6 +59,21 @@ export default function TableManagement() {
   );
   const [newTable, setNewTable] = useState({ number: "", capacity: 4 });
   const [copied, setCopied] = useState(false);
+
+  // Sort tables ascendingly by table number
+  const sortedTables = useMemo(() => {
+    return [...tables].sort((a, b) => {
+      const numA = parseInt(a.number, 10);
+      const numB = parseInt(b.number, 10);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        return numA - numB;
+      }
+      return (a.number || "").localeCompare(b.number || "", undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+    });
+  }, [tables]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -313,7 +328,7 @@ export default function TableManagement() {
 
       <div className="max-w-screen-2xl mx-auto p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {tables.map((table) => (
+          {sortedTables.map((table) => (
             <Card
               key={table.id}
               className="bg-card border-border hover:border-amber-500/50 transition-all"

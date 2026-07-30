@@ -55,13 +55,21 @@ export default function ActiveTablesPage() {
   const { data: tables = [], loading } = useFirestore<Table>("tables");
 
   
-  // Filter only active tables
+  // Filter and sort active tables ascendingly by table number
   const activeTables = useMemo(() => {
-    return tables.filter((table) =>
+    const filtered = tables.filter((table) =>
       ["Occupied", "Reserved", "Ordering", "Eating", "Waiting Bill"].includes(
         table.status || "",
       ),
     );
+    return filtered.sort((a, b) => {
+      const numA = parseInt(a.number || "", 10);
+      const numB = parseInt(b.number || "", 10);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return (a.number || "").localeCompare(b.number || "", undefined, {
+        numeric: true,
+      });
+    });
   }, [tables]);
 
   const getStatusColor = (status: string) => {
