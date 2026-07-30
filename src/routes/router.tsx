@@ -77,11 +77,7 @@ export const router = createBrowserRouter([
 
       {
         path: "customer",
-        element: (
-          <ProtectedRoute allowedRoles={["customer"]}>
-            <CustomerLayout />
-          </ProtectedRoute>
-        ),
+        element: <CustomerLayout />,
         children: [
           {
             index: true,
