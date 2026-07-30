@@ -481,38 +481,12 @@ export default function TableManagement() {
           </DialogHeader>
 
           {selectedTable && (
-            <div className="space-y-4">
-              <div className="flex justify-center py-6 bg-white rounded-2xl border border-border shadow-inner">
-                <img
-                  src={getQRCodeUrl(selectedTable)}
-                  alt={`QR Code for Table ${selectedTable.number}`}
-                  className="w-56 h-56 rounded-xl shadow-md"
-                />
-              </div>
-
-              <div className="bg-muted/50 p-3 rounded-xl text-xs space-y-2 border border-border text-left">
-                <p className="font-semibold text-foreground flex items-center justify-between">
-                  <span>Encoded Destination URL:</span>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(getDestinationUrl(selectedTable));
-                      setCopied(true);
-                      setTimeout(() => setCopied(false), 2000);
-                    }}
-                    className="text-amber-500 hover:underline flex items-center gap-1 font-normal"
-                  >
-                    {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                    {copied ? "Copied!" : "Copy"}
-                  </button>
-                </p>
-                <p className="text-muted-foreground font-mono truncate text-[11px] bg-background p-1.5 rounded border border-border">
-                  {getDestinationUrl(selectedTable)}
-                </p>
-
-                <div className="pt-1 text-[11px] text-muted-foreground leading-relaxed">
-                  💡 <strong>Mobile Phone Scanning Tip</strong>: Scanning <code className="text-amber-500">localhost</code> from your phone camera won't connect because <code className="text-amber-500">localhost</code> targets your phone. To scan from a phone in dev, use your computer's local Wi-Fi IP (<code className="text-amber-500">192.168.x.x:5173</code>) or test your live production URL when deployed.
-                </div>
-              </div>
+            <div className="flex justify-center py-6 bg-white rounded-2xl border border-border shadow-inner">
+              <img
+                src={getQRCodeUrl(selectedTable)}
+                alt={`QR Code for Table ${selectedTable.number}`}
+                className="w-56 h-56 rounded-xl shadow-md"
+              />
             </div>
           )}
 
