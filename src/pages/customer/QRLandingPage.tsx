@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Bell, Menu } from "lucide-react";
+import Logo from "../../components/common/Logo";
 
 export default function QRLandingPage() {
   const [searchParams] = useSearchParams();
@@ -25,15 +26,16 @@ export default function QRLandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <div className="mb-10">
+        <div className="mb-10 flex flex-col items-center">
+          <Logo size="xl" showText textSub="GRAND HOTEL & RESTAURANT" className="mb-6" />
           <Badge
             variant="outline"
             className="mb-4 text-lg px-6 py-2 border-amber-500 text-amber-500"
           >
             TABLE #{tableNumber}
           </Badge>
-          <h2 className="text-5xl font-bold mb-3">Welcome!</h2>
-          <p className="text-muted-foreground text-xl">
+          <h2 className="text-4xl font-bold mb-3">Welcome!</h2>
+          <p className="text-muted-foreground text-lg">
             We're delighted to serve you today
           </p>
         </div>

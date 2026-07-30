@@ -11,6 +11,7 @@ import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Search, ShoppingCart } from "lucide-react";
+import Logo from "../../components/common/Logo";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useCartStore } from "../../store/cartStore";
 
@@ -93,15 +94,7 @@ export default function DigitalMenuPage() {
       {/* Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
-              <span className="text-2xl">🍽️</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">Lumina Menu</h1>
-              <p className="text-xs text-amber-500">Table #{tableNumber}</p>
-            </div>
-          </div>
+          <Logo size="sm" showText textSub={`Table #${tableNumber}`} />
         </div>
 
         {/* Search */}

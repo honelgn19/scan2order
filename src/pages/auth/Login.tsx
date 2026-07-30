@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { BedDouble, UtensilsCrossed } from "lucide-react";
+import Logo from "../../components/common/Logo";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
@@ -102,21 +103,8 @@ export default function Login() {
   return (
     <Card className="w-full border-0 shadow-2xl bg-white/95 dark:bg-background/95 backdrop-blur-xl">
       <CardHeader className="space-y-6 text-center pb-8">
-        <div className="mx-auto flex items-center justify-center gap-3">
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
-            <div className="flex">
-              <BedDouble className="h-9 w-9 text-white" />
-              <UtensilsCrossed className="h-9 w-9 text-white -ml-1" />
-            </div>
-          </div>
-
-          <div>
-            <h1 className="text-4xl font-bold">Bright Day</h1>
-
-            <p className="text-amber-600 dark:text-amber-500 text-sm">
-              GRAND HOTEL & RESTAURANT
-            </p>
-          </div>
+        <div className="mx-auto flex items-center justify-center">
+          <Logo size="xl" showText textSub="GRAND HOTEL & RESTAURANT" />
         </div>
 
         <CardTitle className="text-2xl">Welcome Back</CardTitle>

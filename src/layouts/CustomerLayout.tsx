@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
+import Logo from "../components/common/Logo";
 import { ThemeToggle } from "../components/common/ThemeToggle";
 import { signInCustomer } from "../services/firebase/auth";
 import { error as loggerError } from "../lib/logger";
@@ -37,16 +38,7 @@ export default function CustomerLayout() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border">
         <div className="px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">
-              🍽️
-            </div>
-
-            <div>
-              <h1 className="text-xl font-bold">Lumina</h1>
-              <p className="text-[10px] text-amber-500">Grand Restaurant</p>
-            </div>
-          </div>
+          <Logo size="sm" showText textSub="GRAND HOTEL & RESTAURANT" />
 
           <ThemeToggle />
         </div>
