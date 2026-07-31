@@ -43,6 +43,13 @@ export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCartStore();
 
   const { data: existingPayments = [] } = useFirestore<any>("payments");
+  const { data: settingsData = [] } = useFirestore<any>("settings");
+  const liveSettings = settingsData[0] || {};
+
+  const telePhone = liveSettings.telebirrPhone || "0911234567";
+  const teleShort = liveSettings.telebirrShortcode || "789012";
+  const cbeAcc = liveSettings.cbeAccountNumber || "1000123456789";
+  const cbeName = liveSettings.cbeAccountName || "Bright Day Hotel & Restaurant";
 
   const subtotal = totalPrice();
   const vat = subtotal * 0.15;
@@ -387,7 +394,7 @@ export default function CheckoutPage() {
                     <ol className="list-decimal list-inside space-y-1 text-xs text-muted-foreground">
                       <li>Open Telebirr App or Dial <strong>*127#</strong></li>
                       <li>Select Pay Merchant / Transfer</li>
-                      <li>Enter Till / Phone: <strong>+251 911 234 567</strong></li>
+                      <li>Enter Till / Phone: <strong>{telePhone}</strong></li>
                       <li>Enter Amount: <strong>ETB {total.toFixed(0)}</strong></li>
                     </ol>
                   </div>
@@ -397,9 +404,9 @@ export default function CheckoutPage() {
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Telebirr Merchant Phone:</span>
                       <div className="flex items-center gap-2 font-mono font-bold">
-                        <span>0911234567</span>
+                        <span>{telePhone}</span>
                         <button
-                          onClick={() => copyToClipboard("0911234567", "telePhone")}
+                          onClick={() => copyToClipboard(telePhone, "telePhone")}
                           className="p-1.5 hover:bg-accent rounded-lg text-amber-500"
                         >
                           {copiedField === "telePhone" ? (
@@ -414,9 +421,9 @@ export default function CheckoutPage() {
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Merchant Shortcode:</span>
                       <div className="flex items-center gap-2 font-mono font-bold">
-                        <span>789012</span>
+                        <span>{teleShort}</span>
                         <button
-                          onClick={() => copyToClipboard("789012", "teleShort")}
+                          onClick={() => copyToClipboard(teleShort, "teleShort")}
                           className="p-1.5 hover:bg-accent rounded-lg text-amber-500"
                         >
                           {copiedField === "teleShort" ? (
@@ -438,8 +445,8 @@ export default function CheckoutPage() {
                     <ol className="list-decimal list-inside space-y-1 text-xs text-muted-foreground">
                       <li>Open CBE Mobile Banking or CBE Birr App</li>
                       <li>Select Transfer to Account</li>
-                      <li>Account Number: <strong>1000123456789</strong></li>
-                      <li>Account Name: <strong>Bright Day Hotel & Restaurant</strong></li>
+                      <li>Account Number: <strong>{cbeAcc}</strong></li>
+                      <li>Account Name: <strong>{cbeName}</strong></li>
                     </ol>
                   </div>
 
@@ -448,9 +455,9 @@ export default function CheckoutPage() {
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">CBE Account Number:</span>
                       <div className="flex items-center gap-2 font-mono font-bold">
-                        <span>1000123456789</span>
+                        <span>{cbeAcc}</span>
                         <button
-                          onClick={() => copyToClipboard("1000123456789", "cbeAcc")}
+                          onClick={() => copyToClipboard(cbeAcc, "cbeAcc")}
                           className="p-1.5 hover:bg-accent rounded-lg text-amber-500"
                         >
                           {copiedField === "cbeAcc" ? (
