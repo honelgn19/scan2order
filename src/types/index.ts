@@ -6,8 +6,12 @@
 export interface MenuItem {
   id: string;
   name: string;
+  nameAm?: string;
+  nameOm?: string;
   price: number;
   description?: string;
+  descriptionAm?: string;
+  descriptionOm?: string;
   image?: string;
   category: string;
   fasting: "FASTING" | "NON_FASTING" | "BOTH";

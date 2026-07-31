@@ -74,10 +74,14 @@ export default function FoodManagement() {
 
   const [newFood, setNewFood] = useState<Partial<MenuItem>>({
     name: "",
+    nameAm: "",
+    nameOm: "",
     category: "",
     price: 0,
     image: "",
     description: "",
+    descriptionAm: "",
+    descriptionOm: "",
     fasting: "BOTH",
     available: true,
   });
@@ -88,7 +92,8 @@ export default function FoodManagement() {
   
   const filteredFoods = foods.filter((food) => {
     const matchesSearch = food?.name
-      ? food.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ? food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (food.nameAm && food.nameAm.toLowerCase().includes(searchTerm.toLowerCase()))
       : false;
 
     const matchesCategory =
@@ -385,27 +390,107 @@ export default function FoodManagement() {
               ) : null}
             </div>
 
-            <div>
-              <Label>Food Name *</Label>
-              <Input
-                value={newFood.name || ""}
-                onChange={(e) =>
-                  setNewFood({ ...newFood, name: e.target.value })
-                }
-                placeholder="Doro Wot"
-              />
+            {/* Multi-language Food Names */}
+            <div className="space-y-3 bg-muted/30 p-3.5 rounded-2xl border border-border">
+              <Label className="font-bold text-amber-500 text-xs uppercase tracking-wider">
+                🌐 Food Name (Multi-Language)
+              </Label>
+              <div className="space-y-2">
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    English 🇬🇧 *
+                  </span>
+                  <Input
+                    value={newFood.name || ""}
+                    onChange={(e) =>
+                      setNewFood({ ...newFood, name: e.target.value })
+                    }
+                    placeholder="e.g. Doro Wot"
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    አማርኛ (Amharic) 🇪🇹
+                  </span>
+                  <Input
+                    value={newFood.nameAm || ""}
+                    onChange={(e) =>
+                      setNewFood({ ...newFood, nameAm: e.target.value })
+                    }
+                    placeholder="ምሳሌ፦ ዶሮ ወጥ"
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    Afaan Oromoo 🇪🇹
+                  </span>
+                  <Input
+                    value={newFood.nameOm || ""}
+                    onChange={(e) =>
+                      setNewFood({ ...newFood, nameOm: e.target.value })
+                    }
+                    placeholder="Fakkeenya: Doro Wot Aadaa"
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div>
-              <Label>Description *</Label>
-              <Textarea
-                value={newFood.description || ""}
-                onChange={(e) =>
-                  setNewFood({ ...newFood, description: e.target.value })
-                }
-                placeholder="Spicy chicken stew served with injera..."
-                rows={3}
-              />
+            {/* Multi-language Food Descriptions */}
+            <div className="space-y-3 bg-muted/30 p-3.5 rounded-2xl border border-border">
+              <Label className="font-bold text-amber-500 text-xs uppercase tracking-wider">
+                📝 Description (Multi-Language)
+              </Label>
+              <div className="space-y-2">
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    English Description 🇬🇧
+                  </span>
+                  <Textarea
+                    value={newFood.description || ""}
+                    onChange={(e) =>
+                      setNewFood({ ...newFood, description: e.target.value })
+                    }
+                    placeholder="Spicy traditional chicken stew served with injera..."
+                    rows={2}
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    የአማርኛ ማብራሪያ (Amharic) 🇪🇹
+                  </span>
+                  <Textarea
+                    value={newFood.descriptionAm || ""}
+                    onChange={(e) =>
+                      setNewFood({ ...newFood, descriptionAm: e.target.value })
+                    }
+                    placeholder="በእንጀራ የሚቀርብ ጣፋጭ ባህላዊ የዶሮ ወጥ..."
+                    rows={2}
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    Ibsa Afaan Oromoo 🇪🇹
+                  </span>
+                  <Textarea
+                    value={newFood.descriptionOm || ""}
+                    onChange={(e) =>
+                      setNewFood({ ...newFood, descriptionOm: e.target.value })
+                    }
+                    placeholder="Nyaata aadaa mi'aawaa buddeenaan dhiyaatu..."
+                    rows={2}
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

@@ -43,6 +43,8 @@ import { log, error as loggerError } from "../../lib/logger";
 interface Category {
   id: string;
   name: string;
+  nameAm?: string;
+  nameOm?: string;
   description?: string;
   image: string;
   itemCount: number;
@@ -330,15 +332,54 @@ export default function CategoryManagement() {
               ) : null}
             </div>
 
-            <div>
-              <Label>Category Name</Label>
-              <Input
-                value={newCategory.name}
-                onChange={(e) =>
-                  setNewCategory({ ...newCategory, name: e.target.value })
-                }
-                placeholder="e.g. Breakfast"
-              />
+            {/* Multi-Language Category Name */}
+            <div className="space-y-3 bg-muted/30 p-3.5 rounded-2xl border border-border">
+              <Label className="font-bold text-amber-500 text-xs uppercase tracking-wider">
+                📁 Category Name (Multi-Language)
+              </Label>
+              <div className="space-y-2">
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    English 🇬🇧 *
+                  </span>
+                  <Input
+                    value={newCategory.name || ""}
+                    onChange={(e) =>
+                      setNewCategory({ ...newCategory, name: e.target.value })
+                    }
+                    placeholder="e.g. Traditional"
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    አማርኛ (Amharic) 🇪🇹
+                  </span>
+                  <Input
+                    value={newCategory.nameAm || ""}
+                    onChange={(e) =>
+                      setNewCategory({ ...newCategory, nameAm: e.target.value })
+                    }
+                    placeholder="ምሳሌ፦ ባህላዊ"
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
+                    Afaan Oromoo 🇪🇹
+                  </span>
+                  <Input
+                    value={newCategory.nameOm || ""}
+                    onChange={(e) =>
+                      setNewCategory({ ...newCategory, nameOm: e.target.value })
+                    }
+                    placeholder="Fakkeenya: Aadaa"
+                    className="mt-0.5 bg-card"
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
