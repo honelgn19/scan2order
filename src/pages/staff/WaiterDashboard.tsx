@@ -198,17 +198,6 @@ export default function WaiterDashboard() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.open("/customer/menu?table=01", "_blank")}
-              className="gap-1.5 bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/20 text-xs sm:text-sm font-medium"
-              title="Open Customer Digital Menu"
-            >
-              <UtensilsCrossed className="h-4 w-4" />
-              <span className="hidden sm:inline">View Menu</span>
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
               onClick={() => signOutUser()}
               className="text-red-500 border-red-500/30 hover:bg-red-500/10 hover:text-red-400 gap-1.5"
               title="Log out"

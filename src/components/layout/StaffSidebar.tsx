@@ -24,7 +24,6 @@ const staffMenu = [
   { icon: ClipboardList, label: "Ready Orders", path: "/staff/ready-orders" },
   { icon: Users, label: "Active Tables", path: "/staff/active-tables" },
   { icon: UserCheck, label: "Waiter Dashboard", path: "/staff/waiter" },
-  { icon: UtensilsCrossed, label: "View Digital Menu", path: "/customer/menu?table=01" },
 ];
 
 interface StaffSidebarProps {
