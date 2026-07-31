@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Tables Collection: Allow read and write for table management & guest ordering
+    match /tables/{tableId} {
+      allow read, write: if true;
+    }
+
+    // Orders Collection: Allow read, create, update for customer checkout & staff kitchen
+    match /orders/{orderId} {
+      allow read, create, update: if true;
+      allow delete: if true;
+    }
+
+    // Foods Collection: Menu management
+    match /foods/{foodId} {
+      allow read, write: if true;
+    }
+
+    // Categories Collection
+    match /categories/{categoryId} {
+      allow read, write: if true;
+    }
+
+    // Notifications Collection: Call waiter alerts & notifications
+    match /notifications/{notificationId} {
+      allow read, create, update, delete: if true;
+    }
+
+    // Payments Collection: Payment verifications
+    match /payments/{paymentId} {
+      allow read, create, update: if true;
+    }
+
+    // Settings Collection: System & Merchant settings
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // Users Collection: Staff accounts
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+  }
+}
