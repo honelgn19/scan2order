@@ -103,7 +103,7 @@ export default function ActiveTablesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-card border-b border-border px-6 py-4">
+      <div className="relative bg-card border-b border-border px-6 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <h1 className="text-3xl font-bold">Active Tables</h1>

@@ -168,7 +168,7 @@ export default function WaiterDashboard() {
           HEADER
       ============================================= */}
 
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+      <div className="relative bg-background/95 border-b border-border">
         <div className="max-w-screen-2xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600">

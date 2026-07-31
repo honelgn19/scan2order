@@ -130,7 +130,7 @@ export default function ReadyOrdersPage() {
           HEADER
       ============================================= */}
 
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+      <div className="relative bg-background/95 border-b border-border">
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-700">

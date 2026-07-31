@@ -114,7 +114,7 @@ export default function KitchenDashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+      <div className="relative bg-background/95 border-b border-border">
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600">
@@ -150,7 +150,7 @@ export default function KitchenDashboard() {
               className="bg-card rounded-2xl border border-border p-3"
             >
               {/* Column Header */}
-              <div className="sticky top-20 z-30 bg-card pb-3 flex items-center justify-between">
+              <div className="relative bg-card pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${column.color}`} />
 
