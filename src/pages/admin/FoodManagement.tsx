@@ -356,27 +356,33 @@ export default function FoodManagement() {
           <div className="space-y-4 py-4">
             {/* Image Upload */}
             <div>
-              <Label>Food Image</Label>
-              <div className="mt-2 border-2 border-dashed border-zinc-700 rounded-xl p-6 text-center">
-                {imagePreview ? (
+              <Label>Image URL</Label>
+              <Input
+                type="url"
+                value={newFood.image || ""}
+                onChange={(e) =>
+                  setNewFood({ ...newFood, image: e.target.value })
+                }
+                placeholder="https://images.unsplash.com/photo-1544025162-d76694265947?w=600"
+                className="mt-1"
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Paste a direct image web link (e.g. Unsplash, Imgur, CDN)
+              </p>
+
+              {newFood.image ? (
+                <div className="mt-3 relative h-36 rounded-2xl overflow-hidden border border-border bg-muted">
                   <img
-                    src={imagePreview}
-                    alt="preview"
-                    className="mx-auto w-32 h-32 object-cover rounded-lg mb-4"
+                    src={newFood.image}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600";
+                    }}
                   />
-                ) : (
-                  <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                )}
-                <label className="cursor-pointer text-amber-500 hover:underline">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                  Upload Image
-                </label>
-              </div>
+                </div>
+              ) : null}
             </div>
 
             <div>

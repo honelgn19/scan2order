@@ -301,27 +301,33 @@ export default function CategoryManagement() {
 
           <div className="space-y-4 py-4">
             <div>
-              <Label>Category Image / Icon</Label>
-              <div className="mt-2 flex flex-col items-center justify-center border-2 border-dashed border-zinc-700 rounded-xl p-6">
-                {imagePreview ? (
+              <Label>Category Image URL *</Label>
+              <Input
+                type="url"
+                value={newCategory.image || ""}
+                onChange={(e) =>
+                  setNewCategory({ ...newCategory, image: e.target.value })
+                }
+                placeholder="https://images.unsplash.com/photo-1544025162-d76694265947?w=600"
+                className="mt-1"
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Paste a direct image web link (e.g. Unsplash, Imgur, CDN)
+              </p>
+
+              {newCategory.image ? (
+                <div className="mt-3 relative h-36 rounded-2xl overflow-hidden border border-border bg-muted">
                   <img
-                    src={imagePreview}
-                    alt="preview"
-                    className="w-32 h-32 object-cover rounded-lg mb-4"
+                    src={newCategory.image}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600";
+                    }}
                   />
-                ) : (
-                  <Upload className="h-12 w-12 text-muted-foreground mb-3" />
-                )}
-                <label className="cursor-pointer text-amber-500 hover:underline">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                  Upload Image
-                </label>
-              </div>
+                </div>
+              ) : null}
             </div>
 
             <div>
