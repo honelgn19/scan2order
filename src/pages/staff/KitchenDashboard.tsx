@@ -8,7 +8,8 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2 } from "lucide-react";
+import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2, LogOut } from "lucide-react";
+import { signOutUser } from "../../services/firebase/auth";
 
 import {
   listenToOrders,
@@ -136,6 +137,17 @@ export default function KitchenDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               Live
             </Badge>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => signOutUser()}
+              className="text-red-500 border-red-500/30 hover:bg-red-500/10 hover:text-red-400 gap-1.5"
+              title="Log out"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
           </div>
         </div>
       </div>

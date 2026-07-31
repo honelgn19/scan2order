@@ -11,6 +11,10 @@ export async function signInCustomer() {
 }
 
 export async function signOutUser() {
-  if (!auth.currentUser) return;
-  return signOut(auth);
+  if (auth.currentUser) {
+    await signOut(auth);
+  }
+  if (typeof window !== "undefined") {
+    window.location.href = "/login";
+  }
 }

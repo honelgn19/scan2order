@@ -8,8 +8,9 @@ import React, { useState, useMemo } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Users, Bell } from 'lucide-react';
+import { Users, Bell, LogOut } from 'lucide-react';
 import { useFirestore } from "../../hooks/useFirestore";
+import { signOutUser } from "../../services/firebase/auth";
 
 const formatTime = (timestamp: unknown): string => {
   if (!timestamp) return "—";
@@ -110,6 +111,16 @@ export default function ActiveTablesPage() {
               {activeTables.length}
             </Badge>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => signOutUser()}
+            className="text-red-500 border-red-500/30 hover:bg-red-500/10 hover:text-red-400 gap-1.5"
+            title="Log out"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="hidden sm:inline">Logout</span>
+          </Button>
                   </div>
       </div>
 

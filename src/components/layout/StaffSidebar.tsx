@@ -13,8 +13,10 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  LogOut,
 } from "lucide-react";
 import Logo from "../common/Logo";
+import { signOutUser } from "../../services/firebase/auth";
 
 const staffMenu = [
   { icon: ChefHat, label: "Kitchen Queue", path: "/staff/kitchen" },
@@ -89,7 +91,17 @@ export default function StaffSidebar({
           ))}
         </nav>
 
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-3">
+          <button
+            onClick={() => signOutUser()}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 hover:text-red-400 transition-all group ${
+              isCollapsed ? "justify-center" : ""
+            }`}
+            title="Log Out"
+          >
+            <LogOut className="h-5 w-5 flex-shrink-0" />
+            {!isCollapsed && <span>Log Out</span>}
+          </button>
           {!isCollapsed && (
             <p className="text-xs text-muted-foreground text-center">
               © 2026 Bright Day Grand
