@@ -12,6 +12,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Search, ShoppingCart } from "lucide-react";
 import Logo from "../../components/common/Logo";
+import AiMenuAssistant from "../../components/customer/AiMenuAssistant";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useCartStore } from "../../store/cartStore";
 
@@ -111,6 +112,9 @@ export default function DigitalMenuPage() {
         </div>
       </div>
       <div className="max-w-2xl mx-auto px-4">
+        {/* AI Menu Recommendation Assistant */}
+        <AiMenuAssistant foods={foods} tableNumber={tableNumber} />
+
         {/* Categories & Filters */}
         <div className="flex gap-2 overflow-x-auto no-scrollbar py-4">
           {allCategories.map((cat) => (
