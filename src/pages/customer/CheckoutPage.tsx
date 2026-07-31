@@ -48,6 +48,7 @@ export default function CheckoutPage() {
 
   const telePhone = liveSettings.telebirrPhone || "0911234567";
   const teleShort = liveSettings.telebirrShortcode || "789012";
+  const teleName = liveSettings.telebirrAccountName || "Bright Day Grand Hotel";
   const cbeAcc = liveSettings.cbeAccountNumber || "1000123456789";
   const cbeName = liveSettings.cbeAccountName || "Bright Day Hotel & Restaurant";
 
@@ -394,6 +395,7 @@ export default function CheckoutPage() {
                     <ol className="list-decimal list-inside space-y-1 text-xs text-muted-foreground">
                       <li>Open Telebirr App or Dial <strong>*127#</strong></li>
                       <li>Select Pay Merchant / Transfer</li>
+                      <li>Recipient Name: <strong>{teleName}</strong></li>
                       <li>Enter Till / Phone: <strong>{telePhone}</strong></li>
                       <li>Enter Amount: <strong>ETB {total.toFixed(0)}</strong></li>
                     </ol>
@@ -401,6 +403,11 @@ export default function CheckoutPage() {
 
                   {/* Copy Account Details */}
                   <div className="bg-card p-4 rounded-2xl border border-border space-y-3">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">Telebirr Recipient Name:</span>
+                      <span className="font-bold text-foreground">{teleName}</span>
+                    </div>
+
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Telebirr Merchant Phone:</span>
                       <div className="flex items-center gap-2 font-mono font-bold">

@@ -27,6 +27,7 @@ interface SystemSettings {
   // Payment Merchant Details
   telebirrPhone: string;
   telebirrShortcode: string;
+  telebirrAccountName: string;
   cbeAccountNumber: string;
   cbeAccountName: string;
 }
@@ -44,6 +45,7 @@ export default function SettingsPage() {
     autoPrintOrders: false,
     telebirrPhone: "0911234567",
     telebirrShortcode: "789012",
+    telebirrAccountName: "Bright Day Grand Hotel",
     cbeAccountNumber: "1000123456789",
     cbeAccountName: "Bright Day Hotel & Restaurant",
   });
@@ -62,6 +64,7 @@ export default function SettingsPage() {
         autoPrintOrders: docData.autoPrintOrders ?? false,
         telebirrPhone: docData.telebirrPhone || "0911234567",
         telebirrShortcode: docData.telebirrShortcode || "789012",
+        telebirrAccountName: docData.telebirrAccountName || "Bright Day Grand Hotel",
         cbeAccountNumber: docData.cbeAccountNumber || "1000123456789",
         cbeAccountName: docData.cbeAccountName || "Bright Day Hotel & Restaurant",
       });
@@ -126,7 +129,27 @@ export default function SettingsPage() {
                 <Smartphone className="h-5 w-5" />
                 Telebirr Merchant Settings
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">
+                    Telebirr Account / Owner Name
+                  </Label>
+                  <Input
+                    placeholder="e.g. Bright Day Grand Hotel"
+                    value={settings.telebirrAccountName}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        telebirrAccountName: e.target.value,
+                      })
+                    }
+                    className="mt-1 bg-input border-border font-medium"
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Displayed to customers for recipient verification
+                  </p>
+                </div>
+
                 <div>
                   <Label className="text-xs text-muted-foreground">
                     Telebirr Merchant Phone Number
