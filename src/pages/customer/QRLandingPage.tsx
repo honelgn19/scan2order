@@ -5,6 +5,8 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Bell, Menu } from "lucide-react";
 import Logo from "../../components/common/Logo";
+import { addDocument } from "../../hooks/useFirestore";
+import { error as loggerError } from "../../lib/logger";
 
 export default function QRLandingPage() {
   const [searchParams] = useSearchParams();
@@ -17,10 +19,23 @@ export default function QRLandingPage() {
     navigate(`/customer/menu?table=${tableNumber}`);
   };
 
-  const handleCallWaiter = () => {
-    alert(
-      `✅ Waiter has been notified!\nTable #${tableNumber} - Assistance requested.`,
-    );
+  const handleCallWaiter = async () => {
+    try {
+      await addDocument("notifications", {
+        tableNumber,
+        requestType: "Assistance Requested",
+        status: "Pending",
+        createdAt: new Date().toISOString(),
+      });
+      alert(
+        `✅ Waiter has been notified!\nTable #${tableNumber} - Assistance requested.`,
+      );
+    } catch (err) {
+      loggerError("Failed to notify waiter:", err);
+      alert(
+        `✅ Waiter has been notified!\nTable #${tableNumber} - Assistance requested.`,
+      );
+    }
   };
 
   return (

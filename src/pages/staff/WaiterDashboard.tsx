@@ -7,6 +7,7 @@
    ============================================= */
 
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/ui/button";
 
@@ -23,6 +24,7 @@ import {
   Users,
   ChefHat,
   LogOut,
+  UtensilsCrossed,
 } from "lucide-react";
 import { signOutUser } from "../../services/firebase/auth";
 
@@ -33,7 +35,7 @@ import {
 import type { Order } from "../../types";
 import { log, error as loggerError } from "../../lib/logger";
 
-import { useFirestore } from "../../hooks/useFirestore";
+import { useFirestore, deleteDocument } from "../../hooks/useFirestore";
 
 // =============================================
 // TYPES
@@ -63,9 +65,21 @@ interface AssistanceRequest {
 // =============================================
 
 export default function WaiterDashboard() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<WaiterOrder[]>([]);
 
   const [loading, setLoading] = useState(true);
+
+  // Handle responding to customer assistance requests
+  const handleRespondRequest = async (requestId: string, tableNumber: string) => {
+    try {
+      await deleteDocument("notifications", requestId);
+      alert(`✅ Request for Table #${tableNumber} resolved!`);
+    } catch (err) {
+      loggerError("Error resolving request:", err);
+      alert("Failed to update request");
+    }
+  };
 
   // =============================================
   // CUSTOMER REQUESTS FROM FIRESTORE
@@ -180,6 +194,17 @@ export default function WaiterDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               {assistanceRequests.length} Requests
             </Badge>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open("/customer/menu?table=01", "_blank")}
+              className="gap-1.5 bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/20 text-xs sm:text-sm font-medium"
+              title="Open Customer Digital Menu"
+            >
+              <UtensilsCrossed className="h-4 w-4" />
+              <span className="hidden sm:inline">View Menu</span>
+            </Button>
 
             <Button
               variant="outline"
@@ -387,7 +412,8 @@ export default function WaiterDashboard() {
 
                       <Button
                         variant="outline"
-                        className="w-full mt-5 h-11 border-border hover:bg-accent"
+                        onClick={() => handleRespondRequest(req.id, req.tableNumber)}
+                        className="w-full mt-5 h-11 border-border hover:bg-accent text-amber-500 hover:text-amber-400 font-semibold"
                       >
                         Respond Now
                       </Button>
@@ -420,11 +446,13 @@ export default function WaiterDashboard() {
             <div className="mt-6">
               <Button
                 variant="outline"
+                onClick={() => navigate("/staff/active-tables")}
                 className="
                   w-full
                   h-12
                   border-border
                   hover:bg-accent
+                  font-semibold
                 "
               >
                 View Active Tables

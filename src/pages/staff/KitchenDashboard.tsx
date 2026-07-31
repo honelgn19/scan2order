@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2, LogOut } from "lucide-react";
+import { Moon, Sun, Bell, Clock3, ChefHat, CheckCircle2, LogOut, UtensilsCrossed } from "lucide-react";
 import { signOutUser } from "../../services/firebase/auth";
 
 import {
@@ -137,6 +137,17 @@ export default function KitchenDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               Live
             </Badge>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open("/customer/menu?table=01", "_blank")}
+              className="gap-1.5 bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/20 text-xs sm:text-sm font-medium"
+              title="Open Customer Digital Menu"
+            >
+              <UtensilsCrossed className="h-4 w-4" />
+              <span className="hidden sm:inline">View Menu</span>
+            </Button>
 
             <Button
               variant="outline"

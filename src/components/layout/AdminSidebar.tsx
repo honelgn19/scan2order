@@ -32,6 +32,7 @@ const menuItems = [
   { icon: BarChart3, label: "Reports", path: "/admin/reports" },
   { icon: Users, label: "Users", path: "/admin/users" },
   { icon: Bell, label: "Notifications", path: "/admin/notifications" },
+  { icon: UtensilsCrossed, label: "View Digital Menu", path: "/customer/menu?table=01" },
   { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];
 
