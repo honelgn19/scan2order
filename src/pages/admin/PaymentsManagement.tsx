@@ -96,12 +96,29 @@ export default function PaymentsManagement() {
     try {
       await updateDocument("payments", paymentId, {
         status: "PAID",
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
       });
-      // Real-time update will automatically refresh the table
     } catch (error) {
       loggerError("Failed to update payment:", error);
-      alert("Failed to mark as paid. Check console.");
+      alert("Failed to mark as paid.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  // Reject Invalid / Fake Payment Reference
+  const rejectPayment = async (paymentId: string) => {
+    if (!paymentId) return;
+    if (!confirm("Are you sure you want to reject this payment reference as invalid/fake?")) return;
+    setUpdatingId(paymentId);
+    try {
+      await updateDocument("payments", paymentId, {
+        status: "FAILED",
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      loggerError("Failed to reject payment:", error);
+      alert("Failed to update payment.");
     } finally {
       setUpdatingId(null);
     }
@@ -111,11 +128,14 @@ export default function PaymentsManagement() {
     switch (status) {
       case "PAID":
         return "bg-green-600";
+      case "VERIFICATION_PENDING":
+        return "bg-blue-600 animate-pulse";
       case "PENDING":
         return "bg-yellow-600";
       case "CASH_PENDING":
         return "bg-amber-600";
       case "FAILED":
+      case "REJECTED":
         return "bg-red-600";
       case "REFUNDED":
         return "bg-purple-600";
@@ -126,6 +146,7 @@ export default function PaymentsManagement() {
 
   const getStatusText = (status?: string) => {
     if (!status) return "UNKNOWN";
+    if (status === "VERIFICATION_PENDING") return "VERIFY NEEDED";
     return status.replace("_", " ");
   };
 
@@ -341,19 +362,30 @@ export default function PaymentsManagement() {
                       {formatTimestamp(payment.timestamp)}
                     </TableCell>
                     <TableCell>
-                      {(payment.status === "PENDING" ||
-                        payment.status === "CASH_PENDING") && (
-                        <Button
-                          size="sm"
-                          onClick={() => markAsPaid(payment.id!)}
-                          disabled={updatingId === payment.id}
-                          className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                        >
-                          <CheckCircle className="h-4 w-4" />
-                          {updatingId === payment.id
-                            ? "Updating..."
-                            : "Mark as Paid"}
-                        </Button>
+                      {payment.status !== "PAID" && payment.status !== "FAILED" && (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => markAsPaid(payment.id!)}
+                            disabled={updatingId === payment.id}
+                            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-1.5 text-xs h-8"
+                            title="Verify and Approve Payment"
+                          >
+                            <CheckCircle className="h-3.5 w-3.5" />
+                            {updatingId === payment.id ? "Saving..." : "Approve"}
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => rejectPayment(payment.id!)}
+                            disabled={updatingId === payment.id}
+                            className="border-red-500/30 text-red-500 hover:bg-red-500/10 text-xs h-8"
+                            title="Reject Invalid Transaction Ref"
+                          >
+                            Reject
+                          </Button>
+                        </div>
                       )}
                     </TableCell>
                   </TableRow>

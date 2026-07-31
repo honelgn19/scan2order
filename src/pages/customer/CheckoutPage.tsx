@@ -24,7 +24,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useCartStore } from "../../store/cartStore";
-import { addDocument } from "../../hooks/useFirestore";
+import { useFirestore, addDocument } from "../../hooks/useFirestore";
 import { error as loggerError } from "../../lib/logger";
 
 const generateOrderId = () => `LUM-ORD-${Date.now().toString().slice(-6)}`;
@@ -41,6 +41,8 @@ export default function CheckoutPage() {
 
   const tableNumber = searchParams.get("table") || "01";
   const { items, totalPrice, clearCart } = useCartStore();
+
+  const { data: existingPayments = [] } = useFirestore<any>("payments");
 
   const subtotal = totalPrice();
   const vat = subtotal * 0.15;
@@ -70,11 +72,31 @@ export default function CheckoutPage() {
     payStatus: string,
     txId: string,
   ) => {
+    // 🛡️ FRAUD PREVENTION: Check if transaction ID was already used
+    if (txId && txId.length > 3) {
+      const isDuplicate = existingPayments.some(
+        (p) =>
+          p.transactionId &&
+          p.transactionId.toLowerCase().trim() === txId.toLowerCase().trim(),
+      );
+      if (isDuplicate) {
+        alert(
+          `⚠️ Duplicate Payment Reference Detected!\n\nThe Transaction Ref "${txId}" has ALREADY been used for a previous order. Please provide your real transaction reference from your ${paymentMethodName} app.`,
+        );
+        return;
+      }
+    }
+
     setIsProcessing(true);
 
     try {
       const orderId = generateOrderId();
       const nowIso = new Date().toISOString();
+      const finalTxId = txId || generateTransactionId();
+      const finalStatus =
+        paymentMethodName === "Cash"
+          ? "CASH_PENDING"
+          : "VERIFICATION_PENDING";
 
       // Clean item structure with mandatory fields
       const formattedItems = items.map((item) => ({
@@ -94,7 +116,7 @@ export default function CheckoutPage() {
         vat: Math.round(vat),
         serviceCharge: Math.round(serviceCharge),
         paymentMethod: paymentMethodName,
-        paymentStatus: payStatus,
+        paymentStatus: finalStatus,
         status: "Pending",
         createdAt: nowIso,
       };
@@ -108,16 +130,28 @@ export default function CheckoutPage() {
 
       try {
         await addDocument("payments", {
-          transactionId: txId || generateTransactionId(),
+          transactionId: finalTxId,
           orderId,
           tableNumber,
           amount: Math.round(total),
           paymentMethod: paymentMethodName,
-          status: payStatus,
+          status: finalStatus,
           timestamp: nowIso,
         });
       } catch (err) {
         loggerError("Payment document creation warning:", err);
+      }
+
+      // Notify Staff / Cashier for Payment Verification
+      try {
+        await addDocument("notifications", {
+          tableNumber,
+          requestType: `💳 ${paymentMethodName} Verification Required (Ref: ${finalTxId})`,
+          status: "Pending",
+          createdAt: nowIso,
+        });
+      } catch (err) {
+        loggerError("Notification creation warning:", err);
       }
 
       clearCart();
