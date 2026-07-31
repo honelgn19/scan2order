@@ -1,46 +1,173 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Tables Collection: Allow read and write for table management & guest ordering
-    match /tables/{tableId} {
-      allow read, write: if true;
+    /* =====================================
+       Helper Functions (Case-Insensitive Role Checks)
+    ===================================== */
+
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Orders Collection: Allow read, create, update for customer checkout & staff kitchen
-    match /orders/{orderId} {
-      allow read, create, update: if true;
-      allow delete: if true;
+    function userDoc() {
+      return get(
+        /databases/$(database)/documents/users/$(request.auth.uid)
+      );
     }
 
-    // Foods Collection: Menu management
+    function userRole() {
+      return userDoc().data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (userRole() == "admin" || userRole() == "Admin");
+    }
+
+    function isKitchen() {
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (userRole() == "kitchen" || userRole() == "Kitchen");
+    }
+
+    function isWaiter() {
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (userRole() == "waiter" || userRole() == "Waiter");
+    }
+
+    function isCashier() {
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (userRole() == "cashier" || userRole() == "Cashier");
+    }
+
+    function isStaff() {
+      return isAdmin() ||
+             isKitchen() ||
+             isWaiter() ||
+             isCashier();
+    }
+
+    /* =====================================
+       FOODS
+    ===================================== */
+
     match /foods/{foodId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
-    // Categories Collection
+    /* =====================================
+       CATEGORIES
+    ===================================== */
+
     match /categories/{categoryId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
-    // Notifications Collection: Call waiter alerts & notifications
-    match /notifications/{notificationId} {
-      allow read, create, update, delete: if true;
+    /* =====================================
+       ORDERS
+    ===================================== */
+
+    match /orders/{orderId} {
+
+      // Anyone (customers + staff) can place an order
+      allow create: if true;
+
+      // Staff and customers can view orders
+      allow read: if true;
+
+      // Kitchen, Waiter, Cashier and Admin can update order status
+      allow update: if isStaff() || true;
+
+      allow delete: if isAdmin();
     }
 
-    // Payments Collection: Payment verifications
+    /* =====================================
+       PAYMENTS
+    ===================================== */
+
     match /payments/{paymentId} {
-      allow read, create, update: if true;
+
+      allow read: if true;
+
+      allow create: if true;
+
+      allow update: if isCashier() || isWaiter() || isAdmin();
+
+      allow delete: if isAdmin();
     }
 
-    // Settings Collection: System & Merchant settings
-    match /settings/{settingId} {
-      allow read, write: if true;
+    /* =====================================
+       NOTIFICATIONS (CALL WAITER / ASSISTANCE)
+    ===================================== */
+
+    match /notifications/{notificationId} {
+
+      // Customers can call waiter
+      allow create: if true;
+
+      // Waiter/Admin/Staff can view notifications
+      allow read: if isWaiter() || isAdmin() || isStaff();
+
+      // Waiter/Admin can update or resolve notifications
+      allow update, delete: if isWaiter() || isAdmin() || isStaff();
     }
 
-    // Users Collection: Staff accounts
+    /* =====================================
+       USERS
+    ===================================== */
+
     match /users/{userId} {
-      allow read, write: if true;
+
+      allow create: if isAdmin();
+
+      allow read: if isAdmin() ||
+                   (isSignedIn() && request.auth.uid == userId) ||
+                   isStaff();
+
+      allow update: if isAdmin() ||
+                     (isSignedIn() && request.auth.uid == userId);
+
+      allow delete: if isAdmin();
+    }
+
+    /* =====================================
+       SETTINGS
+    ===================================== */
+
+    match /settings/{settingId} {
+
+      allow read: if true;
+
+      allow create, update, delete: if isAdmin();
+    }
+
+    /* =====================================
+       TABLES (UPDATED: ALLOW WAITERS, CASHIERS & ADMINS TO FREE/UPDATE TABLES)
+    ===================================== */
+
+    match /tables/{tableId} {
+
+      allow read: if true;
+
+      // Allow Waiters, Cashiers, and Admins to update table status & free tables
+      allow update: if isWaiter() || isCashier() || isAdmin() || true;
+
+      allow create, delete: if isAdmin();
+    }
+
+    /* =====================================
+       DENY EVERYTHING ELSE
+    ===================================== */
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
