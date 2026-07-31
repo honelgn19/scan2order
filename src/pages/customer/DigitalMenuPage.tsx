@@ -1,25 +1,95 @@
 /* =============================================
    PAGE NAME: DigitalMenuPage
    FILE PATH: src/pages/customer/DigitalMenuPage.tsx
+   MULTI-LANGUAGE SUPPORT: ENGLISH • AMHARIC (አማርኛ) • AFAAN OROMOO
    RESPONSIVE: VERTICAL ON MOBILE • HORIZONTAL GRID ON LARGE SCREENS
    ============================================= */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Search, ShoppingCart, Plus, Sparkles } from "lucide-react";
+import { Search, ShoppingCart, Plus, Sparkles, Globe } from "lucide-react";
 import Logo from "../../components/common/Logo";
 import AiMenuAssistant from "../../components/customer/AiMenuAssistant";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useCartStore } from "../../store/cartStore";
 
+export type Language = "en" | "am" | "om";
+
+const translations = {
+  en: {
+    searchPlaceholder: "Search dishes...",
+    all: "All",
+    breakfast: "Breakfast",
+    lunch: "Lunch",
+    dinner: "Dinner",
+    drinks: "Drinks",
+    desserts: "Desserts",
+    fasting: "Fasting",
+    nonFasting: "Non-Fasting",
+    add: "Add",
+    dishes: "Dishes",
+    items: "Items",
+    viewCart: "View Cart",
+    itemsSelected: "Selected",
+    loading: "Loading delicious menu...",
+    noItems: "No menu items found",
+    adjustFilter: "Try adjusting your category filter or search query",
+    table: "Table",
+  },
+  am: {
+    searchPlaceholder: "ምግብ ይፈልጉ...",
+    all: "ሁሉም",
+    breakfast: "ቁርስ",
+    lunch: "ምሳ",
+    dinner: "እራት",
+    drinks: "መጠጦች",
+    desserts: "ማጣፈጫ",
+    fasting: "የጾም",
+    nonFasting: "የጾም ያልሆነ",
+    add: "ጨምር",
+    dishes: "ምግቦች",
+    items: "ዕቃዎች",
+    viewCart: "ቅርጫት እይ",
+    itemsSelected: "የተመረጡ",
+    loading: "ምግብ ዝርዝር በመጫን ላይ...",
+    noItems: "ምንም ምግብ አልተገኘም",
+    adjustFilter: "እባክዎ የተለየ ምድብ ወይም ቃል ይፈልጉ",
+    table: "ጠረጴዛ",
+  },
+  om: {
+    searchPlaceholder: "Nyaata barbaadi...",
+    all: "Hunda",
+    breakfast: "Ciree",
+    lunch: "Laaqana",
+    dinner: "Irbaata",
+    drinks: "Dhugaatii",
+    desserts: "Mi'aawaa",
+    fasting: "Soomaa",
+    nonFasting: "Soomaa Alaa",
+    add: "Dabali",
+    dishes: "Nyaata",
+    items: "Gostoota",
+    viewCart: "Gara Kaffaltii",
+    itemsSelected: "Filataman",
+    loading: "Tarree nyaataa fe'aa jira...",
+    noItems: "Nyaanni tokkollee hin argamne",
+    adjustFilter: "Maaloo gosa nyaataa ykn maqaa biraa barbaadaa",
+    table: "Taabulaa",
+  },
+};
+
 export default function DigitalMenuPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const tableNumber = searchParams.get("table") || "01";
+
+  const [lang, setLang] = useState<Language>(() => {
+    return (localStorage.getItem("menuLang") as Language) || "en";
+  });
 
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeFilter, setActiveFilter] = useState<
@@ -29,6 +99,12 @@ export default function DigitalMenuPage() {
 
   const { data: foods = [], loading } = useFirestore("foods");
   const { addItem, totalItems, totalPrice } = useCartStore();
+
+  const t = translations[lang];
+
+  useEffect(() => {
+    localStorage.setItem("menuLang", lang);
+  }, [lang]);
 
   const fixedCategories = [
     "All",
@@ -45,6 +121,36 @@ export default function DigitalMenuPage() {
     ...new Set([...fixedCategories, ...dynamicCategories]),
   ];
 
+  const getCategoryLabel = (category: string) => {
+    const catLower = category.toLowerCase();
+    if (catLower === "all") return t.all;
+    if (catLower === "breakfast") return t.breakfast;
+    if (catLower === "lunch") return t.lunch;
+    if (catLower === "dinner") return t.dinner;
+    if (catLower === "drinks") return t.drinks;
+    if (catLower === "desserts") return t.desserts;
+    return category;
+  };
+
+  const getFilterLabel = (filter: "All" | "Fasting" | "Non-Fasting") => {
+    if (filter === "All") return t.all;
+    if (filter === "Fasting") return t.fasting;
+    if (filter === "Non-Fasting") return t.nonFasting;
+    return filter;
+  };
+
+  const getTranslatedDishName = (item: any) => {
+    if (lang === "am" && item.nameAm) return item.nameAm;
+    if (lang === "om" && item.nameOm) return item.nameOm;
+    return item.name;
+  };
+
+  const getTranslatedDishDescription = (item: any) => {
+    if (lang === "am" && item.descriptionAm) return item.descriptionAm;
+    if (lang === "om" && item.descriptionOm) return item.descriptionOm;
+    return item.description;
+  };
+
   const filteredItems = foods.filter((item: any) => {
     const categoryMatch =
       activeCategory === "All" || item.category === activeCategory;
@@ -54,9 +160,12 @@ export default function DigitalMenuPage() {
     if (activeFilter === "Non-Fasting")
       fastingMatch = item.fasting === "NON_FASTING" || item.fasting === "BOTH";
 
+    const name = getTranslatedDishName(item);
+    const desc = getTranslatedDishDescription(item) || "";
+
     const searchMatch =
-      item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      desc?.toLowerCase().includes(searchQuery.toLowerCase());
 
     return (
       categoryMatch && fastingMatch && searchMatch && item.available !== false
@@ -83,7 +192,7 @@ export default function DigitalMenuPage() {
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="flex items-center gap-3">
           <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-          <span className="font-medium">Loading delicious menu...</span>
+          <span className="font-medium">{t.loading}</span>
         </div>
       </div>
     );
@@ -93,15 +202,53 @@ export default function DigitalMenuPage() {
     <div className="min-h-screen bg-background text-foreground pb-32">
       {/* Top Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <Logo size="sm" showText textSub={`Table #${tableNumber}`} />
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between gap-4">
+          <Logo size="sm" showText textSub={`${t.table} #${tableNumber}`} />
+
+          {/* Multi-Language Selector Pill */}
+          <div className="flex items-center gap-1 bg-card p-1 rounded-2xl border border-border shadow-sm">
+            <Globe className="h-4 w-4 text-amber-500 ml-1.5 hidden sm:block" />
+            <button
+              onClick={() => setLang("en")}
+              className={`px-2.5 py-1 text-xs font-bold rounded-xl transition-all ${
+                lang === "en"
+                  ? "bg-amber-500 text-black shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title="English"
+            >
+              EN 🇬🇧
+            </button>
+            <button
+              onClick={() => setLang("am")}
+              className={`px-2.5 py-1 text-xs font-bold rounded-xl transition-all ${
+                lang === "am"
+                  ? "bg-amber-500 text-black shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title="አማርኛ"
+            >
+              አማ 🇪🇹
+            </button>
+            <button
+              onClick={() => setLang("om")}
+              className={`px-2.5 py-1 text-xs font-bold rounded-xl transition-all ${
+                lang === "om"
+                  ? "bg-amber-500 text-black shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title="Afaan Oromoo"
+            >
+              Oro 🇪🇹
+            </button>
+          </div>
 
           {/* Quick Actions / Desktop Search integration */}
           <div className="hidden md:flex items-center gap-3 w-72">
             <div className="relative w-full">
               <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search menu..."
+                placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-card border-border h-10 text-sm rounded-xl"
@@ -115,7 +262,7 @@ export default function DigitalMenuPage() {
           <div className="relative">
             <Search className="absolute left-4 top-3.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search dishes..."
+              placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-11 bg-card border-border h-11 text-sm rounded-xl"
@@ -145,7 +292,7 @@ export default function DigitalMenuPage() {
                     : "bg-background text-foreground hover:bg-accent"
                 }`}
               >
-                {cat}
+                {getCategoryLabel(cat)}
               </Button>
             ))}
           </div>
@@ -164,7 +311,7 @@ export default function DigitalMenuPage() {
                     : "bg-background text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {filter}
+                {getFilterLabel(filter)}
               </Button>
             ))}
           </div>
@@ -173,9 +320,9 @@ export default function DigitalMenuPage() {
         {/* Dynamic Items Counter */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <span>{activeCategory} Dishes</span>
-            <Badge variant="outline" className="text-amber-500 border-amber-500/30">
-              {filteredItems.length} items
+            <span>{getCategoryLabel(activeCategory)} {t.dishes}</span>
+            <Badge variant="outline" className="text-amber-500 border-amber-500/30 font-mono">
+              {filteredItems.length} {t.items}
             </Badge>
           </h2>
         </div>
@@ -184,9 +331,9 @@ export default function DigitalMenuPage() {
         {filteredItems.length === 0 ? (
           <div className="text-center py-20 bg-card rounded-3xl border border-border">
             <Sparkles className="h-12 w-12 text-muted-foreground mx-auto mb-3 animate-pulse" />
-            <h3 className="text-lg font-semibold">No menu items found</h3>
+            <h3 className="text-lg font-semibold">{t.noItems}</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Try adjusting your category filter or search query
+              {t.adjustFilter}
             </p>
           </div>
         ) : (
@@ -207,13 +354,13 @@ export default function DigitalMenuPage() {
                       {(item.fasting === "FASTING" ||
                         item.fasting === "BOTH") && (
                         <Badge className="bg-emerald-600/90 text-white backdrop-blur text-[10px] px-2.5 py-0.5">
-                          🌱 Fasting
+                          🌱 {t.fasting}
                         </Badge>
                       )}
                       {(item.fasting === "NON_FASTING" ||
                         item.fasting === "BOTH") && (
                         <Badge className="bg-amber-600/90 text-white backdrop-blur text-[10px] px-2.5 py-0.5">
-                          🍖 Non-Fasting
+                          🍖 {t.nonFasting}
                         </Badge>
                       )}
                     </div>
@@ -222,11 +369,11 @@ export default function DigitalMenuPage() {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-bold text-lg text-foreground group-hover:text-amber-500 transition-colors line-clamp-1">
-                        {item.name}
+                        {getTranslatedDishName(item)}
                       </h3>
                     </div>
                     <p className="text-xs text-muted-foreground line-clamp-2 min-h-[32px]">
-                      {item.description || "Freshly prepared by Lumina Grand culinary team."}
+                      {getTranslatedDishDescription(item) || "Freshly prepared by Lumina Grand culinary team."}
                     </p>
                   </CardContent>
                 </div>
@@ -245,7 +392,7 @@ export default function DigitalMenuPage() {
                       className="h-11 px-5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-bold flex items-center gap-1.5 shadow-md group-hover:scale-105 transition-all"
                     >
                       <Plus className="h-4 w-4" />
-                      Add
+                      {t.add}
                     </Button>
                   </div>
                 </div>
@@ -267,9 +414,9 @@ export default function DigitalMenuPage() {
                 <ShoppingCart className="h-6 w-6" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-medium text-black/70 leading-none">View Cart</p>
+                <p className="text-xs font-medium text-black/70 leading-none">{t.viewCart}</p>
                 <p className="text-base font-extrabold text-black leading-tight mt-0.5">
-                  {totalItems()} {totalItems() === 1 ? "Item" : "Items"} Selected
+                  {totalItems()} {t.itemsSelected}
                 </p>
               </div>
             </div>
