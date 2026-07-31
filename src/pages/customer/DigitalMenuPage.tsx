@@ -23,6 +23,7 @@ const translations = {
   en: {
     searchPlaceholder: "Search dishes...",
     all: "All",
+    traditional: "Traditional",
     breakfast: "Breakfast",
     lunch: "Lunch",
     dinner: "Dinner",
@@ -43,6 +44,7 @@ const translations = {
   am: {
     searchPlaceholder: "ምግብ ይፈልጉ...",
     all: "ሁሉም",
+    traditional: "ባህላዊ",
     breakfast: "ቁርስ",
     lunch: "ምሳ",
     dinner: "እራት",
@@ -63,6 +65,7 @@ const translations = {
   om: {
     searchPlaceholder: "Nyaata barbaadi...",
     all: "Hunda",
+    traditional: "Aadaa",
     breakfast: "Ciree",
     lunch: "Laaqana",
     dinner: "Irbaata",
@@ -108,6 +111,7 @@ export default function DigitalMenuPage() {
 
   const fixedCategories = [
     "All",
+    "Traditional",
     "Breakfast",
     "Lunch",
     "Dinner",
@@ -115,7 +119,11 @@ export default function DigitalMenuPage() {
     "Desserts",
   ];
   const dynamicCategories = [
-    ...new Set(foods.map((item: any) => item.category).filter(Boolean)),
+    ...new Set(
+      foods
+        .map((item: any) => item.category)
+        .filter((cat: any) => Boolean(cat) && cat !== "Main Course"),
+    ),
   ];
   const allCategories = [
     ...new Set([...fixedCategories, ...dynamicCategories]),
@@ -124,6 +132,7 @@ export default function DigitalMenuPage() {
   const getCategoryLabel = (category: string) => {
     const catLower = category.toLowerCase();
     if (catLower === "all") return t.all;
+    if (catLower === "traditional") return t.traditional;
     if (catLower === "breakfast") return t.breakfast;
     if (catLower === "lunch") return t.lunch;
     if (catLower === "dinner") return t.dinner;
@@ -152,8 +161,20 @@ export default function DigitalMenuPage() {
   };
 
   const filteredItems = foods.filter((item: any) => {
-    const categoryMatch =
-      activeCategory === "All" || item.category === activeCategory;
+    let categoryMatch = false;
+    if (activeCategory === "All") {
+      categoryMatch = true;
+    } else if (activeCategory === "Traditional") {
+      categoryMatch =
+        item.category === "Traditional" ||
+        item.category === "Main Course" ||
+        ["doro", "wat", "wot", "beyaynetu", "kitfo", "tibs", "shiro", "agelgil", "asa", "gurage", "genfo", "chechebsa"].some(
+          (k) => item.name?.toLowerCase().includes(k),
+        );
+    } else {
+      categoryMatch = item.category === activeCategory;
+    }
+
     let fastingMatch = true;
     if (activeFilter === "Fasting")
       fastingMatch = item.fasting === "FASTING" || item.fasting === "BOTH";
