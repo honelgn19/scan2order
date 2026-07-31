@@ -111,19 +111,26 @@ export default function CategoryManagement() {
   };
 
   const saveCategory = async () => {
-    if (!newCategory.name || !newCategory.image) {
-      alert("Name and Image are required");
+    if (!newCategory.name) {
+      alert("Category Name (English) is required");
       return;
     }
 
+    const categoryPayload = {
+      ...newCategory,
+      image:
+        newCategory.image ||
+        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600",
+    };
+
     try {
       if (isEditModalOpen && selectedCategory?.id) {
-        await updateDocument("categories", selectedCategory.id, newCategory);
+        await updateDocument("categories", selectedCategory.id, categoryPayload);
         alert("Category updated successfully!");
         setIsEditModalOpen(false);
       } else {
         await addDocument("categories", {
-          ...newCategory,
+          ...categoryPayload,
           itemCount: 0,
         });
         alert("Category created successfully!");

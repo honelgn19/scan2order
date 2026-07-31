@@ -146,16 +146,23 @@ export default function FoodManagement() {
 
   const saveFood = async () => {
     if (!newFood.name || !newFood.category || !newFood.price) {
-      alert("Please fill Name, Category and Price");
+      alert("Please fill English Food Name, Category and Price");
       return;
     }
 
+    const foodPayload = {
+      ...newFood,
+      image:
+        newFood.image ||
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
+    };
+
     try {
       if (isEditModalOpen && selectedFood?.id) {
-        await updateDocument("foods", selectedFood.id, newFood);
+        await updateDocument("foods", selectedFood.id, foodPayload);
         setIsEditModalOpen(false);
       } else {
-        await addDocument("foods", newFood);
+        await addDocument("foods", foodPayload);
         setIsAddModalOpen(false);
       }
 
