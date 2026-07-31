@@ -29,7 +29,8 @@ import {
   deleteDocument,
 } from "../../hooks/useFirestore";
 import { error as loggerError, log } from "../../lib/logger";
-import { serverTimestamp } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import { serverTimestamp, doc, updateDoc, deleteField } from "firebase/firestore";
 import { parseTable, parseTablePartial } from "../../lib/schemas";
 import { formatTimestamp } from "../../lib/utils";
 import { useAuth } from "../../hooks/useAuth";
@@ -245,19 +246,23 @@ export default function TableManagement() {
     newStatus: RestaurantTable["status"],
   ) => {
     try {
-      const payload = {
-        status: newStatus,
-        updatedAt: serverTimestamp(),
-        ...(newStatus === "Available" && { currentSession: null }),
-      } as const;
-
-      try {
-        parseTablePartial(payload);
-      } catch (ve) {
-        loggerError("Table update validation failed:", ve);
+      const tableRef = doc(db, "tables", id);
+      if (newStatus === "Available") {
+        await updateDoc(tableRef, {
+          status: "Available",
+          currentSession: deleteField(),
+          currentOrderId: deleteField(),
+          guests: 0,
+          totalSpent: 0,
+          hasRequest: false,
+          updatedAt: serverTimestamp(),
+        });
+      } else {
+        await updateDoc(tableRef, {
+          status: newStatus,
+          updatedAt: serverTimestamp(),
+        });
       }
-
-      await updateDocument("tables", id, payload as any);
     } catch (err) {
       loggerError("Failed to change table status:", err);
     }

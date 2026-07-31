@@ -8,9 +8,10 @@ import React, { useState, useMemo } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Users, Bell, LogOut, UtensilsCrossed } from 'lucide-react';
-import { useFirestore, updateDocument } from "../../hooks/useFirestore";
-import { signOutUser } from "../../services/firebase/auth";
+import { Users, Bell, LogOut, UtensilsCrossed, CheckCircle2 } from 'lucide-react';
+import { useFirestore } from "../../hooks/useFirestore";
+import { db } from "../../lib/firebase";
+import { doc, updateDoc, deleteField, serverTimestamp } from "firebase/firestore";
 
 const formatTime = (timestamp: unknown): string => {
   if (!timestamp) return "—";
@@ -52,10 +53,8 @@ interface Table {
 }
 
 export default function ActiveTablesPage() {
-  
   const { data: tables = [], loading } = useFirestore<Table>("tables");
 
-  
   // Filter and sort active tables ascendingly by table number
   const activeTables = useMemo(() => {
     const filtered = tables.filter((table) =>
@@ -72,6 +71,28 @@ export default function ActiveTablesPage() {
       });
     });
   }, [tables]);
+
+  const handleFreeTable = async (tableId?: string, tableNum?: string) => {
+    if (!tableId) {
+      alert("Table ID missing!");
+      return;
+    }
+    try {
+      const tableRef = doc(db, "tables", tableId);
+      await updateDoc(tableRef, {
+        status: "Available",
+        guests: 0,
+        totalSpent: 0,
+        hasRequest: false,
+        currentSession: deleteField(),
+        currentOrderId: deleteField(),
+        updatedAt: serverTimestamp(),
+      });
+    } catch (err: any) {
+      console.error("Failed to free table:", err);
+      alert(`Failed to free table: ${err?.message || "Unknown error"}`);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -111,17 +132,17 @@ export default function ActiveTablesPage() {
               {activeTables.length}
             </Badge>
           </div>
-                  </div>
+        </div>
       </div>
 
       <div className="max-w-5xl mx-auto p-6">
         {activeTables.length === 0 ? (
           <Card className="bg-card border-border">
             <CardContent className="p-16 text-center">
-              <Users className="h-20 w-20 mx-auto text-muted-foreground mb-4" />
+              <CheckCircle2 className="h-20 w-20 mx-auto text-emerald-500 mb-4 animate-bounce" />
               <h3 className="text-2xl font-semibold mb-2">No Active Tables</h3>
               <p className="text-muted-foreground">
-                All tables are currently available
+                All tables are currently free and available!
               </p>
             </CardContent>
           </Card>
@@ -187,15 +208,7 @@ export default function ActiveTablesPage() {
                     </Button>
                     <Button
                       className="h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
-                      onClick={async () => {
-                        if (table.id) {
-                          await updateDocument("tables", table.id, {
-                            status: "Available",
-                            currentSession: null,
-                          });
-                          alert(`Table #${table.number} session closed and set to Available!`);
-                        }
-                      }}
+                      onClick={() => handleFreeTable(table.id, table.number)}
                     >
                       Close & Free Table
                     </Button>
