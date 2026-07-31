@@ -35,7 +35,7 @@ import {
 import type { Order } from "../../types";
 import { log, error as loggerError } from "../../lib/logger";
 
-import { useFirestore, deleteDocument } from "../../hooks/useFirestore";
+import { useFirestore, updateDocument, deleteDocument } from "../../hooks/useFirestore";
 
 // =============================================
 // TYPES
@@ -306,23 +306,37 @@ export default function WaiterDashboard() {
                         ))}
                       </div>
 
-                      {/* BUTTON */}
-
-                      <Button
-                        onClick={() => markAsDelivered(order.id)}
-                        className="
-                          w-full
-                          mt-6
-                          h-12
-                          bg-green-600
-                          hover:bg-green-700
-                          text-white
-                          font-semibold
-                        "
-                      >
-                        <CheckCircle className="mr-2 h-5 w-5" />
-                        Mark as Delivered
-                      </Button>
+                      {/* BUTTONS */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+                        {order.paymentStatus?.toUpperCase() !== "PAID" && (
+                          <Button
+                            onClick={async () => {
+                              try {
+                                await updateDocument("orders", order.id, {
+                                  paymentStatus: "Paid",
+                                  paymentMethod: "Cash",
+                                  updatedAt: new Date().toISOString(),
+                                });
+                                alert(`💵 Cash payment approved for Table #${order.tableNumber}`);
+                              } catch (err) {
+                                loggerError(err);
+                              }
+                            }}
+                            className="h-11 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs"
+                          >
+                            💵 Mark Paid Cash
+                          </Button>
+                        )}
+                        <Button
+                          onClick={() => markAsDelivered(order.id)}
+                          className={`h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs ${
+                            order.paymentStatus?.toUpperCase() === "PAID" ? "col-span-2" : ""
+                          }`}
+                        >
+                          <CheckCircle className="mr-1.5 h-4 w-4" />
+                          Mark Delivered
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 );
