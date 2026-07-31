@@ -9,7 +9,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Users, Bell, LogOut, UtensilsCrossed } from 'lucide-react';
-import { useFirestore } from "../../hooks/useFirestore";
+import { useFirestore, updateDocument } from "../../hooks/useFirestore";
 import { signOutUser } from "../../services/firebase/auth";
 
 const formatTime = (timestamp: unknown): string => {
@@ -177,9 +177,29 @@ export default function ActiveTablesPage() {
                     </div>
                   )}
 
-                  <Button className="w-full mt-6 h-12" variant="outline">
-                    View Table Details / Orders
-                  </Button>
+                  <div className="grid grid-cols-2 gap-3 mt-6">
+                    <Button
+                      className="h-11 border-border"
+                      variant="outline"
+                      onClick={() => alert(`Table #${table.number} orders viewed.`)}
+                    >
+                      View Details
+                    </Button>
+                    <Button
+                      className="h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                      onClick={async () => {
+                        if (table.id) {
+                          await updateDocument("tables", table.id, {
+                            status: "Available",
+                            currentSession: null,
+                          });
+                          alert(`Table #${table.number} session closed and set to Available!`);
+                        }
+                      }}
+                    >
+                      Close & Free Table
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
