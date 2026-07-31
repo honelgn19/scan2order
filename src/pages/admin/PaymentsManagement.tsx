@@ -364,7 +364,6 @@ export default function PaymentsManagement() {
                     <TableHead>Transaction Ref</TableHead>
                     <TableHead>Order ID</TableHead>
                     <TableHead>Table</TableHead>
-                    <TableHead>Customer</TableHead>
                     <TableHead>Method</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
@@ -385,9 +384,6 @@ export default function PaymentsManagement() {
                         <Badge variant="outline" className="font-mono text-xs">
                           #{payment.tableNumber}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {payment.customerName || "Customer"}
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="text-xs">
