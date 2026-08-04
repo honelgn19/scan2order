@@ -339,23 +339,25 @@ export default function CheckoutPage() {
       </div>
 
       {/* PLACE ORDER STICKY BUTTON */}
-      <div className="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 border-t border-border p-4 backdrop-blur-lg shadow-2xl">
-        <div className="max-w-2xl mx-auto">
-          <Button
-            onClick={handleOpenPaymentFlow}
-            disabled={!selectedPayment || isProcessing || items.length === 0}
-            className="w-full h-16 text-base md:text-lg font-extrabold rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-black shadow-xl"
-          >
-            {isProcessing
-              ? "Processing Order..."
-              : `Pay ETB ${total.toFixed(0)} & Place Order`}
-          </Button>
+      {!showPaymentModal && items.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 border-t border-border p-4 backdrop-blur-lg shadow-2xl">
+          <div className="max-w-2xl mx-auto">
+            <Button
+              onClick={handleOpenPaymentFlow}
+              disabled={!selectedPayment || isProcessing || items.length === 0}
+              className="w-full h-16 text-base md:text-lg font-extrabold rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-black shadow-xl"
+            >
+              {isProcessing
+                ? "Processing Order..."
+                : `Pay ETB ${total.toFixed(0)} & Place Order`}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* TELEBIRR / CBE PAYMENT INSTRUCTIONS MODAL */}
       {showPaymentModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="w-full max-w-lg bg-background border border-border rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300">
             {/* Modal Header */}
             <div className="p-4 border-b border-border flex items-center justify-between bg-card">
