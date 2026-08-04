@@ -4,11 +4,21 @@
    ============================================= */
 
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Home, Menu, ShoppingCart, User } from "lucide-react";
 
 // Default Export
 export default function MobileBottomNav() {
+  const location = useLocation();
+
+  // Hide bottom nav bar during Cart & Checkout flows so sticky action buttons are 100% visible & unobstructed
+  if (
+    location.pathname.includes("/customer/checkout") ||
+    location.pathname.includes("/customer/cart")
+  ) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background/95 border-t border-border md:hidden z-50 backdrop-blur-sm">
       <div className="max-w-md mx-auto flex items-center justify-around py-2">

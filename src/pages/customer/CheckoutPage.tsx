@@ -176,7 +176,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-36">
+    <div className="min-h-screen bg-background text-foreground pb-44 md:pb-36">
       {/* Header */}
       <div className="relative bg-background/95 border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -339,12 +339,12 @@ export default function CheckoutPage() {
       </div>
 
       {/* PLACE ORDER STICKY BUTTON */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 border-t border-border p-4 backdrop-blur-lg">
+      <div className="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 border-t border-border p-4 backdrop-blur-lg shadow-2xl">
         <div className="max-w-2xl mx-auto">
           <Button
             onClick={handleOpenPaymentFlow}
             disabled={!selectedPayment || isProcessing || items.length === 0}
-            className="w-full h-16 text-lg font-semibold rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 shadow-xl"
+            className="w-full h-16 text-base md:text-lg font-extrabold rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-black shadow-xl"
           >
             {isProcessing
               ? "Processing Order..."

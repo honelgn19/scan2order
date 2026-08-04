@@ -31,7 +31,7 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-28">
+    <div className="min-h-screen bg-background text-foreground pb-44 md:pb-36">
       {" "}
       {/* Increased bottom padding */}
       {/* Header */}
@@ -148,25 +148,23 @@ export default function CartPage() {
           </>
         )}
       </div>
-      {/* CHECKOUT BUTTON - Higher position */}
+      {/* CHECKOUT BUTTON - Flush at bottom without overlap */}
       {items.length > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 z-40 bg-background/95 border-t border-border p-4">
-          {" "}
-          {/* bottom-20 = 80px */}
-          <div className="max-w-2xl mx-auto space-y-3">
+        <div className="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 border-t border-border p-4 backdrop-blur-lg shadow-2xl">
+          <div className="max-w-2xl mx-auto space-y-2">
             <Button
-              variant="outline"
-              className="w-full h-12"
-              onClick={() => navigate(`/customer/menu?table=${tableNumber}`)}
+              onClick={handleCheckout}
+              className="w-full h-14 text-base md:text-lg font-extrabold rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-black shadow-xl"
             >
-              ← Continue Ordering
+              Proceed to Checkout • ETB {grandTotal.toFixed(0)}
             </Button>
 
             <Button
-              onClick={handleCheckout}
-              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-amber-600 to-orange-600"
+              variant="ghost"
+              className="w-full h-9 text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => navigate(`/customer/menu?table=${tableNumber}`)}
             >
-              Proceed to Checkout • ETB {grandTotal.toFixed(0)}
+              ← Continue Ordering
             </Button>
           </div>
         </div>

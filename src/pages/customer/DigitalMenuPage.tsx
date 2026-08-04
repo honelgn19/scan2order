@@ -220,7 +220,7 @@ export default function DigitalMenuPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-32">
+    <div className="min-h-screen bg-background text-foreground pb-44 md:pb-32">
       {/* Top Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between gap-4">
@@ -425,23 +425,23 @@ export default function DigitalMenuPage() {
 
       {/* Floating Sticky Cart Button */}
       {totalItems() > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-lg px-4 z-50 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-[76px] md:bottom-6 left-1/2 -translate-x-1/2 w-full max-w-lg px-4 z-[60] animate-in slide-in-from-bottom-5">
           <Button
             onClick={() => navigate(`/customer/cart?table=${tableNumber}`)}
-            className="w-full h-16 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-black font-extrabold text-lg rounded-2xl shadow-2xl flex justify-between items-center px-6 border border-amber-400/30"
+            className="w-full h-16 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-black font-extrabold text-base md:text-lg rounded-2xl shadow-2xl flex justify-between items-center px-5 md:px-6 border border-amber-400/30"
           >
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-black/20 text-black">
                 <ShoppingCart className="h-6 w-6" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-medium text-black/70 leading-none">{t.viewCart}</p>
-                <p className="text-base font-extrabold text-black leading-tight mt-0.5">
+                <p className="text-[11px] font-semibold text-black/70 leading-none">{t.viewCart}</p>
+                <p className="text-sm md:text-base font-black text-black leading-tight mt-0.5">
                   {totalItems()} {t.itemsSelected}
                 </p>
               </div>
             </div>
-            <div className="bg-black text-amber-400 px-4 py-2 rounded-xl text-base font-mono font-bold shadow">
+            <div className="bg-black text-amber-400 px-3.5 py-2 rounded-xl text-sm md:text-base font-mono font-bold shadow">
               ETB {totalPrice().toLocaleString()} →
             </div>
           </Button>
