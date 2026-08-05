@@ -189,46 +189,46 @@ export default function ReportsAnalytics() {
       </div>
 
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* KPI Cards - 2 Columns on Mobile for better screen usage */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           <Card className="bg-card border-border">
-            <CardContent className="p-5 flex items-center justify-between">
+            <CardContent className="p-4 md:p-5 flex items-center justify-between gap-2">
               <div>
-                <p className="text-xs text-muted-foreground uppercase font-mono">Total Sales Revenue</p>
-                <p className="text-3xl font-black text-amber-500 mt-1">
+                <p className="text-[10px] md:text-xs text-muted-foreground uppercase font-mono line-clamp-1">Total Sales Revenue</p>
+                <p className="text-xl sm:text-2xl md:text-3xl font-black text-amber-500 mt-1">
                   ETB {metrics.totalRevenue.toLocaleString()}
                 </p>
               </div>
-              <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500">
-                <DollarSign className="h-7 w-7" />
+              <div className="p-2.5 md:p-3 rounded-2xl bg-amber-500/10 text-amber-500 shrink-0">
+                <DollarSign className="h-5 w-5 md:h-7 md:w-7" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-card border-border">
-            <CardContent className="p-5 flex items-center justify-between">
+            <CardContent className="p-4 md:p-5 flex items-center justify-between gap-2">
               <div>
-                <p className="text-xs text-muted-foreground uppercase font-mono">Total Completed Orders</p>
-                <p className="text-3xl font-black text-foreground mt-1">
+                <p className="text-[10px] md:text-xs text-muted-foreground uppercase font-mono line-clamp-1">Completed Orders</p>
+                <p className="text-xl sm:text-2xl md:text-3xl font-black text-foreground mt-1">
                   {metrics.totalOrders}
                 </p>
               </div>
-              <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500">
-                <ShoppingBag className="h-7 w-7" />
+              <div className="p-2.5 md:p-3 rounded-2xl bg-blue-500/10 text-blue-500 shrink-0">
+                <ShoppingBag className="h-5 w-5 md:h-7 md:w-7" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border">
-            <CardContent className="p-5 flex items-center justify-between">
+          <Card className="bg-card border-border col-span-2 md:col-span-1">
+            <CardContent className="p-4 md:p-5 flex items-center justify-between gap-2">
               <div>
-                <p className="text-xs text-muted-foreground uppercase font-mono">Average Order Value</p>
-                <p className="text-3xl font-black text-emerald-500 mt-1">
+                <p className="text-[10px] md:text-xs text-muted-foreground uppercase font-mono line-clamp-1">Average Order Value</p>
+                <p className="text-xl sm:text-2xl md:text-3xl font-black text-emerald-500 mt-1">
                   ETB {metrics.avgOrderValue.toLocaleString()}
                 </p>
               </div>
-              <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
-                <Award className="h-7 w-7" />
+              <div className="p-2.5 md:p-3 rounded-2xl bg-emerald-500/10 text-emerald-500 shrink-0">
+                <Award className="h-5 w-5 md:h-7 md:w-7" />
               </div>
             </CardContent>
           </Card>

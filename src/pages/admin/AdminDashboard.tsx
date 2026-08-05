@@ -137,21 +137,21 @@ export default function AdminDashboard() {
         description="Real-time overview of Lumina Grand Restaurant Operations"
       />
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      {/* Stats Grid - 2 Columns on Mobile for better screen usage */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 md:gap-6 mb-10">
         {stats.map((stat, index) => (
           <Card key={index} className="bg-card border-border">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between gap-2">
                 <div>
-                  <p className="text-sm text-muted-foreground">{stat.title}</p>
-                  <p className="text-3xl font-bold mt-2">{stat.value}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">{stat.title}</p>
+                  <p className="text-lg sm:text-2xl md:text-3xl font-extrabold mt-1">{stat.value}</p>
                 </div>
-                <div className={`${stat.color}`}>
-                  <stat.icon className="h-10 w-10" />
+                <div className={`${stat.color} shrink-0`}>
+                  <stat.icon className="h-7 w-7 md:h-10 md:w-10" />
                 </div>
               </div>
-              <p className="text-sm mt-4 text-green-400 font-medium">
+              <p className="text-xs md:text-sm mt-3 text-green-400 font-medium line-clamp-1">
                 {stat.change}
               </p>
             </CardContent>

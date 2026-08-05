@@ -211,8 +211,8 @@ export default function PaymentsManagement() {
       </div>
 
       <div className="max-w-screen-2xl mx-auto p-4 md:p-6 space-y-6">
-        {/* Metrics Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Metrics Summary Cards - 2 Columns on Mobile for better screen usage */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-xs font-mono uppercase text-muted-foreground">
