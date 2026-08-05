@@ -178,14 +178,14 @@ export default function NotificationsPage() {
           </div>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+        {/* Filter Pills - Horizontal Touch Scrollable */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-none py-1 -mx-4 px-4 sm:mx-0 sm:px-0">
           {(["All", "Waiter", "Kitchen", "System"] as const).map((f) => (
             <Button
               key={f}
               variant={filter === f ? "default" : "outline"}
               onClick={() => setFilter(f)}
-              className={`rounded-full px-5 h-10 text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`rounded-full px-5 h-10 text-xs font-semibold whitespace-nowrap shrink-0 transition-all ${
                 filter === f
                   ? "bg-amber-500 hover:bg-amber-600 text-black shadow-md"
                   : "bg-background text-foreground hover:bg-accent"
@@ -219,23 +219,23 @@ export default function NotificationsPage() {
                   !notif.read ? "border-l-4 border-l-amber-500 bg-amber-500/5" : "opacity-85"
                 }`}
               >
-                <CardContent className="p-4 sm:p-5 flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3.5">
+                <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1 w-full">
                     <div className="p-2.5 rounded-2xl bg-muted border border-border/60 shrink-0">
                       {getTypeIcon(notif.type)}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-base text-foreground">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h4 className="font-bold text-base text-foreground break-words">
                           {notif.title}
                         </h4>
                         {!notif.read && (
-                          <Badge className="bg-amber-500 text-black text-[10px] px-2 py-0 font-extrabold">
+                          <Badge className="bg-amber-500 text-black text-[10px] px-2 py-0 font-extrabold shrink-0">
                             NEW
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="text-sm text-muted-foreground mt-1 break-words">
                         {notif.message}
                       </p>
 
@@ -251,26 +251,27 @@ export default function NotificationsPage() {
                     </div>
                   </div>
 
-                  {/* Quick Action Buttons */}
-                  <div className="flex items-center gap-1 shrink-0">
+                  {/* Quick Action Buttons - Always 100% visible on mobile */}
+                  <div className="flex items-center justify-end gap-2 shrink-0 w-full sm:w-auto border-t sm:border-t-0 border-border/50 pt-3 sm:pt-0">
                     {!notif.read ? (
                       <Button
                         size="sm"
                         onClick={() => handleMarkAsRead(notif.id)}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-9 px-3 text-xs rounded-xl shadow-sm"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-9 px-4 text-xs rounded-xl shadow-sm w-full sm:w-auto"
                       >
-                        <Check className="h-4 w-4 mr-1" />
+                        <Check className="h-4 w-4 mr-1.5" />
                         Resolve
                       </Button>
                     ) : (
                       <Button
-                        variant="ghost"
-                        size="icon"
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleClear(notif.id)}
-                        className="text-muted-foreground hover:text-red-500 h-9 w-9 rounded-xl"
+                        className="text-muted-foreground hover:text-red-500 h-9 px-3 text-xs rounded-xl border-border w-full sm:w-auto"
                         title="Dismiss"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Dismiss
                       </Button>
                     )}
                   </div>
